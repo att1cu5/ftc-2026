@@ -17,3 +17,5 @@
 # 5203 Series Yellow Jacket Planetary Gear Motor (19.2:1 Ratio, 24mm # Length 8mm REX™ Shaft, 312 RPM, 3.3 - 5V Encoder)
 # encoders 
 # servos
+
+# https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html#introduction-to-pid control loop for auto and shooter
