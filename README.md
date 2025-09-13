@@ -1,13 +1,13 @@
 
 # documentation
-#april tags 
+# april tags 
 # [text](https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/apriltag_library/apriltag-library.html)
-#road runner
-#[text](https://learnroadrunner.com/)
-#webcam
-#https://github.com/FIRST-Tech-Challenge/FtcRobotController/wiki/FTC-Webcam-Controls
+# road runner
+# [text](https://learnroadrunner.com/)
+# webcam
+# https://github.com/FIRST-Tech-Challenge/FtcRobotController/wiki/FTC-Webcam-Controls
 # odometry
-#https://gm0.org/en/latest/docs/software/concepts/odometry.html
+# https://gm0.org/en/latest/docs/software/concepts/odometry.html
 
 # lots of documentation here https://ftclib.org/
 
