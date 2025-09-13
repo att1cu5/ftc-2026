@@ -10,3 +10,4 @@
 # 312 rpm 
 # 5203 Series Yellow Jacket Planetary Gear Motor (19.2:1 Ratio, 24mm # Length 8mm REX™ Shaft, 312 RPM, 3.3 - 5V Encoder)
 # encoders 
+# servos
