@@ -20,8 +20,10 @@
 # camera
 # 2* Logitech C270
 # [text](https://www.logitech.com/en-us/shop/p/c270-hd-webcam.960-000694)
+# cpu usage problem
 # https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/visionportal_cpu_and_bandwidth/visionportal-cpu-and-bandwidth.html
-# https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html#introduction-to-pid control loop for auto and shooter
+# control loop for auto and shooter
+# https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html#introduction-to-pid 
 # april tag print outs us paper
 # https://ftc-resources.firstinspires.org/ftc/archive/2026/field/apriltag-us
 # april tag print outs A4
