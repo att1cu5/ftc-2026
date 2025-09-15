@@ -17,5 +17,12 @@
 # 5203 Series Yellow Jacket Planetary Gear Motor (19.2:1 Ratio, 24mm # Length 8mm REX™ Shaft, 312 RPM, 3.3 - 5V Encoder)
 # encoders 
 # servos
-
+# camera
+# 2* Logitech C270
+# [text](https://www.logitech.com/en-us/shop/p/c270-hd-webcam.960-000694)
+# https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/visionportal_cpu_and_bandwidth/visionportal-cpu-and-bandwidth.html
 # https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html#introduction-to-pid control loop for auto and shooter
+# april tag print outs us paper
+# https://ftc-resources.firstinspires.org/ftc/archive/2026/field/apriltag-us
+# april tag print outs A4
+# https://ftc-resources.firstinspires.org/ftc/archive/2026/field/apriltag-a4
