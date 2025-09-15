@@ -28,3 +28,5 @@
 # https://ftc-resources.firstinspires.org/ftc/archive/2026/field/apriltag-us
 # april tag print outs A4
 # https://ftc-resources.firstinspires.org/ftc/archive/2026/field/apriltag-a4
+
+# colour sensor https://www.revrobotics.com/rev-31-1557/
