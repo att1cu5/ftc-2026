@@ -1,0 +1,84 @@
+@TeleOp (name = "TELEOP_BEST (Blocks to Java)")
+public class TELEOP_BEST extends LinearOpMode {
+
+  private DcMotor backleft;
+  private DcMotor backright;
+  private DcMotor frontright;
+  private DcMotor frontleft;
+  @Override
+  public void runOpMode() {
+    double yAxis= -gamepad2.left_stick_y;
+    double xAxis= gamepad2.left_stick_x;
+    double zAxis= gamepad1.right_stick_y;
+    double backleft_A;
+    double backright_A;
+    double frontleft_A;
+    double frontright_A;
+    backleft = hardwareMap.get(DcMotor.class, "backleft");
+    backright = hardwareMap.get(DcMotor.class, "backright");
+    frontright = hardwareMap.get(DcMotor.class, "frontright");
+    frontleft = hardwareMap.get(DcMotor.class, "frontleft");
+
+  while (opModeIsActive()) {
+        //strafe_fourty_five_degrees = gamepad2.right_stick_y;
+        y = gamepad2.left_stick_y;
+        x = gamepad2.left_stick_x;
+        turn = gamepad2.right_stick_x;
+        height_A=gamepad1.right_stick_y;
+        frontleft_A = y - x - turn;
+        frontright_A = (y + x) + turn;
+        backleft_A = (y + x) - turn;
+        backright_A = (y - x) + turn;
+
+ 
+       
+
+        
+        if (gamepad2.right_bumper) {
+          precision=1-gamepad2.left_trigger;                  // 'precision' is redundant. Just multiply the power variables by PRECISION_VALUE.
+                                                      // since this loop is always running, the "power" variables go out of scope and are reset above.
+                                                      // so as long as the right bumper is not pressed it'll be the full analgo value #~AW  
+          frontleft_A=precision*(frontleft_A);
+          frontright_A=precision*(frontright_A);
+          backleft_A=precision*(backleft_A);
+          backright_A=precision*(backright_A);
+        }
+
+        if (gamepad2.left_bumper) {
+          precision=0.3-(gamepad2.left_trigger*0.3);                  // 'precision' is redundant. Just multiply the power variables by PRECISION_VALUE.
+                                                      // since this loop is always running, the "power" variables go out of scope and are reset above.
+                                                      // so as long as the right bumper is not pressed it'll be the full analgo value #~AW  
+          frontleft_A=precision*(frontleft_A);
+          frontright_A=precision*(frontright_A);
+          backleft_A=precision*(backleft_A);
+          backright_A=precision*(backright_A);
+        }
+        if(!gamepad2.left_bumper && !gamepad2.right_bumper){
+          precision=0.6-(gamepad2.left_trigger*0.6);                  // 'precision' is redundant. Just multiply the power variables by PRECISION_VALUE.
+                                                      // since this loop is always running, the "power" variables go out of scope and are reset above.
+                                                      // so as long as the right bumper is not pressed it'll be the full analgo value #~AW  
+          frontleft_A=precision*(frontleft_A);
+          frontright_A=precision*(frontright_A);
+          backleft_A=precision*(backleft_A);
+          backright_A=precision*(backright_A);
+        }
+                 
+
+        if(gamepad2.a){
+              frontright.setPower(-frontright_A);        // you DON'T set this motor direction to reverse above, maybe you should and remove the negative sign. #~AW
+              frontleft.setPower(-frontleft_A);          // you DO set this motor direction to reverse above... maybe you shouldn't then remove the negative sign. #~AW
+              backleft.setPower(0);            
+              backright.setPower(0);
+            }
+        else if(gamepad2.b){
+              frontright.setPower(0);        // you DON'T set this motor direction to reverse above, maybe you should and remove the negative sign. #~AW
+              frontleft.setPower(0);          // you DO set this motor direction to reverse above... maybe you shouldn't then remove the negative sign. #~AW
+              backleft.setPower(backleft_A);            
+              backright.setPower(backright_A);            
+            }
+        else{
+              frontright.setPower(-frontright_A);        // you DON'T set this motor direction to reverse above, maybe you should and remove the negative sign. #~AW
+              frontleft.setPower(-frontleft_A);          // you DO set this motor direction to reverse above... maybe you shouldn't then remove the negative sign. #~AW
+              backleft.setPower(backleft_A);            
+              backright.setPower(backright_A);
+            }
