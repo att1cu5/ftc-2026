@@ -1,6 +1,10 @@
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.CameraControl
 import java.io.Serializable 
 import java.lang.Comparable
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
 public enum FocusControl.Mode{
   Auto,
   Fixed,
@@ -20,5 +24,6 @@ public enum ExposureControl.Mode{
   ShutterPriorty,
   AutoPriority
 }
+
 
 
