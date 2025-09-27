@@ -36,7 +36,7 @@ public class Camera extends LinearOpMode {
 @Override
 public void runOpMode() {
        
-
+        
         waitForStart();
 
         while (opModeIsActive()) {
@@ -45,6 +45,7 @@ public void runOpMode() {
  }
 
 }
+
 
 
 
