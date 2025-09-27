@@ -35,16 +35,23 @@ public class Camera extends LinearOpMode {
 }
 @Override
 public void runOpMode() {
-       
-        
+       private static final String VUFORIA_KEY =
+            "   INSERT YOUR VUFORIA KEY HERE  ";
+
+    // Class Members
+        private VuforiaLocalizer vuforia    = null;
+        private WebcamName webcamName       = null;
+        myExposureControl = vuforia.getCamera().getControl(ExposureControl.class);  
+        myExposureControl.setMode(ExposureControl.Mode.Manual);
         waitForStart();
-
+        
         while (opModeIsActive()) {
-
+           myExposureControl.setExposure(30, TimeUnit.MILLISECONDS);
 
  }
 
 }
+
 
 
 
