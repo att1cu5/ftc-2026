@@ -1,3 +1,4 @@
+package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.CameraControl
 import java.io.Serializable 
 import java.lang.Comparable
@@ -5,6 +6,9 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.FocusControl;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public enum FocusControl.Mode{
   Auto,
   Fixed,
@@ -25,6 +29,7 @@ public enum ExposureControl.Mode{
   AutoPriority
 }
 ExposureControl MyExposureControl;
+
 
 
 
