@@ -29,6 +29,10 @@ public enum ExposureControl.Mode{
   AutoPriority
 }
 ExposureControl MyExposureControl;
+@TeleOp (name = "Camera (Blocks to Java)")
+public class Camera extends LinearOpMode {
+
+}
 
 
 
