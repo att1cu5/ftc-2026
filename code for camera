@@ -33,6 +33,11 @@ ExposureControl MyExposureControl;
 public class Camera extends LinearOpMode {
 
 }
+@Override
+public void runOpMode() {
+       
+
+        waitForStart();
 
 
 
