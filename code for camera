@@ -1,1 +1,24 @@
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.CameraControl
+import java.io.Serializable 
+import java.lang.Comparable
+public enum FocusControl.Mode{
+  Auto,
+  Fixed,
+  Unknown,
+  ContinousAuto,
+  Macro,
+  Infinty
+}
+public enum WhiteBalanceControl.Mode {
+  Auto
+}
+public enum ExposureControl.Mode{
+  Unknown,
+  Auto,
+  ContinousAuto,
+  Maunal,
+  ShutterPriorty,
+  AutoPriority
+}
+
+
