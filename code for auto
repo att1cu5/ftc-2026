@@ -156,21 +156,29 @@ public class Auto_forward extends LinearOpMode {
     backright = hardwareMap.get(DcMotor.class, "backright");
     frontright = hardwareMap.get(DcMotor.class, "frontright");
     frontleft = hardwareMap.get(DcMotor.class, "frontleft");
+    backleft.setmode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontleft.setmode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontright.setmode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backright.setmode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     backleft.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
     frontleft.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
     frontright.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
     backright.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     frontleft.setDirection(DcMotor.Direction.REVERSE);
     backright.setDirection(DcMotor.Direction.REVERSE);
     waitForStart();
     while (opModeIsActive()) {
       PIDCONTOLLERBL BL=new PIDCONTOLLERBL();
       PIDCONTOLLERFL FL=new PIDCONTOLLERFL();
+      PIDCONTOLLERBR BR=new PIDCONTOLLERBR();
+      PIDCONTOLLERFR FR=new PIDCONTOLLERFR();
       double powerBL=BL.calcBL(backleft.currentposition(),desiredPositionBL);
       double powerFL=FL.calcFL(frontleft.currentposition(),desiredPositionFL);
       double powerFR=FR.calcFR(frontright.currentposition(),desiredPositionFR);
       double powerBR=BR.calcBR(backright.currentposition(),desiredPositionBR);
     }
 }
+
 
 
