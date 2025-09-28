@@ -16,6 +16,10 @@ public class Auto_forward extends LinearOpMode {
   private DcMotor backright;
   private DcMotor frontright;
   private DcMotor frontleft;
+  double desiredPositionBLA=0; // add value for desired distance
+  double desiredPositionBRA=0; // add value for desired distance
+  double desiredPositionFRA=0; // add value for desired distance
+  double desiredPositionFLA=0; // add value for desired distance  
   public class PIDCONTOLLERFL(){
     
 
@@ -152,14 +156,21 @@ public class Auto_forward extends LinearOpMode {
     backright = hardwareMap.get(DcMotor.class, "backright");
     frontright = hardwareMap.get(DcMotor.class, "frontright");
     frontleft = hardwareMap.get(DcMotor.class, "frontleft");
-
-    
-  
+    backleft.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
+    frontleft.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
+    frontright.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
+    backright.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
     frontleft.setDirection(DcMotor.Direction.REVERSE);
     backright.setDirection(DcMotor.Direction.REVERSE);
     waitForStart();
     while (opModeIsActive()) {
-      
+      PIDCONTOLLERBL BL=new PIDCONTOLLERBL();
+      PIDCONTOLLERFL FL=new PIDCONTOLLERFL();
+      double powerBL=BL.calcBL(backleft.currentposition(),desiredPositionBL);
+      double powerFL=FL.calcFL(frontleft.currentposition(),desiredPositionFL);
+      double powerFR=FR.calcFR(frontright.currentposition(),desiredPositionFR);
+      double powerBR=BR.calcBR(backright.currentposition(),desiredPositionBR);
     }
 }
+
 
