@@ -177,8 +177,13 @@ public class Auto_forward extends LinearOpMode {
       double powerFL=FL.calcFL(frontleft.currentposition(),desiredPositionFL);
       double powerFR=FR.calcFR(frontright.currentposition(),desiredPositionFR);
       double powerBR=BR.calcBR(backright.currentposition(),desiredPositionBR);
+      frontright.setPower(powerFR);       
+      frontleft.setPower(powerFL);         
+      backleft.setPower(powerBL);            
+      backright.setPower(powerBR);  
     }
 }
+
 
 
 
