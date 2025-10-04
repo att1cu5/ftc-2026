@@ -18,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 //hi
+public Camera interface
  implements CameraControls{ 
   public enum Camera.error
   {
@@ -59,15 +60,6 @@ public class W_WebcamControls_Camera extends LinearOpMode {
         curGain = myGainControl.getGain();
         AprilTagProcessor myAprilTagProcessor;
         myAprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
-        myVisionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), myAprilTagProcessor, vuforia);
-        myVisionPortal = new VisionPortal.Builder()
-        .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-        .addProcessor(myAprilTagProcessor)
-        .setCameraResolution(new Size(640, 480))
-        .setStreamFormat(VisionPortal.StreamFormat.YUY2)
-        .enableCameraMonitoring(true)
-        .setAutoStopLiveView(true)
-        .build();
         myAprilTagProcessorBuilder.setTagLibrary(myAprilTagLibrary);   
         myAprilTagProcessorBuilder.setDrawTagID(true);      
         myAprilTagProcessorBuilder.setDrawTagOutline(true);  
@@ -83,6 +75,44 @@ public class W_WebcamControls_Camera extends LinearOpMode {
         .setDrawCubeProjection(true)
         .build();
         myVisionPortal.setProcessorEnabled(myAprilTagProcessor, true);
+        myVisionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), myAprilTagProcessor, vuforia);
+        myVisionPortal = new VisionPortal.Builder()
+        .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+        .addProcessor(myAprilTagProcessor)
+        .setCameraResolution(new Size(640, 480))
+        .setStreamFormat(VisionPortal.StreamFormat.YUY2)
+        .enableCameraMonitoring(true)
+        .setAutoStopLiveView(true)
+        .build();
+        myVisionPortal.setProcessorEnabled(myAprilTagProcessor, true);
+        AprilTagProcessor myAprilTagProcessor;
+
+        List<AprilTagDetection> myAprilTagDetections;  // list of all detections
+        AprilTagDetection myAprilTagDetection;         // current detection in for() loop
+        int myAprilTagIdCode;                           // ID code of current detection, in for() loop
+        String myAprilTagName;
+        myAprilTagName = myAprilTagDetection.metadata.name;
+        // Get a list of AprilTag detections.
+        myAprilTagDetections = myAprilTagProcessor.getDetections();
+        double myTagPoseX = myAprilTagDetection.ftcPose.x;
+        double myTagPoseY = myAprilTagDetection.ftcPose.y;
+        double myTagPoseZ = myAprilTagDetection.ftcPose.z;
+        double myTagPosePitch = myAprilTagDetection.ftcPose.pitch;
+        double myTagPoseRoll = myAprilTagDetection.ftcPose.roll;
+        double myTagPoseYaw = myAprilTagDetection.ftcPose.yaw;
+        double myTagPoseRange = myAprilTagDetection.ftcPose.range;
+        double myTagPoseBearing = myAprilTagDetection.ftcPose.bearing;
+        double myTagPoseElevation = myAprilTagDetection.ftcPose.elevation;
+        // Cycle through through the list and process each AprilTag.
+        for (myAprilTagDetection : myAprilTagDetections) {
+
+         if (myAprilTagDetection.metadata != null) {  // This check for non-null Metadata is not needed for reading only ID code.
+            myAprilTagIdCode = myAprilTagDetection.id;
+
+            / / Now take action based on this tag's ID code, or store info for later action.
+
+          }
+        }
         waitForStart();
         while (opModeIsActive()) {
             try{:
