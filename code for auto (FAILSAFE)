@@ -1,0 +1,191 @@
+
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+@Autonomous (name= "Auto_forward (Blocks to Java)")
+
+
+public class Auto_forward extends LinearOpMode {
+  private DcMotor backleft;
+  private DcMotor backright;
+  private DcMotor frontright;
+  private DcMotor frontleft;
+  double desiredPositionBLA=0; // add value for desired distance
+  double desiredPositionBRA=0; // add value for desired distance
+  double desiredPositionFRA=0; // add value for desired distance
+  double desiredPositionFLA=0; // add value for desired distance  
+  public class PIDCONTOLLERFL(){
+    
+
+
+    private double kpFL, kiFL, kdFL;
+    
+    private double previousErrorFL=0;
+
+
+   
+    private double intergralFL=0; //assign a value in the future to intergral
+
+
+
+    private double minOutputFL=0; //assign a value in the future to minoutput
+
+
+    private double maxOutputFL=0; //assign a value in the future to maxoutput
+
+    public PIDFL(double kpFL, double kiFL, double kdFL){
+       this.kpFL=kpFL
+       this.kiFL=kiFL
+       this.kdFL=kdFL
+    }
+    public double calcFL(double targetFL,double currentFL){
+        double errorFL = targetFL - currentFL;
+        integralFL += errorFL;
+        double derivativeFL = errorFL - previousErrorFL;
+        double outputFL = kpFL * errorFL + kiFL * integralFL + kdFL * derivativeFL;
+        outputFL = Math.max(minOutputFL, Math.min(maxOutputFL, outputFL));
+
+        previousErrorFL = errorFL;
+        return outputFL;
+    }
+    public void resetFL(){
+       previousErrorFL=0;
+       intergralFL=0;
+    }
+ }
+ public class PIDCONTOLLERFR(){
+    private double kpFR, kiFR, kdFR;
+    private double previousErrorFR=0;
+    private double maxOutputFR=0; //assign a value in the future to maxoutput
+    private double intergralFR=0; //assign a value in the future to intergral
+    private double minOutputFR=0; //assign a value in the future to minoutput
+    public PIDFR(double kpFR, double kiFR, double kdFR){
+       this.kpFR=kpFR
+       this.kiFR=kiFR
+       this.kdFR=kdFR
+    }
+    public double calcFR(double targetFR,double currentFR){
+        double errorFR = targetFR - currentFR;
+        integralFR += errorFR;
+        double derivativeFR = errorFR - previousErrorFR;
+        double outputFR = kpFR * errorFR + kiFR * integralFR + kdFR * derivativeFR;
+        outputFR = Math.max(minOutputFR, Math.min(maxOutputFR, outputFR));
+
+        previousErrorFR = errorFR;
+        return outputFR;
+    }
+    public void resetFR(){
+       previousErrorFR=0;
+       intergralFR=0;
+    }
+ }
+ public class PIDCONTOLLERBR(){
+    private double kpBR, kiBR, kdBR;
+    private double previousErrorBR=0;
+    private double maxOutputBR=0; //assign a value in the future to maxoutput
+    private double intergralBR=0; //assign a value in the future to intergral
+    private double minOutputBR=0; //assign a value in the future to minoutput
+    public PIDBR(double kpBR, double kiBR, double kdBR){
+       this.kpBR=kpBR
+       this.kiBR=kiBR
+       this.kdBR=kdBR
+    }
+    public double calcBR(double targetBR,double currentBR){
+        double errorBR = targetBR - currentBR;
+        integralBR += errorBR;
+        double derivativeBR = errorBR - previousErrorBR;
+        double outputBR = kpBR * errorBR + kiBR * integralBR + kdBR * derivativeBR;
+        outputBR = Math.max(minOutputBR, Math.min(maxOutputBR, outputBR));
+
+        previousErrorBR = errorBR;
+        return outputBR;
+    }
+    public void resetBR(){
+       previousErrorBR=0;
+       intergralBR=0;
+    }
+ }  
+ public class PIDCONTOLLERBL(){
+    
+
+
+    private double kpBL, kiBL, kdBL;
+    
+    private double previousErrorBL=0;
+
+
+   
+    private double intergralBL=0; //assign a value in the future to intergral
+
+
+
+    private double minOutputBL=0; //assign a value in the future to minoutput
+
+
+    private double maxOutputBL=0; //assign a value in the future to maxoutput
+
+    public PIDFL(double kpBL, double kiBL, double kdBL){
+       this.kpBL=kpBL
+       this.kiBL=kiBL
+       this.kdBL=kdBL
+    }
+    public double calcBL(double targetBL,double currentBL){
+        double errorBL = targetBL - currentBL;
+        integralBL += errorBL;
+        double derivativeBL = errorBL - previousErrorBL;
+        double outputBL = kpBL * errorBL + kiBL * integralBL + kdBL * derivativeBL;
+        outputBL = Math.max(minOutputBL, Math.min(maxOutputBL, outputBL));
+
+        previousErrorBL = errorBL;
+        return outputBL;
+    }
+    public void resetBL(){
+       previousErrorBL=0;
+       intergralBL=0;
+    }
+  }
+  @Override 
+  public void runOpMode() {
+    backleft = hardwareMap.get(DcMotor.class, "backleft");
+    backright = hardwareMap.get(DcMotor.class, "backright");
+    frontright = hardwareMap.get(DcMotor.class, "frontright");
+    frontleft = hardwareMap.get(DcMotor.class, "frontleft");
+    backleft.setmode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontleft.setmode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontright.setmode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backright.setmode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backleft.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
+    frontleft.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
+    frontright.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
+    backright.setmode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    frontleft.setDirection(DcMotor.Direction.REVERSE);
+    backright.setDirection(DcMotor.Direction.REVERSE);
+    waitForStart();
+    while (opModeIsActive()) {
+      PIDCONTOLLERBL BL=new PIDCONTOLLERBL();
+      PIDCONTOLLERFL FL=new PIDCONTOLLERFL();
+      PIDCONTOLLERBR BR=new PIDCONTOLLERBR();
+      PIDCONTOLLERFR FR=new PIDCONTOLLERFR();
+      double powerBL=BL.calcBL(backleft.currentposition(),desiredPositionBL);
+      double powerFL=FL.calcFL(frontleft.currentposition(),desiredPositionFL);
+      double powerFR=FR.calcFR(frontright.currentposition(),desiredPositionFR);
+      double powerBR=BR.calcBR(backright.currentposition(),desiredPositionBR);
+      frontright.setPower(powerFR);       
+      frontleft.setPower(powerFL);         
+      backleft.setPower(powerBL);            
+      backright.setPower(powerBR);  
+    }
+
+}
+
+}
+
+
+

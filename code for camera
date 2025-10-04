@@ -1,0 +1,138 @@
+package org.firstinspires.ftc.robotcore.external.hardware.camera.controls.CameraControl;
+package org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import java.io.Serializable;
+import java.lang.Comparable;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+public interface Camera
+ implements CameraControls{ 
+  public enum Camera.error
+  {
+    None, OtherError, Timeout 
+  }
+}
+@Autonomous(name = "Webcam Controls - Camera" , group ="Webcam Controls")
+public class W_WebcamControls_Camera extends LinearOpMode {
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String[] LABELS = {
+      "Ball",
+      "Cube",
+      "Duck",
+      "Marker"
+    };
+    private final String VUFORIA_KEY="insert key here";
+    private VuforiaLocalizer vuforia = null;
+    private Camera camera = null;
+    private TFObjectDetector tfod;
+    ExposureControl myExposureControl;
+    if(myExposureControl!=null){
+        myExposureControl=null;
+    }  
+    long minExp;
+    long maxExp;
+    long curExp;   
+    GainControl myGainControl;  
+    if(myGainControl!=null){
+        myGainControl=null;
+    }       
+    int minGain;
+    int maxGain;
+    int curGain;
+    boolean wasSetGainSuccessful;
+    boolean isAEPriorityOn = false;
+    @Override public void runOpMode() {
+        private static final boolean USE_WEBCAM=true;
+        CameraA=hardwareMap.get(WebcamName.class, "Webcam 1");
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraName = CameraA;
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        
+        initTfod();
+        if (tfod != null) {
+            tfod.activate();
+            
+        }
+        myExposureControl = vuforia.getCamera().getControl(ExposureControl.class);
+        myGainControl = vuforia.getCamera().getControl(GainControl.class);
+        checkExposureFeatures();
+        curExp = myExposureControl.getExposure(TimeUnit.MILLISECONDS);
+        curGain = myGainControl.getGain();
+        minExp = myExposureControl.getMinExposure(TimeUnit.MILLISECONDS);
+        maxExp = myExposureControl.getMaxExposure(TimeUnit.MILLISECONDS);.
+        minGain = myGainControl.getMinGain();
+        maxGain = myGainControl.getMaxGain();
+        myExposureControl.setMode(ExposureControl.Mode.Manual);
+        curExp=myExposureControl.setExposure(TimeUnit.MILLISECONDS);
+        curGain=myGainControl.setGain(curGain);
+        waitForStart();
+        while (opModeIsActive()) {
+            try{:
+              if(tfod!=null){
+                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                 if (updatedRecognitions != null) {
+                      telemetry.addData("\n# Object Detected", updatedRecognitions.size());
+                      // step through the list of recognitions and display boundary info.
+                      int i = 0;
+                      for (Recognition recognition : updatedRecognitions) {
+                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                recognition.getLeft(), recognition.getTop());
+                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                recognition.getRight(), recognition.getBottom());
+                        i++;
+                      }
+                   }
+              }
+              telemetry.update();
+              curExp = Math.max(curExp, minExp);
+              curExp = Math.min(curExp, maxExp);
+              curGain = Math.max(curGain, minGain);
+              curGain = Math.min(curGain, maxGain);
+
+                // update the webcam's settings
+              myExposureControl.setExposure(curExp, TimeUnit.MILLISECONDS);
+              wasSetGainSuccessful = myGainControl.setGain(curGain);
+
+              sleep(50);   
+            }
+            except (TimeoutException e) {:
+                 telemetry.addData("Exception", Camera.error.Timeout);
+                 telemetry.update();
+                 break;
+            }
+            except (Excetion e) {:
+                 telemetry.addData("Exception", Camera.error.OtherError);
+                 telemetry.update();
+            }   
+        }
+    }
+}
+private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+            "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+       tfodParameters.minResultConfidence = 0.8f;
+       tfodParameters.isModelTensorFlow2 = true;
+       tfodParameters.inputSize = 320;
+       tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+       tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+    }  
+
+} 
+
+
+
+
+
+
+
