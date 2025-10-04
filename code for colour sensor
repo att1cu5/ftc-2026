@@ -1,3 +1,13 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 @TeleOp
 public class ColorSensorTest extends LinearOpMode {
     private NormalizedColorSensor test_color;
@@ -20,3 +30,4 @@ public class ColorSensorTest extends LinearOpMode {
         }
     }
 }
+
