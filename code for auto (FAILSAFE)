@@ -24,25 +24,17 @@ public class Auto_forward extends LinearOpMode {
     
 
 
-    private double kpFL, kiFL, kdFL;
-    
+    private double kpFL; 
+    private double kiFL; 
+    private double kdFL;
     private double previousErrorFL=0;
-
-
-   
     private double intergralFL=0; //assign a value in the future to intergral
-
-
-
     private double minOutputFL=0; //assign a value in the future to minoutput
-
-
     private double maxOutputFL=0; //assign a value in the future to maxoutput
-
     public PIDFL(double kpFL, double kiFL, double kdFL){
-       this.kpFL=kpFL
-       this.kiFL=kiFL
-       this.kdFL=kdFL
+       this.kpFL=kpFL;
+       this.kiFL=kiFL;
+       this.kdFL=kdFL;
     }
     public double calcFL(double targetFL,double currentFL){
         double errorFL = targetFL - currentFL;
@@ -60,15 +52,17 @@ public class Auto_forward extends LinearOpMode {
     }
  }
  public class PIDCONTOLLERFR(){
-    private double kpFR, kiFR, kdFR;
+    private double kpFR; 
+    private double kiFR;
+    private double kdFR;
     private double previousErrorFR=0;
     private double maxOutputFR=0; //assign a value in the future to maxoutput
     private double intergralFR=0; //assign a value in the future to intergral
     private double minOutputFR=0; //assign a value in the future to minoutput
     public PIDFR(double kpFR, double kiFR, double kdFR){
-       this.kpFR=kpFR
-       this.kiFR=kiFR
-       this.kdFR=kdFR
+       this.kpFR=kpFR;
+       this.kiFR=kiFR;
+       this.kdFR=kdFR;
     }
     public double calcFR(double targetFR,double currentFR){
         double errorFR = targetFR - currentFR;
@@ -86,15 +80,17 @@ public class Auto_forward extends LinearOpMode {
     }
  }
  public class PIDCONTOLLERBR(){
-    private double kpBR, kiBR, kdBR;
+    private double kpBR;
+    private double kiBR; 
+    private double kdBR;
     private double previousErrorBR=0;
     private double maxOutputBR=0; //assign a value in the future to maxoutput
     private double intergralBR=0; //assign a value in the future to intergral
     private double minOutputBR=0; //assign a value in the future to minoutput
     public PIDBR(double kpBR, double kiBR, double kdBR){
-       this.kpBR=kpBR
-       this.kiBR=kiBR
-       this.kdBR=kdBR
+       this.kpBR=kpBR;
+       this.kiBR=kiBR;
+       this.kdBR=kdBR;
     }
     public double calcBR(double targetBR,double currentBR){
         double errorBR = targetBR - currentBR;
@@ -115,25 +111,17 @@ public class Auto_forward extends LinearOpMode {
     
 
 
-    private double kpBL, kiBL, kdBL;
-    
+    private double kpBL; 
+    private double kiBL; 
+    private double kdBL;
     private double previousErrorBL=0;
-
-
-   
     private double intergralBL=0; //assign a value in the future to intergral
-
-
-
     private double minOutputBL=0; //assign a value in the future to minoutput
-
-
     private double maxOutputBL=0; //assign a value in the future to maxoutput
-
     public PIDFL(double kpBL, double kiBL, double kdBL){
-       this.kpBL=kpBL
-       this.kiBL=kiBL
-       this.kdBL=kdBL
+       this.kpBL=kpBL;
+       this.kiBL=kiBL;
+       this.kdBL=kdBL;
     }
     public double calcBL(double targetBL,double currentBL){
         double errorBL = targetBL - currentBL;
@@ -183,9 +171,8 @@ public class Auto_forward extends LinearOpMode {
       backright.setPower(powerBR);  
     }
 
-}
+ }
 
 }
-
 
 
