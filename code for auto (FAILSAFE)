@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -20,7 +19,7 @@ public class Auto_forward extends LinearOpMode {
   double desiredPositionBRA=0; // add value for desired distance
   double desiredPositionFRA=0; // add value for desired distance
   double desiredPositionFLA=0; // add value for desired distance  
-  public class PIDCONTOLLERFL(){
+  public class PIDCONTOLLERFL{
     
 
 
@@ -51,7 +50,7 @@ public class Auto_forward extends LinearOpMode {
        intergralFL=0;
     }
  }
- public class PIDCONTOLLERFR(){
+ public class PIDCONTOLLERFR{
     private double kpFR; 
     private double kiFR;
     private double kdFR;
@@ -79,7 +78,7 @@ public class Auto_forward extends LinearOpMode {
        intergralFR=0;
     }
  }
- public class PIDCONTOLLERBR(){
+ public class PIDCONTOLLERBR{
     private double kpBR;
     private double kiBR; 
     private double kdBR;
@@ -107,7 +106,7 @@ public class Auto_forward extends LinearOpMode {
        intergralBR=0;
     }
  }  
- public class PIDCONTOLLERBL(){
+ public class PIDCONTOLLERBL{
     
 
 
@@ -174,5 +173,3 @@ public class Auto_forward extends LinearOpMode {
  }
 
 }
-
-
