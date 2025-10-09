@@ -27,6 +27,6 @@
 # camera
 # 2* Logitech C270
 # [text](https://www.logitech.com/en-us/shop/p/c270-hd-webcam.960-000694)
-
+# green ball has to round to 0.1 
 
 # colour sensor https://www.revrobotics.com/rev-31-1557/
