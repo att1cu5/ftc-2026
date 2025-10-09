@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import java.lang.Object;
 @Autonomous (name= "Auto_forward (Blocks to Java)")
 
 
@@ -31,10 +32,11 @@ public class Auto_forward extends LinearOpMode {
     double minOutputFL=0; //assign a value in the future to minoutput
     double maxOutputFL=0; //assign a value in the future to maxoutput
     public double PIDFL(double kpFL, double kiFL, double kdFL){
+
        this.kpFL=kpFL;
        this.kiFL=kiFL;
        this.kdFL=kdFL;
-       
+
     }
     public double calcFL(double targetFL,double currentFL){
         double errorFL = targetFL - currentFL;
@@ -179,3 +181,4 @@ public class Auto_forward extends LinearOpMode {
  
 
 }
+
