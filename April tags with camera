@@ -1,12 +1,14 @@
-package org.firstinspires.ftc.robotcore.external.hardware.camera.controls.CameraControl;
-package org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import java.io.Serializable;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.VisionPortal;
 import java.lang.Comparable;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.firstinspires.ftc.robotcore.eternal.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -15,32 +17,32 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 //hi
-public Camera interface
+/*public Camera interface
  implements CameraControls{ 
   public enum Camera.error
   {
-    None, OtherError, Timeout 
+    None, OtherError, Timeout; 
   }
-}
+}*/
 @Autonomous(name = "Webcam Controls - Camera" , group ="Webcam Controls")
 public class W_WebcamControls_Camera extends LinearOpMode {
     private final String VUFORIA_KEY="insert key here";
     private VuforiaLocalizer vuforia = null;
     private Camera camera = null;
     ExposureControl myExposureControl;
-    if(myExposureControl!=null){
-        myExposureControl=null;
-    }  
+    //if(myExposureControl!=null){
+    //    myExposureControl=null;
+    //}  
     long minExp;
     long maxExp;
     long curExp;   
     GainControl myGainControl;  
-    if(myGainControl!=null){
-        myGainControl=null;
-    }       
+    //if(myGainControl!=null){
+    //    myGainControl=null;
+    //}       
     int minGain;
     int maxGain;
     int curGain;
@@ -61,9 +63,9 @@ public class W_WebcamControls_Camera extends LinearOpMode {
      
         waitForStart();
         while (opModeIsActive()) {
-            try{:
+            try{
                  minExp = myExposureControl.getMinExposure(TimeUnit.MILLISECONDS);
-                 maxExp = myExposureControl.getMaxExposure(TimeUnit.MILLISECONDS);.
+                 maxExp = myExposureControl.getMaxExposure(TimeUnit.MILLISECONDS);
                  minGain = myGainControl.getMinGain();
                  maxGain = myGainControl.getMaxGain();
                  myExposureControl.setMode(ExposureControl.Mode.Manual);
@@ -97,24 +99,22 @@ public class W_WebcamControls_Camera extends LinearOpMode {
                  .build();
                  myVisionPortal.setProcessorEnabled(myAprilTagProcessor, true);
                  AprilTagProcessor myAprilTagProcessor;
-                
-                  
-                 for (myAprilTagDetection : myAprilTagDetections) {
+                 for (int myAprilTagDetection : myAprilTagDetections) {
                 
                          if (myAprilTagDetection.metadata != null) {  // This check for non-null Metadata is not needed for reading only ID code.
                             myAprilTagIdCode = myAprilTagDetection.id;
                 
-                            / / Now take action based on this tag's ID code, or store info for later action.
+                            
                 
                           }
-                        }
+                 }
                  List<AprilTagDetection> myAprilTagDetections;  // list of all detections
-                 AprilTagDetection myAprilTagDetection;         // current detection in for() loop
+                 new AprilTagDetection myAprilTagDetection;         // current detection in for() loop
                  int myAprilTagIdCode;                           // ID code of current detection, in for() loop
                  String myAprilTagName;
-                 myAprilTagName = myAprilTagDetection.metadata.name;
+                 String myAprilTagName = myAprilTagDetection.metadata.name;
                         // Get a list of AprilTag detections.
-                 myAprilTagDetections = myAprilTagProcessor.getDetections();
+                 int myAprilTagDetections = myAprilTagProcessor.getDetections();
                  double myTagPoseX = myAprilTagDetection.ftcPose.x;
                  double myTagPoseY = myAprilTagDetection.ftcPose.y;
                  double myTagPoseZ = myAprilTagDetection.ftcPose.z;
@@ -126,15 +126,15 @@ public class W_WebcamControls_Camera extends LinearOpMode {
                  double myTagPoseElevation = myAprilTagDetection.ftcPose.elevation;
                         // Cycle through through the list and process each AprilTag.
             }
-            except (TimeoutException e) {:
-                 telemetry.addData("Exception", Camera.error.Timeout);
+            catch(TimeOutException e){
+                 telemetry.addData("timeout error");
                  telemetry.update();
-                 break;
             }
-            except (Excetion e) {:
-                 telemetry.addData("Exception", Camera.error.OtherError);
-                 telemetry.update();
-            }   
+            finally{
+                telemetry.addData("other error");
+                telemetry.update();
+            }
         }
     }
 }
+
