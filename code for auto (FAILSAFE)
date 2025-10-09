@@ -36,7 +36,6 @@ public class Auto_forward extends LinearOpMode {
        this.kpFL=kpFL;
        this.kiFL=kiFL;
        this.kdFL=kdFL;
-
     }
     public double calcFL(double targetFL,double currentFL){
         double errorFL = targetFL - currentFL;
@@ -181,4 +180,5 @@ public class Auto_forward extends LinearOpMode {
  
 
 }
+
 
