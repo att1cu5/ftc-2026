@@ -22,8 +22,13 @@ public class ColorSensorTest extends LinearOpMode {
             telemetry.addData("Red", "%.3f", colors.red);
             telemetry.addData("Green", "%.3f", colors.green);
             telemetry.addData("Blue", "%.3f", colors.blue);
+
+            if(colors.green==Math.round(colors.green)){
+                telemetry.addData("got green artifact");
+            }
             telemetry.update();
         }
     }
 }
+
 
