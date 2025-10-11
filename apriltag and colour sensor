@@ -67,6 +67,14 @@ public class motiftest extends LinearOpMode {
     double blue=0;
     double test=0;
     double sense=0;
+    double X=0;
+    double Y=0;
+    double Z=0;
+    double Pitch=0;
+    double Yaw=0;
+    double Roll=0;
+    double Ycenter=0;
+    double Xcenter=0;
     int i=0;
     // Variables to store the position and orientation of the camera on the robot. Setting these
     // values requires a definition of the axes of the camera and robot:
@@ -112,9 +120,19 @@ public class motiftest extends LinearOpMode {
          // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
           test=myAprilTagDetection.id;
           motifs=test;
+          
           if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
-            telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
-            telemetry.addLine("PRY " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getOrientation().getPitch(), 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getOrientation().getRoll(), 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getOrientation().getYaw(), 6, 1) + "  (deg)");
+            Y=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
+            X=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
+            Z=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
+            Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
+            Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
+            Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
+ 
+            //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
+            telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
+            telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + "  (deg)");
+            
           }
         } else {
            telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
@@ -122,38 +140,38 @@ public class motiftest extends LinearOpMode {
           }
 
       }
-      
       telemetry.addLine("");
       telemetry.addLine("key:");
       telemetry.addLine("XYZ = X (Right), Y (Forward), Z (Up) dist.");
       telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-      if(motifs==23){
-        correctmotif[0]=2;
-        correctmotif[1]=2;
-        correctmotif[2]=1;
-      }
-      if(motifs==21){
+      if(motifs!=20 && motifs!=24){
+       if(motifs==23){
+         correctmotif[0]=2;
+         correctmotif[1]=2;
+         correctmotif[2]=1;
+       }
+       if(motifs==21){
         correctmotif[0]=1;
         correctmotif[1]=2;
         correctmotif[2]=2;
-      }
-      if(motifs==22){
+       }
+       if(motifs==22){
         correctmotif[0]=2;
         correctmotif[1]=1;
         correctmotif[2]=2;
-      }
+       }
       
       // Push telemetry to the Driver Station.
       //sleep(500);
-      NormalizedRGBA colors = test_color.getNormalizedColors();
-      red=colors.red*10;
-      green=colors.green*10;
-      blue=colors.blue*10;
-      //telemetry.addData("blue","3%f",colors.blue);
-      //telemetry.addData("green","3%f",colors.green);
-      sense=0;
+        NormalizedRGBA colors = test_color.getNormalizedColors();
+        red=colors.red*10;
+        green=colors.green*10;
+        blue=colors.blue*10;
+       //telemetry.addData("blue","3%f",colors.blue);
+       //telemetry.addData("green","3%f",colors.green);
+        sense=0;
 
-      if(blue>=0.05){
+        if(blue>=0.05){
                 sense=2;
 
                 motif[i]=sense;
@@ -161,49 +179,50 @@ public class motiftest extends LinearOpMode {
                 i=i+1;
                    
                 
-      }
-      if(green>=0.05 && blue<0.05){
+        }
+        if(green>=0.05 && blue<0.05){
                 //telemetry.addLine("got green artifact");
                 sense=1;
                 motif[i]=sense;
                 i=i+1;
                   
-      }
-      sleep(200); // change delay for cycle of ball to sensor
-      if(i==3){
-        i=0;
-      }
-      if(correctmotif[0]==motif[0] && motifs!=0){
-        telemetry.addLine("first ball is correct");
-      }
-      else{
-        telemetry.addLine("first ball is incorrect");
-      }
-      if(correctmotif[1]==motif[1] && motifs!=0){
-          telemetry.addLine("second ball is correct");
-      }
-      else{
-        telemetry.addLine("second ball is incorrect");
-      }
-      if(correctmotif[2]==motif[2] && motifs!=0){
-            telemetry.addLine("third ball is correct");
-      }
+        }
+        sleep(200); // change delay for cycle of ball to sensor
+        if(i==3){
+          i=0;
+        }
       
-      else{
-        telemetry.addLine("third ball is incorrect");
-      }
-      if(correctmotif[2]==motif[2] && motifs!=0 && correctmotif[1]==motif[1] && correctmotif[0]==motif[0]){
-        telemetry.addLine("all balls are in correct placement");
-        sleep(50000);
-        //go to next april tag and shot
-      }
-      if(correctmotif[2]!=motif[2] && motifs!=0 && correctmotif[1]!=motif[1] && correctmotif[0]!=motif[0]){
-        telemetry.addLine("all balls are in incorrect placement");
+        if(correctmotif[0]==motif[0] && motifs!=0){
+          telemetry.addLine("first ball is correct");
+        }
+        else{
+          telemetry.addLine("first ball is incorrect");
+        }
+        if(correctmotif[1]==motif[1] && motifs!=0){
+            telemetry.addLine("second ball is correct");
+        }
+        else{
+          telemetry.addLine("second ball is incorrect");
+        }
+        if(correctmotif[2]==motif[2] && motifs!=0){
+              telemetry.addLine("third ball is correct");
+        }
+      
+        else{
+          telemetry.addLine("third ball is incorrect");
+        }
+        if(correctmotif[2]==motif[2] && motifs!=0 && correctmotif[1]==motif[1] && correctmotif[0]==motif[0]){
+          telemetry.addLine("all balls are in correct placement");
+          sleep(50000);
+          //go to next april tag and shot
+        }
+      //if(correctmotif[2]!=motif[2] && motifs!=0 && correctmotif[1]!=motif[1] && correctmotif[0]!=motif[0]){
+      //  telemetry.addLine("all balls are in incorrect placement");
         //sleep(50000);
         //shot 
-      }
+      //}
 
-      
+      }
       telemetry.update();
       //if (gamepad1.dpad_down) {
         // Temporarily stop the streaming session. This can save CPU
