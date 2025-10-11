@@ -273,14 +273,14 @@ public class teleopandapriltagscolorsensor extends LinearOpMode {
 
         
       
-      if (gamepad1.dpad_down) {
+      //if (gamepad1.dpad_down) {
         // Temporarily stop the streaming session. This can save CPU
         // resources, with the ability to resume quickly when needed.
-        myVisionPortal.stopStreaming();
-      } else if (gamepad1.dpad_up) {
+        //myVisionPortal.stopStreaming();
+      //} else  {
         // Resume the streaming session if previously stopped.
-        myVisionPortal.resumeStreaming();
-      }
+        //myVisionPortal.resumeStreaming();
+      //}
       // Share the CPU.
       sleep(20);
       
