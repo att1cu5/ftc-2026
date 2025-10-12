@@ -1,0 +1,442 @@
+package org.firstinspires.ftc.teamcode;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import java.lang.Object;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
+import com.qualcomm.robotcore.util.Range;
+import java.util.concurrent.TimeUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import java.util.List;
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+
+@TeleOp(name = "teleopandapriltagscolorsensor (Blocks to Java)")
+public class teleopandapriltagscolorsensor extends LinearOpMode {
+  private DcMotor backleft;
+  private DcMotor backright;
+  private DcMotor frontright;
+  private DcMotor frontleft;
+  boolean USE_WEBCAM;
+  AprilTagProcessor myAprilTagProcessor;
+  Position cameraPosition;
+  YawPitchRollAngles cameraOrientation;
+  VisionPortal myVisionPortal;
+  private NormalizedColorSensor test_color;
+  double motifs=0;
+  double targets=0;
+  ExposureControl myExposureControl;
+  long minExposure;
+  long maxExposure;
+  GainControl myGainControl;
+  double myExposure;
+  int minGain;
+  int maxGain;
+  double myGain;
+  /**
+   * This OpMode illustrates the basics of AprilTag based localization.
+   *
+   * For an introduction to AprilTags, see the FTC-DOCS link below:
+   * https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/apriltag_intro/apriltag-intro.html
+   *
+   * In this sample, any visible tag ID will be detected and displayed, but only
+   * tags that are included in the default "TagLibrary" will be used to compute the
+   * robot's location and orientation. This default TagLibrary contains the current
+   * Season's AprilTags and a small set of "test Tags" in the high number range.
+   *
+   * When an AprilTag in the TagLibrary is detected, the SDK provides
+   * location and orientation of the robot, relative to the field origin. This
+   * information is provided in the "robotPose" member of the returned "detection".
+   *
+   * To learn about the Field Coordinate System that is defined for
+   * FTC (and used by this OpMode), see the FTC-DOCS link below:
+   * https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html
+   */
+  @Override
+  public void runOpMode() {
+    boolean thisExpUp;
+    boolean thisExpDn;
+    boolean thisGainUp;
+    boolean thisGainDn;
+    boolean lastExpUp;
+    boolean lastExpDn;
+    boolean lastGainUp;
+    boolean lastGainDn;
+    double yAxis= -gamepad2.left_stick_y;
+    double xAxis= gamepad2.left_stick_x;
+    double zAxis= gamepad1.right_stick_y;
+    double turn=0;
+    double backleft_A;
+    double backright_A;
+    double frontleft_A;
+    double frontright_A;
+    backleft = hardwareMap.get(DcMotor.class, "backleft");
+    backright = hardwareMap.get(DcMotor.class, "backright");
+    frontright = hardwareMap.get(DcMotor.class, "frontright");
+    frontleft = hardwareMap.get(DcMotor.class, "frontleft");
+    USE_WEBCAM = true;
+    test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
+    double[] motif={0,0,0,0};
+    double[] correctmotif={0,0,0,0};
+    double red=0;
+    double green=0;
+    double blue=0;
+    double test=0;
+    double sense=0;
+    double X=0;
+    double Y=0;
+    double y=0;
+    double x=0;
+    double Z=0;
+    double Pitch=0;
+    double Yaw=0;
+    double Roll=0;
+    double Ycenter=0;
+    double Xcenter=0;
+    int i=0;
+    // Variables to store the position and orientation of the camera on the robot. Setting these
+    // values requires a definition of the axes of the camera and robot:
+    // Camera axes:
+    // Origin location: Center of the lens
+    // Axes orientation: +x right, +y down, +z forward (from camera's perspective)
+    // Robot axes (this is typical, but you can define this however you want):
+    // Origin location: Center of the robot at field height
+    // Axes orientation: +x right, +y forward, +z upward
+    // Position:
+    // If all values are zero (no translation), that implies the camera is at the center of the
+    // robot. Suppose your camera is positioned 5 inches to the left, 7 inches forward, and 12
+    // inches above the ground - you would need to set the position to (-5, 7, 12).
+    // Orientation:
+    // If all values are zero (no rotation), that implies the camera is pointing straight up. In
+    // most cases, you'll need to set the pitch to -90 degrees (rotation about the x-axis), meaning
+    // the camera is horizontal. Use a yaw of 0 if the camera is pointing forwards, +90 degrees if
+    // it's pointing straight left, -90 degrees for straight right, etc. You can also set the roll
+    // to +/-90 degrees if it's vertical, or 180 degrees if it's upside-down.
+    cameraPosition = new Position(DistanceUnit.INCH, 0, 0, 0, 0);
+    cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, 0, -90, 0, 0);
+    // Initialize AprilTag before waitForStart.
+    thisExpUp = false;
+    thisExpDn = false;
+    thisGainUp = false;
+    thisGainDn = false;
+    lastExpUp = false;
+    lastExpDn = false;
+    lastGainUp = false;
+    lastGainDn = false;
+    initAprilTag();
+    getCameraSetting();
+    myExposure = 10;
+    myGain = 50;
+    setManualExposure();
+    // Wait for the match to begin.
+    telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
+    telemetry.addData(">", "Touch START to start OpMode");
+    telemetry.update();
+    waitForStart();
+    while (opModeIsActive()) {
+      y = gamepad2.left_stick_y;
+      x = gamepad2.left_stick_x;
+      turn = gamepad2.right_stick_x;
+        
+      frontleft_A = y - x - turn;
+      frontright_A = (y + x) + turn;
+      backleft_A = (y + x) - turn;
+      backright_A = (y - x) + turn;
+      if (gamepad2.right_bumper) {
+          double precision=1-gamepad2.left_trigger;               
+          frontleft_A=precision*(frontleft_A);
+          frontright_A=precision*(frontright_A);
+          backleft_A=precision*(backleft_A);
+          backright_A=precision*(backright_A);
+      }
+      if (gamepad2.left_bumper) {
+          double precision=0.3-(gamepad2.left_trigger*0.3);                 
+          frontleft_A=precision*(frontleft_A);
+          frontright_A=precision*(frontright_A);
+          backleft_A=precision*(backleft_A);
+          backright_A=precision*(backright_A);
+      }
+      if(!gamepad2.left_bumper && !gamepad2.right_bumper){
+          double precision=0.6-(gamepad2.left_trigger*0.6);                  
+                                                     
+          frontleft_A=precision*(frontleft_A);
+          frontright_A=precision*(frontright_A);
+          backleft_A=precision*(backleft_A);
+          backright_A=precision*(backright_A);
+      }
+      List<AprilTagDetection> myAprilTagDetections;
+      AprilTagDetection myAprilTagDetection;
+    
+      // Get a list of AprilTag detections.
+      myAprilTagDetections = myAprilTagProcessor.getDetections();
+      telemetry.addData("# AprilTags Detected", JavaUtil.listLength(myAprilTagDetections));
+    // Iterate through list and call a function to display info for each recognized AprilTag.
+      for (AprilTagDetection myAprilTagDetection_item : myAprilTagDetections) {
+        myAprilTagDetection = myAprilTagDetection_item;
+      // Display info about the detection.
+        telemetry.addLine("");
+        if (myAprilTagDetection.metadata != null) {
+          telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") " + myAprilTagDetection.metadata.name);
+         // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
+          test=myAprilTagDetection.id;
+          motifs=test;
+          
+          if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
+            Y=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
+            X=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
+            Z=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
+            Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
+            Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
+            Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
+ 
+            //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
+            telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
+            telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + "  (deg)");
+            
+          }
+        } else {
+           telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
+           telemetry.addLine("Center " + JavaUtil.formatNumber(myAprilTagDetection.center.x, 6, 0) + "" + JavaUtil.formatNumber(myAprilTagDetection.center.y, 6, 0) + " (pixels)");
+          }
+
+      }
+      telemetry.addLine("");
+      telemetry.addLine("key:");
+      telemetry.addLine("XYZ = X (Right), Y (Forward), Z (Up) dist.");
+      telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+      if(motifs!=20 && motifs!=24){
+       if(motifs==23){
+         correctmotif[0]=2;
+         correctmotif[1]=2;
+         correctmotif[2]=1;
+       }
+       if(motifs==21){
+        correctmotif[0]=1;
+        correctmotif[1]=2;
+        correctmotif[2]=2;
+       }
+       if(motifs==22){
+        correctmotif[0]=2;
+        correctmotif[1]=1;
+        correctmotif[2]=2;
+       }
+      
+
+        NormalizedRGBA colors = test_color.getNormalizedColors();
+        red=colors.red*10;
+        green=colors.green*10;
+        blue=colors.blue*10;
+       //telemetry.addData("blue","3%f",colors.blue);
+       //telemetry.addData("green","3%f",colors.green);
+        sense=0;
+
+        if(blue>=0.05){
+                sense=2;
+
+                motif[i]=sense;
+
+                i=i+1;
+                   
+                
+        }
+        if(green>=0.05 && blue<0.05){
+                //telemetry.addLine("got green artifact");
+                sense=1;
+                motif[i]=sense;
+                i=i+1;
+                  
+        }
+        sleep(200); // change delay for cycle of ball to sensor
+        if(i==3){
+          i=0;
+        }
+      
+        if(correctmotif[0]==motif[0] && motifs!=0){
+          telemetry.addLine("first ball is correct");
+        }
+        else{
+          telemetry.addLine("first ball is incorrect");
+        }
+        if(correctmotif[1]==motif[1] && motifs!=0){
+            telemetry.addLine("second ball is correct");
+        }
+        else{
+          telemetry.addLine("second ball is incorrect");
+        }
+        if(correctmotif[2]==motif[2] && motifs!=0){
+              telemetry.addLine("third ball is correct");
+        }
+      
+        else{
+          telemetry.addLine("third ball is incorrect");
+        }
+        if(correctmotif[2]==motif[2] && motifs!=0 && correctmotif[1]==motif[1] && correctmotif[0]==motif[0]){
+          telemetry.addLine("all balls are in correct placement");
+          //sleep(50000);
+          //go to next april tag and shot
+        }
+      //if(correctmotif[2]!=motif[2] && motifs!=0 && correctmotif[1]!=motif[1] && correctmotif[0]!=motif[0]){
+      //  telemetry.addLine("all balls are in incorrect placement");
+        //sleep(50000);
+        //shot 
+      //}
+
+      }
+      telemetry.addData("Exposure", myExposure + "  (" + minExposure + " - " + maxExposure + ")");
+      telemetry.addData("Gain", myGain + "  (" + minGain + " - " + maxGain + ")");
+      telemetry.update();
+      thisExpUp = gamepad1.left_bumper;
+      thisExpDn = gamepad1.left_trigger > 0.25;
+      thisGainUp = gamepad1.right_bumper;
+      thisGainDn = gamepad1.right_trigger > 0.25;
+        // Look for clicks to change the exposure.
+      if (thisExpUp && !lastExpUp) {
+          myExposure = Range.clip(myExposure + 5, minExposure, maxExposure);
+          setManualExposure();
+      } else if (thisExpDn && !lastExpDn) {
+          myExposure = Range.clip(myExposure - 5, minExposure, maxExposure);
+          setManualExposure();
+      }
+        // Look for clicks to change the gain.
+      if (thisGainUp && !lastGainUp) {
+          myGain = Range.clip(myGain + 5, minGain, maxGain);
+          setManualExposure();
+      } else if (thisGainDn && !lastGainDn) {
+          myGain = Range.clip(myGain - 5, minGain, maxGain);
+          setManualExposure();
+      }
+      lastExpUp = thisExpUp;
+      lastExpDn = thisExpDn;
+      lastGainUp = thisGainUp;
+      lastGainDn = thisGainDn;
+      sleep(20);
+        
+       
+
+        
+      
+      //if (gamepad1.dpad_down) {
+        // Temporarily stop the streaming session. This can save CPU
+        // resources, with the ability to resume quickly when needed.
+        //myVisionPortal.stopStreaming();
+      //} else  {
+        // Resume the streaming session if previously stopped.
+        //myVisionPortal.resumeStreaming();
+      //}
+      // Share the CPU.
+      
+      
+    }
+  }
+  
+  /**
+   * Initialize AprilTag Detection.
+   */
+  private void initAprilTag() {
+    AprilTagProcessor.Builder myAprilTagProcessorBuilder;
+    VisionPortal.Builder myVisionPortalBuilder;
+
+    // First, create an AprilTagProcessor.Builder.
+    myAprilTagProcessorBuilder = new AprilTagProcessor.Builder();
+    myAprilTagProcessorBuilder.setCameraPose(cameraPosition, cameraOrientation);
+    // Create an AprilTagProcessor by calling build.
+    myAprilTagProcessor = myAprilTagProcessorBuilder.build();
+    // Next, create a VisionPortal.Builder and set attributes related to the camera.
+    myVisionPortalBuilder = new VisionPortal.Builder();
+    if (USE_WEBCAM) {
+      // Use a webcam.
+      myVisionPortalBuilder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+    } else {
+      // Use the device's back camera.
+      myVisionPortalBuilder.setCamera(BuiltinCameraDirection.BACK);
+    }
+    // Add myAprilTagProcessor to the VisionPortal.Builder.
+    myVisionPortalBuilder.addProcessor(myAprilTagProcessor);
+    // Create a VisionPortal by calling build.
+    myVisionPortal = myVisionPortalBuilder.build();
+  }
+
+  /**
+   * Display info (using telemetry) for a recognized AprilTag.
+   */
+
+  /**
+   * returns if the containText is inside of the stringToSearch
+   */
+  private boolean contains(String stringToSearch, String containText) {
+    if (stringToSearch.indexOf(containText) + 1 == 0) {
+      return false;
+    }
+    return true;
+  }
+  private void getCameraSetting() {
+    // Wait for the camera to be open.
+    waitForCamera();
+    // Get camera control values unless we are stopping.
+    if (!isStopRequested()) {
+      // Get the ExposureControl object, to allow adjusting the camera's exposure.
+      myExposureControl = myVisionPortal.getCameraControl(ExposureControl.class);
+      minExposure = 10;
+      maxExposure = 30;
+      // Get the GainControl object, to allow adjusting the camera's gain.
+      myGainControl = myVisionPortal.getCameraControl(GainControl.class);
+      minGain = 0;
+      maxGain = 100;
+    }
+  }
+
+  /**
+   * Wait for the camera to be open.
+   */
+  private void waitForCamera() {
+    if (!myVisionPortal.getCameraState().equals(VisionPortal.CameraState.STREAMING)) {
+      telemetry.addData("Camera", "Waiting");
+      telemetry.update();
+      while (!isStopRequested() && !myVisionPortal.getCameraState().equals(VisionPortal.CameraState.STREAMING)) {
+        sleep(20);
+      }
+      telemetry.addData("Camera", "Ready");
+      telemetry.update();
+    }
+  }
+
+  /**
+   * Manually set the camera gain and exposure.
+   * Can only be called AFTER calling initAprilTag.
+   */
+  private void setManualExposure() {
+    // Wait for the camera to be open.
+    waitForCamera();
+    // Set camera controls unless we are stopping.
+    if (!isStopRequested()) {
+      // Set exposure.  Make sure we are in Manual Mode for these values to take effect.
+      if (!myExposureControl.getMode().equals(ExposureControl.Mode.Manual)) {
+        myExposureControl.setMode(ExposureControl.Mode.Manual);
+        sleep(50);
+      }
+      myExposureControl.setExposure((long) myExposure, TimeUnit.MILLISECONDS);
+      sleep(20);
+      
+      
+      // Set Gain.
+      myGainControl.setGain((int) myGain);
+      sleep(20);
+    }
+  }
+}
+ 
+
+
