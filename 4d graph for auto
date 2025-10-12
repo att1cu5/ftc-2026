@@ -77,6 +77,10 @@ public class motiftest extends LinearOpMode {
     test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
     double[] motif={0,0,0,0};
     double[] correctmotif={0,0,0,0};
+    double[] deltax={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    double[] deltay={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    double[] deltaz={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    double[] deltat={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     double red=0;
     double green=0;
     double blue=0;
@@ -91,6 +95,7 @@ public class motiftest extends LinearOpMode {
     double Ycenter=0;
     double Xcenter=0;
     int i=0;
+    int g=0;
     // Variables to store the position and orientation of the camera on the robot. Setting these
     // values requires a definition of the axes of the camera and robot:
     // Camera axes:
@@ -147,11 +152,17 @@ public class motiftest extends LinearOpMode {
             Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
             Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
             Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
- 
+            if(g<17){
+              deltax[g]=X/10;
+              deltay[g]=Y/10;
+              deltaz[g]=z/10;
+              deltat[g]=elapsedSeconds;
+            }
             //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
             telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)" + elapsedSeconds + "(seconds)");
             telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)" + elapsedSeconds + "(seconds)" );
             
+            g=g+1;
           }
         } else {
            telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
@@ -245,6 +256,14 @@ public class motiftest extends LinearOpMode {
       }
       telemetry.addData("Exposure", myExposure + "  (" + minExposure + " - " + maxExposure + ")");
       telemetry.addData("Gain", myGain + "  (" + minGain + " - " + maxGain + ")");
+      telemetry.update();
+      telemetry.clear();
+      for (int i=0; i==17; i++){
+         telemetry.addData("deltax: ",deltax[g]);
+         telemetry.addData("deltay: ",deltay[g]);
+         telemetry.addData("deltaz: ",deltaz[g]);
+         telemetry.addData("deltat: ",deltat[g]);
+      }
       telemetry.update();
       //if (gamepad1.dpad_down) {
         // Temporarily stop the streaming session. This can save CPU
