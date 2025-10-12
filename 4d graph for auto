@@ -35,7 +35,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.Exposur
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 @Autonomous(name = "motiftest (Blocks to Java)")
 public class motiftest extends LinearOpMode {
-  private static ElapsedTime myStopwatch=new Elapsrd
+  private static ElapsedTime myStopwatch=new Elapsedtime();
   boolean USE_WEBCAM;
   AprilTagProcessor myAprilTagProcessor;
   Position cameraPosition;
