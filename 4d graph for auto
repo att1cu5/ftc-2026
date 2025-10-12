@@ -170,7 +170,7 @@ public class motiftests extends LinearOpMode {
             Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
             Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
             Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
-            if(g<17*9*8){
+            if(g<17*9*8+30){
               deltax[g]=X/10;
               deltay[g]=Y/10;
               deltaz[g]=Z/10;
@@ -186,7 +186,7 @@ public class motiftests extends LinearOpMode {
             //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
             telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)" + elapsedSeconds + "(seconds)");
             telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)" + elapsedSeconds + "(seconds)" );
-            if(g<17*9*8){
+            if(g<17*9*8+30){
               g=g+1;
             }
           }
@@ -374,3 +374,4 @@ public class motiftests extends LinearOpMode {
    * Can only be called AFTER calling initAprilTag.
    */
 }
+
