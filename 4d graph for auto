@@ -159,6 +159,7 @@ public class motiftest extends LinearOpMode {
           }
 
       }
+      runtime.reset();
       telemetry.addLine("");
       telemetry.addLine("key:");
       telemetry.addLine("XYZ = X (Right), Y (Forward), Z (Up) dist.");
@@ -255,6 +256,7 @@ public class motiftest extends LinearOpMode {
       //}
       // Share the CPU.
       sleep(20);
+     
     }
   }
   
