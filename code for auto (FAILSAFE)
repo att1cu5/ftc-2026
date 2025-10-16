@@ -27,15 +27,18 @@ public class Auto_forward extends LinearOpMode {
     public double kpFL; 
     public double kiFL; 
     public double kdFL;
+    
     double previousErrorFL=0;
     double intergralFL=0; //assign a value in the future to intergral
     double minOutputFL=0; //assign a value in the future to minoutput
     double maxOutputFL=0; //assign a value in the future to maxoutput
     public double PIDFL(double kpFL, double kiFL, double kdFL){
-
+       
        this.kpFL=kpFL;
        this.kiFL=kiFL;
        this.kdFL=kdFL;
+       
+      
     }
     public double calcFL(double targetFL,double currentFL){
         double errorFL = targetFL - currentFL;
@@ -60,10 +63,13 @@ public class Auto_forward extends LinearOpMode {
     double maxOutputFR=0; //assign a value in the future to maxoutput
     double intergralFR=0; //assign a value in the future to intergral
     double minOutputFR=0; //assign a value in the future to minoutput
-    public double PIDFR(double kpFR, double kiFR, double kdFR){
+
+    public double PIDFR(double kpFR, double kiFR, double kdFR, double FR1, double FR2, double FR3){
        this.kpFR=kpFR;
        this.kiFR=kiFR;
        this.kdFR=kdFR;
+       double outputFRa = kpBR * FR1 + kiBR * FR3 + kdBR * FR2;
+       return outputFRa;
     }
     public double calcFR(double targetFR,double currentFR){
         double errorFR = targetFR - currentFR;
@@ -88,17 +94,19 @@ public class Auto_forward extends LinearOpMode {
     double maxOutputBR=0; //assign a value in the future to maxoutput
     double intergralBR=0; //assign a value in the future to intergral
     double minOutputBR=0; //assign a value in the future to minoutput
-    public double PIDBR(double kpBR, double kiBR, double kdBR){
+    public double PIDBR(double kpBR, double kiBR, double kdBR, double BR1, double BR3, double BR2){
        this.kpBR=kpBR;
        this.kiBR=kiBR;
        this.kdBR=kdBR;
+       double outputBRa = kpBR * BR1 + kiBR * BR3 + kdBR * BR2;
+       return outputBRa;
     }
     public double calcBR(double targetBR,double currentBR){
         double errorBR = targetBR - currentBR;
         double integralBR =+ errorBR;
         double derivativeBR = errorBR - previousErrorBR;
-        double outputBRa = kpBR * errorBR + kiBR * integralBR + kdBR * derivativeBR;
-        double outputBR = Math.max(minOutputBR, Math.min(maxOutputBR, outputBRa));
+        double outputBRa1=PIDBR(kpBR, kiBR, kdBR, errorBR, integralBR, derivativeBR);
+        double outputBR = Math.max(minOutputBR, Math.min(maxOutputBR, outputBRa1));
 
         double previousErrorBR = errorBR;
         return outputBR;
@@ -182,5 +190,3 @@ public class Auto_forward extends LinearOpMode {
 }
 
 
-
-//THIS IS A CHANGE
