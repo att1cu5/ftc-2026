@@ -32,19 +32,19 @@ public class Auto_forward extends LinearOpMode {
     double intergralFL=0; //assign a value in the future to intergral
     double minOutputFL=0; //assign a value in the future to minoutput
     double maxOutputFL=0; //assign a value in the future to maxoutput
-    public double PIDFL(double kpFL, double kiFL, double kdFL){
+    public double PIDFL(double kpFL, double kiFL, double kdFL, double FL1, double FL2, double FL3){
        
        this.kpFL=kpFL;
        this.kiFL=kiFL;
        this.kdFL=kdFL;
-       
-      
+       double outputFLa = kpFL * FL1 + kiFL * FL3 + kdFL * FL2;
+       return outputFLa;
     }
     public double calcFL(double targetFL,double currentFL){
         double errorFL = targetFL - currentFL;
         double integralFL =+ errorFL;
         double derivativeFL = errorFL - previousErrorFL;
-        double outputFLa = kpFL * errorFL + kiFL * integralFL + kdFL * derivativeFL;
+        double outputFLa = PIDFL(kpFL, kiFL, kdFL, errorFL, derivativeFL, integralFL);
         double outputFL = Math.max(minOutputFL, Math.min(maxOutputFL, outputFLa));
 
         double previousErrorFL = errorFL;
@@ -68,7 +68,7 @@ public class Auto_forward extends LinearOpMode {
        this.kpFR=kpFR;
        this.kiFR=kiFR;
        this.kdFR=kdFR;
-       double outputFRa = kpBR * FR1 + kiBR * FR3 + kdBR * FR2;
+       double outputFRa = kpFR * FR1 + kiFR * FR3 + kdFR * FR2;
        return outputFRa;
     }
     public double calcFR(double targetFR,double currentFR){
@@ -127,16 +127,18 @@ public class Auto_forward extends LinearOpMode {
     double intergralBL=0; //assign a value in the future to intergral
     double minOutputBL=0; //assign a value in the future to minoutput
     double maxOutputBL=0; //assign a value in the future to maxoutput
-    public double PIDFL(double kpBL, double kiBL, double kdBL){
+    public double PIDFL(double kpBL, double kiBL, double kdBL, double BL1, double BL3, double BL2){
        this.kpBL=kpBL;
        this.kiBL=kiBL;
        this.kdBL=kdBL;
+       double outputBLa = kpBL * BL1 + kiBL * BL3 + kdBL * BL2;
+       return outputBLa;
     }
     public double calcBL(double targetBL,double currentBL){
         double errorBL = targetBL - currentBL;
         double integralBL =+ errorBL;
         double derivativeBL = errorBL - previousErrorBL;
-        double outputBLa = kpBL * errorBL + kiBL * integralBL + kdBL * derivativeBL;
+        double outputBLa = PIDFL(kpBL, kiBL, kdBL, errorBL, derivativeBL, integralBL);
         double outputBL = Math.max(minOutputBL, Math.min(maxOutputBL, outputBLa));
 
         double previousErrorBL = errorBL;
@@ -188,5 +190,6 @@ public class Auto_forward extends LinearOpMode {
  
 
 }
+
 
 
