@@ -1,3 +1,8 @@
 public static double TICKS_PER_REV = 0;
 public static double WHEEL_RADIUS = 2; 
 public static double GEAR_RATIO = 1;
+public static double PARALLEL_X = 0; // X is the forward and back direction
+public static double PARALLEL_Y = 0; // Y is the strafe direction
+
+public static double PERPENDICULAR_X = 0; // X is the forward and back direction
+public static double PERPENDICULAR_Y = 0; // Y is the strafe direction
