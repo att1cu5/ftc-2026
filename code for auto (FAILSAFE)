@@ -16,6 +16,10 @@ public class Auto_forward extends LinearOpMode {
   private DcMotor backright;
   private DcMotor frontright;
   private DcMotor frontleft;
+  private DcMotor X;
+  private DcMotor Y;
+  public double desiredPositionY=0;//add value for desired y distance
+  public double desiredX=0;//add value for desired x distance
   public double desiredPositionBLA=0; // add value for desired distance
   public double desiredPositionBRA=0; // add value for desired distance
   public double desiredPositionFRA=0; // add value for desired distance
@@ -86,6 +90,36 @@ public class Auto_forward extends LinearOpMode {
        double intergralFR=0;
     }
  }
+ public class PIDCONTOLLERY{
+    public double kpY;
+    public double kiY; 
+    public double kdY;
+    double previousErrorY=0;
+    double maxOutputY=0; //assign a value in the future to maxoutput
+    double intergralY=0; //assign a value in the future to intergral
+    double minOutputY=0; //assign a value in the future to minoutput
+    public double PIDY(double kpY, double kiY, double kdY, double Y1, double Y3, double Y2){
+       this.kpY=kpY;
+       this.kiY=kiY;
+       this.kdY=kdY;
+       double outputYa = kpY * Y1 + kiY * Y3 + kdY * Y2;
+       return outputYa;
+    }
+    public double calcY(double targetY,double currentY){
+        double errorY = targetY - currentY;
+        double integralY =+ errorY;
+        double derivativeY = errorY - previousErrorY;
+        double outputYa1=PIDY(kpY, kiY, kdY, errorY, integralY, derivativeY);
+        double outputY = Math.max(minOutputY, Math.min(maxOutputY, outputYa1));
+
+        double previousErrorY = errorY;
+        return outputY;
+    }
+    public void resetY(){
+       double previousErrorY=0;
+       double intergralY=0;
+    }
+ } 
  public class PIDCONTOLLERBR{
     public double kpBR;
     public double kiBR; 
@@ -151,6 +185,8 @@ public class Auto_forward extends LinearOpMode {
   }
   @Override 
   public void runOpMode() {
+    Y=hardwareMap.get(DcMotor.class, "odometrywheeltwo");
+    X=hardwareMap.get(DcMotor.class, "odometrywheelone");
     backleft = hardwareMap.get(DcMotor.class, "backleft");
     backright = hardwareMap.get(DcMotor.class, "backright");
     frontright = hardwareMap.get(DcMotor.class, "frontright");
@@ -159,11 +195,14 @@ public class Auto_forward extends LinearOpMode {
     frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    Y.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    X.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+    Y.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    X.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     frontleft.setDirection(DcMotor.Direction.REVERSE);
     backright.setDirection(DcMotor.Direction.REVERSE);
     waitForStart();
@@ -172,6 +211,8 @@ public class Auto_forward extends LinearOpMode {
       PIDCONTOLLERFL FL=new PIDCONTOLLERFL();
       PIDCONTOLLERBR BR=new PIDCONTOLLERBR();
       PIDCONTOLLERFR FR=new PIDCONTOLLERFR();
+      PIDCONTOLLERY YA=new PIDCONTOLLERY();
+      double currentpositionY=Y.getCurrentPosition();
       double currentpositionBL=backleft.getCurrentPosition();
       double currentpositionBR=backright.getCurrentPosition();
       double currentpositionFR=frontright.getCurrentPosition();
@@ -180,6 +221,7 @@ public class Auto_forward extends LinearOpMode {
       double powerFL=FL.calcFL(currentpositionFL,desiredPositionFLA);
       double powerFR=FR.calcFR(currentpositionFR,desiredPositionFRA);
       double powerBR=BR.calcBR(currentpositionBR,desiredPositionBRA);
+      double powerY=YA.calcY(currentpositionY,desiredPositionY);
       frontright.setPower(powerFR);       
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
@@ -190,6 +232,5 @@ public class Auto_forward extends LinearOpMode {
  
 
 }
-
 
 
