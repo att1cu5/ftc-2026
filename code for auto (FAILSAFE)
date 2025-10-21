@@ -19,7 +19,7 @@ public class Auto_forward extends LinearOpMode {
   private DcMotor X;
   private DcMotor Y;
   public double desiredPositionY=0;//add value for desired y distance
-  public double desiredX=0;//add value for desired x distance
+  public double desiredPositionX=0;//add value for desired x distance
   public double desiredPositionBLA=0; // add value for desired distance
   public double desiredPositionBRA=0; // add value for desired distance
   public double desiredPositionFRA=0; // add value for desired distance
@@ -119,6 +119,36 @@ public class Auto_forward extends LinearOpMode {
        double previousErrorY=0;
        double intergralY=0;
     }
+ }
+ public class PIDCONTOLLERX{
+    public double kpX;
+    public double kiX; 
+    public double kdX;
+    double previousErrorX=0;
+    double maxOutputX=0; //assign a value in the future to maxoutput
+    double intergralX=0; //assign a value in the future to intergral
+    double minOutputX=0; //assign a value in the future to minoutput
+    public double PIDX(double kpX, double kiX, double kdX, double X1, double X3, double X2){
+       this.kpX=kpX;
+       this.kiX=kiX;
+       this.kdX=kdX;
+       double outputXa = kpX * X1 + kiX * X3 + kdX * X2;
+       return outputXa;
+    }
+    public double calcX(double targetX,double currentX){
+        double errorX = targetX - currentX;
+        double integralX =+ errorX;
+        double derivativeX = errorX - previousErrorX;
+        double outputXa1=PIDX(kpX, kiX, kdX, errorX, integralX, derivativeX);
+        double outputX = Math.max(minOutputX, Math.min(maxOutputX, outputXa1));
+
+        double previousErrorX = errorX;
+        return outputX;
+    }
+    public void resetX(){
+       double previousErrorX=0;
+       double intergralX=0;
+    }
  } 
  public class PIDCONTOLLERBR{
     public double kpBR;
@@ -212,7 +242,9 @@ public class Auto_forward extends LinearOpMode {
       PIDCONTOLLERBR BR=new PIDCONTOLLERBR();
       PIDCONTOLLERFR FR=new PIDCONTOLLERFR();
       PIDCONTOLLERY YA=new PIDCONTOLLERY();
+      PIDCONTOLLERX XA=new PIDCONTOLLERX();
       double currentpositionY=Y.getCurrentPosition();
+      double currentpositionX=X.getCurrentPosition();
       double currentpositionBL=backleft.getCurrentPosition();
       double currentpositionBR=backright.getCurrentPosition();
       double currentpositionFR=frontright.getCurrentPosition();
@@ -222,6 +254,7 @@ public class Auto_forward extends LinearOpMode {
       double powerFR=FR.calcFR(currentpositionFR,desiredPositionFRA);
       double powerBR=BR.calcBR(currentpositionBR,desiredPositionBRA);
       double powerY=YA.calcY(currentpositionY,desiredPositionY);
+      double powerX=XA.calcX(currentpositionX,desiredPositionX);
       frontright.setPower(powerFR);       
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
