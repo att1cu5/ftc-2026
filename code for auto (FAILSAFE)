@@ -17,7 +17,7 @@ public class Auto_forward extends LinearOpMode {
   private DcMotor frontright;
   private DcMotor frontleft;
   private DcMotor X;
-  private DcMotor Y;
+  private DcMotor intake;
   public double desiredPositionY=0;//add value for desired y distance
   public double desiredPositionX=0;//add value for desired x distance
   public double desiredPositionBLA=0; // add value for desired distance
@@ -156,7 +156,7 @@ public class Auto_forward extends LinearOpMode {
   }
   @Override 
   public void runOpMode() {
-    Y=hardwareMap.get(DcMotor.class, "odometrywheeltwo");
+    intake=hardwareMap.get(DcMotor.class, "intake");
     X=hardwareMap.get(DcMotor.class, "odometrywheelone");
     backleft = hardwareMap.get(DcMotor.class, "backleft");
     backright = hardwareMap.get(DcMotor.class, "backright");
@@ -166,13 +166,13 @@ public class Auto_forward extends LinearOpMode {
     frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    Y.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     X.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    Y.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     X.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     frontleft.setDirection(DcMotor.Direction.REVERSE);
     backright.setDirection(DcMotor.Direction.REVERSE);
@@ -182,7 +182,7 @@ public class Auto_forward extends LinearOpMode {
       PIDCONTOLLERFL FL=new PIDCONTOLLERFL();
       PIDCONTOLLERBR BR=new PIDCONTOLLERBR();
       PIDCONTOLLERFR FR=new PIDCONTOLLERFR();
-      double currentpositionY=Y.getCurrentPosition();
+      double currentpositionY=intake.getCurrentPosition();
       double currentpositionX=X.getCurrentPosition();
       double currentpositionBL=backleft.getCurrentPosition();
       double currentpositionBR=backright.getCurrentPosition();
@@ -202,6 +202,7 @@ public class Auto_forward extends LinearOpMode {
  
 
 }
+
 
 
 
