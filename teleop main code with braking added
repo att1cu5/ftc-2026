@@ -184,13 +184,13 @@ public class teleopandapriltagscolorsensor extends LinearOpMode {
               frontleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
               backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
               backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); 
-            }
+      }
       else if(gamepad2.b){
               frontright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);    
               frontleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); 
               backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);     
               backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            }
+      }
       else{
               frontright.setPower(-frontright_A);        
               frontleft.setPower(-frontleft_A);          
