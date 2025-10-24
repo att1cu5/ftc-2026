@@ -30,7 +30,7 @@ public class TELEOP_BESTA extends LinearOpMode {
     double backright_A;
     double frontleft_A;
     double frontright_A;
-    
+    intake = hardwareMap.get(DcMotor.class, "intake");
     backleft = hardwareMap.get(DcMotor.class, "backleft");
     backright = hardwareMap.get(DcMotor.class, "backright");
     frontright = hardwareMap.get(DcMotor.class, "frontright");
