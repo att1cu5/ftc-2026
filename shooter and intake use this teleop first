@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @TeleOp (name = "TELEOP_BESTC (Blocks to Java)")
-public class TELEOP_BESTA extends LinearOpMode {
+public class TELEOP_BESTC extends LinearOpMode {
   boolean thisExpUp;
   boolean thisExpDn;
   boolean thisGainUp;
