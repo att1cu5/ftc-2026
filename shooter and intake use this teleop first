@@ -26,10 +26,13 @@ public class TELEOP_BESTC extends LinearOpMode {
   private DcMotor backright;
   private DcMotor frontright;
   private DcMotor frontleft;
+  private Servo pivotintake;
   private DcMotor intake;
   private DcMotor shooterwheelA;
   private DcMotor shooterwheelB;
   public double change=10;
+  public double degree1=0.5;
+  public double degree2=0;
   USE_WEBCAM = true;
   test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
   double[] motif={0,0,0,0};
@@ -124,11 +127,13 @@ public class TELEOP_BESTC extends LinearOpMode {
   }
   @Override
   public void runOpMode() {
+    pivotintake = hardwareMap.get(Servo.class, "pivot intake");
     double speedOfintakeOff=0;
     double speedOfintakeOn=0.8;
     double yAxis= -gamepad2.left_stick_y;
     double xAxis= gamepad2.left_stick_x;
     double zAxis= gamepad1.right_stick_y;
+    
     double x=0;
     double y=0;
     double turn=0;
@@ -171,7 +176,12 @@ public class TELEOP_BESTC extends LinearOpMode {
       frontright_A = (y + x) + turn;
       backleft_A = (y + x) - turn;
       backright_A = (y - x) + turn;
-
+      if(gampad1.a){
+        pivotintake.setPosition(degree1);
+      }
+      if(gampad1.b){
+        pivotintake.setPosition(degree2);
+      }
       if(gamepad1.left_bumper){
            intake.setPower(speedOfintakeOn);   
       }
