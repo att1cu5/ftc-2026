@@ -73,16 +73,16 @@ public class TELEOP_BEST extends LinearOpMode {
                  
 
         if(gamepad2.a){
-              frontright.setPower(-frontright_A);        
-              frontleft.setPower(-frontleft_A);         
-              backleft.setPower(0);            
-              backright.setPower(0);
+              frontright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+              frontleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+              backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+              backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); 
             }
         else if(gamepad2.b){
-              frontright.setPower(0);        
-              frontleft.setPower(0);          
-              backleft.setPower(backleft_A);            
-              backright.setPower(backright_A);            
+              frontright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);    
+              frontleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); 
+              backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);     
+              backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             }
         else{
               frontright.setPower(-frontright_A);        
@@ -93,3 +93,4 @@ public class TELEOP_BEST extends LinearOpMode {
         }
     }
 }
+
