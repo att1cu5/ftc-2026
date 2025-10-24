@@ -305,14 +305,9 @@ public class teleopandapriltagscolorsensor extends LinearOpMode {
         }
         if(correctmotif[2]==motif[2] && motifs!=0 && correctmotif[1]==motif[1] && correctmotif[0]==motif[0]){
           telemetry.addLine("all balls are in correct placement");
-          //sleep(50000);
-          //go to next april tag and shot
+ 
         }
-      //if(correctmotif[2]!=motif[2] && motifs!=0 && correctmotif[1]!=motif[1] && correctmotif[0]!=motif[0]){
-      //  telemetry.addLine("all balls are in incorrect placement");
-        //sleep(50000);
-        //shot 
-      //}
+
 
       }
       telemetry.addData("Exposure", myExposure + "  (" + minExposure + " - " + maxExposure + ")");
