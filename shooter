@@ -10,13 +10,15 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @TeleOp (name = "TELEOP_BESTB (Blocks to Java)")
 public class TELEOP_BESTB extends LinearOpMode {
-  public double desiredspeed=0;//desired ticks per sec
+  double desiredspeed=0;//desired ticks per sec
+  public intialspeed=100; //intial speed befor change
   private DcMotor backleft;
   private DcMotor backright;
   private DcMotor frontright;
   private DcMotor frontleft;
-  private DcMotor shooterA;
-  private DcMotor shooterB;
+  private DcMotor shooterwheelA;
+  private DcMotor shooterwheelB;
+  public double change=10;
   public class PIDCONTOLLERshooterB{
     
 
@@ -102,28 +104,48 @@ public class TELEOP_BESTB extends LinearOpMode {
     double frontleft_A;
     double frontright_A;
 
-    shooterA = hardwareMap.get(DcMotor.class, "shooterA");
-    shooterB = hardwareMap.get(DcMotor.class, "shooterB");
+    shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
+    shooterwheelB = hardwareMap.get(DcMotor.class, "shooterwheelB");
     backleft = hardwareMap.get(DcMotor.class, "backleft");
     backright = hardwareMap.get(DcMotor.class, "backright");
     frontright = hardwareMap.get(DcMotor.class, "frontright");
     frontleft = hardwareMap.get(DcMotor.class, "frontleft");
+    shooterwheelB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    shooterwheelA.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    shooterwheelA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    shooterwheelB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     waitForStart();
   while (opModeIsActive()) {
-        
+        shooterwheelA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterwheelB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        PIDCONTOLLERshooterA shooterA=new PIDCONTOLLERshooterA();
+        PIDCONTOLLERshooterB shooterB=new PIDCONTOLLERshooterB();
         y = gamepad2.left_stick_y;
         x = gamepad2.left_stick_x;
         turn = gamepad2.right_stick_x;
-        
         frontleft_A = y - x - turn;
         frontright_A = (y + x) + turn;
         backleft_A = (y + x) - turn;
         backright_A = (y - x) + turn;
 
-        
-       
-
-        
+         
+        if(gamepad1.right_trigger>0){
+            desiredspeed=intialspeed-(change*gamepad1.right_trigger);
+        }
+        if(gamepad1.left_trigger>0){
+            desiredspeed=intialspeed+(change*gamepad1.left_trigger);
+        }
+        if(gamepad1.left_trigger>0 && gamepad1.right_trigger>0){
+            desiredspeed=intialspeed;
+        }
+        if(gamepad1.y){
+          double currentspeedA=shooterA.getCurrentPosition();
+          double currentspeedB=shooterB.getCurrentPosition();
+          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA);
+          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB);
+          shooterwheelA.setPower(speedA);  
+          shooterwheelB.setPower(speedB);
+        }
         if (gamepad2.right_bumper) {
           double precision=1-gamepad2.left_trigger;               
           frontleft_A=precision*(frontleft_A);
