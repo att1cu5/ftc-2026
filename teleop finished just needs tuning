@@ -28,6 +28,8 @@ public class TELEOP_BESTC extends LinearOpMode {
   private DcMotor frontleft;
   private Servo pivotintake;
   private Servo pivotintakeA;
+  private Servo shooterholder;
+  private Servo artifactholder;
   private CRServo belt;
   private DcMotor intake;
   private DcMotor shooterwheelA;
@@ -35,8 +37,12 @@ public class TELEOP_BESTC extends LinearOpMode {
   public double change=10; //adjust value
   public double degree1=0.5;
   public double degree2=0;
-  public double latchopen=0.5;
+  public double latchopen=0.5; 
   public double latchclose=0;
+  public double artifactholderopen=0.5; // adjust value in the future
+  public double artifactholderclose=0; // adjust value in the future
+  public double shooterholderopen=0.5; // adjust value in the future
+  public double shooterholderclose=0; // adjust value in the future 
   public double beltspeed1=-1; // adjust value in the future
   public double beltspeed2=1; // adjust value in the future
   USE_WEBCAM = true;
@@ -149,6 +155,8 @@ public class TELEOP_BESTC extends LinearOpMode {
     double backright_A;
     double frontleft_A;
     double frontright_A;
+    shooterholder= hardwareMap.get(Servo.class, "shooterholder");
+    artifactholder= hardwareMap.get(Servo.class, "artifactholder");
     shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
     shooterwheelB = hardwareMap.get(DcMotor.class, "shooterwheelB");
     X=hardwareMap.get(DcMotor.class, "odometrywheelone");
@@ -179,12 +187,24 @@ public class TELEOP_BESTC extends LinearOpMode {
       y = gamepad2.left_stick_y;
       x = gamepad2.left_stick_x;
       turn = gamepad2.right_stick_x;
-      rotater= gamepad1.right_stick_y;
+      rotater= gamepad1.left_stick_y;
 
       frontleft_A = y - x - turn;
       frontright_A = (y + x) + turn;
       backleft_A = (y + x) - turn;
       backright_A = (y - x) + turn;
+      if(gamepad1.y){
+         artifactholder.setPosition(artifactholderopen);
+      }
+      if(gamepad1.x){
+         artifactholder.setPosition(artifactholderclose);
+      }
+      if(gamepad1.dpad_up){
+         shooterholder.setPosition(shooterholderclose);
+      }
+      if(gamepad1.dpad_down){
+         shooterholder.setPosition(shooterholderopen);
+      }     
       if(gampad1.dpad_left){
         pivotintakeA.setPosition(latchopen);
       }
@@ -204,6 +224,23 @@ public class TELEOP_BESTC extends LinearOpMode {
         
           intake.setPower(speedOfintakeOff); 
 
+      }
+      if(gamepad1.right_trigger>0){
+            desiredspeed=intialspeed-(change*gamepad1.right_trigger);
+      }
+      if(gamepad1.left_trigger>0){
+            desiredspeed=intialspeed+(change*gamepad1.left_trigger);
+      }
+      if(gamepad1.left_trigger>0 && gamepad1.right_trigger>0){
+            desiredspeed=intialspeed;
+      }
+      if(gamepad1.right_stick_button){
+          double currentspeedA=shooterA.getCurrentPosition();
+          double currentspeedB=shooterB.getCurrentPosition();
+          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA);
+          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB);
+          shooterwheelA.setPower(speedA);  
+          shooterwheelB.setPower(speedB);
       }
       if(rotater<0){
         belt.setPower(beltspeed1);
