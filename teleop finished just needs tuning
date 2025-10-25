@@ -235,13 +235,14 @@ public class TELEOP_BESTC extends LinearOpMode {
             desiredspeed=intialspeed;
       }
       if(gamepad1.right_stick_button){
-          double currentspeedA=shooterA.getCurrentPosition();
           double currentspeedB=shooterB.getCurrentPosition();
-          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA);
-          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB);
-          shooterwheelA.setPower(speedA);  
+          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB);    
           shooterwheelB.setPower(speedB);
       }
+      if(gamepad1.left_stick_button)
+          double currentspeedA=shooterA.getCurrentPosition();
+          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA);
+          shooterwheelA.setPower(speedA); 
       if(rotater<0){
         belt.setPower(beltspeed1);
       }
