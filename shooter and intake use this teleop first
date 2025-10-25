@@ -20,19 +20,22 @@ public class TELEOP_BESTC extends LinearOpMode {
   boolean lastExpDn;
   boolean lastGainUp;
   boolean lastGainDn;
-  double desiredspeed=0;//desired ticks per sec
-  public intialspeed=100; //intial speed befor change
+  double desiredspeed=0;
+  public intialspeed=100; //intial speed before change measured in ticks adjust value
   private DcMotor backleft;
   private DcMotor backright;
   private DcMotor frontright;
   private DcMotor frontleft;
   private Servo pivotintake;
+  private CRServo belt;
   private DcMotor intake;
   private DcMotor shooterwheelA;
   private DcMotor shooterwheelB;
-  public double change=10;
+  public double change=10; //adjust value
   public double degree1=0.5;
   public double degree2=0;
+  public double beltspeed1=-1; 
+  public double beltspeed2=1;
   USE_WEBCAM = true;
   test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
   double[] motif={0,0,0,0};
@@ -128,6 +131,7 @@ public class TELEOP_BESTC extends LinearOpMode {
   @Override
   public void runOpMode() {
     pivotintake = hardwareMap.get(Servo.class, "pivot intake");
+    belt = hardwareMap.get(CRServo.class, "belt");
     double speedOfintakeOff=0;
     double speedOfintakeOn=0.8;
     double yAxis= -gamepad2.left_stick_y;
@@ -171,7 +175,7 @@ public class TELEOP_BESTC extends LinearOpMode {
       y = gamepad2.left_stick_y;
       x = gamepad2.left_stick_x;
       turn = gamepad2.right_stick_x;
-        
+      rotater= gamepad1.right_stick_y; 
       frontleft_A = y - x - turn;
       frontright_A = (y + x) + turn;
       backleft_A = (y + x) - turn;
@@ -189,6 +193,12 @@ public class TELEOP_BESTC extends LinearOpMode {
         
           intake.setPower(speedOfintakeOff); 
 
+      }
+      if(rotater<0){
+        belt.setPower(beltspeed1);
+      }
+      if(rotater>0){
+        belt.setPower(beltspeed2);
       }
       if (gamepad2.right_bumper) {
           double precision=1-gamepad2.left_trigger;               
@@ -266,7 +276,7 @@ public class TELEOP_BESTC extends LinearOpMode {
         } else {
            telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
            telemetry.addLine("Center " + JavaUtil.formatNumber(myAprilTagDetection.center.x, 6, 0) + "" + JavaUtil.formatNumber(myAprilTagDetection.center.y, 6, 0) + " (pixels)");
-          }
+         }
 
       }
       telemetry.addLine("");
@@ -339,13 +349,11 @@ public class TELEOP_BESTC extends LinearOpMode {
         }
         if(correctmotif[2]==motif[2] && motifs!=0 && correctmotif[1]==motif[1] && correctmotif[0]==motif[0]){
           telemetry.addLine("all balls are in correct placement");
-          //sleep(50000);
-          //go to next april tag and shot
+
         }
 
       }
-      telemetry.addData("Exposure", myExposure + "  (" + minExposure + " - " + maxExposure + ")");
-      telemetry.addData("Gain", myGain + "  (" + minGain + " - " + maxGain + ")");
+
       telemetry.update();
 
       lastExpUp = thisExpUp;
