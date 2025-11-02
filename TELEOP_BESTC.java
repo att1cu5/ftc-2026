@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode;
-
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -20,9 +20,9 @@ public class TELEOP_BESTC extends LinearOpMode {
   boolean lastExpDn;
   boolean lastGainUp;
   boolean lastGainDn;
-  double onerev=384;
+  double onerev=383.6;
   double desiredspeed=0;
-  public double intialspeed=1322; //intial speed before change measured in ticks adjust value
+  public double intialspeed=1295; //intial speed before change measured in ticks adjust value
   private DcMotor backleft;
   private DcMotor backright;
   private DcMotor frontright;
@@ -46,6 +46,7 @@ public class TELEOP_BESTC extends LinearOpMode {
   public double shooterholderclose=0; // adjust value in the future 
   public double beltspeed1=-1; // adjust value in the future
   public double beltspeed2=1; // adjust value in the future
+  public double Circumference=76.8*Math.PI; //in mm
   USE_WEBCAM = true;
   test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
   double[] motif={0,0,0,0};
@@ -180,6 +181,7 @@ public class TELEOP_BESTC extends LinearOpMode {
   }
   @Override
   public void runOpMode() {
+    private ElapsedTime runtime = new ElapsedTime();
     pivotintake = hardwareMap.get(Servo.class, "pivot intake");
     pivotintakeA = hardwareMap.get(Servo.class, "pivot intakeA");
     belt = hardwareMap.get(CRServo.class, "belt");
@@ -223,6 +225,7 @@ public class TELEOP_BESTC extends LinearOpMode {
     telemetry.addData(">", "Touch START to start OpMode");
     telemetry.update();
     waitForStart();
+    runtime.reset();
     while (opModeIsActive()) {
         
       y = gamepad2.left_stick_y;
@@ -278,8 +281,8 @@ public class TELEOP_BESTC extends LinearOpMode {
       if(gamepad1.right_stick_button){
           feedforwardtermB termB=feedforwardtermB();
           PIDCONTOLLERshooterB ShooterB=PIDCONTOLLERshooterB();
-          double currentspeedB=shooterB.getCurrentPosition();
-          double VelocityB=0;
+          double currentspeedB=((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
+          double VelocityB=1305;
           double AccelerationB=0;
           double KSshooterB=0;
           double KVshooterB=0;
@@ -291,8 +294,8 @@ public class TELEOP_BESTC extends LinearOpMode {
       if(gamepad1.left_stick_button){
           feedforwardtermA termA=feedforwardtermA();
           PIDCONTOLLERshooterA ShooterA=PIDCONTOLLERshooterA();
-          double currentspeedA=shooterA.getCurrentPosition();
-          double VelocityA=0;
+          double currentspeedA=((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
+          double VelocityA=1305;
           double AccelerationA=0;
           double KSshooterA=0;
           double KVshooterA=0;
