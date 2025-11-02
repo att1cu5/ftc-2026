@@ -32,9 +32,11 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "autobest (Blocks to Java)")
 public class autobest extends LinearOpMode {
   double objectA=0;
+  public double Circumference=76.8*Math.PI; //in mm
   double objectB=0;
   double objectC=0;
   double sumofobjects=5;
@@ -56,7 +58,7 @@ public class autobest extends LinearOpMode {
   double myGain;  
   double onerev=384;
   public double rps=435/60;
-  double desiredvelocity=1332;
+  double desiredvelocity=1305;
   double desiredspeed=0;
   double intakestatus=0;
   double intakespeed=0;
@@ -248,7 +250,7 @@ public class autobest extends LinearOpMode {
       public double kSB;
       public double kAB;
       public double kVB;
-      double DesiredVB=1332;
+      double DesiredVB=1305;
       double DesiredAB=0;//find this value
       public class FeedforwardB{
        public double feedforwardtermB(double DesiredVB,double DesiredAB,double kSB,double kVB,double kAB){
@@ -303,7 +305,7 @@ public class autobest extends LinearOpMode {
       public double kSA;
       public double kAA;
       public double kVA;
-      double DesiredVA=1332; //change if needed
+      double DesiredVA=1305; //change if needed
       double DesiredAA=0;//find this value
       public class FeedforwardA{
        public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
@@ -401,6 +403,7 @@ public class autobest extends LinearOpMode {
     }
   @Override
   public void runOpMode() {
+    private ElapsedTime runtime = new ElapsedTime();
     shooterholder= hardwareMap.get(Servo.class, "shooterholder");
     artifactholder= hardwareMap.get(Servo.class, "artifactholder");
     shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
@@ -429,37 +432,9 @@ public class autobest extends LinearOpMode {
     X.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     frontleft.setDirection(DcMotor.Direction.REVERSE);
     backright.setDirection(DcMotor.Direction.REVERSE);
-    double currentpositionY=intake.getCurrentPosition();
-    double currentpositionX=X.getCurrentPosition();
-    double currentpositionBL=backleft.getCurrentPosition();
-    double currentpositionBR=backright.getCurrentPosition();
-    double currentpositionFR=frontright.getCurrentPosition();
-    double currentpositionFL=frontleft.getCurrentPosition();
+
     
-    double powerBL=BLA(currentpositionBL,8);
-    double powerFL=FLA(currentpositionFL,8);
-    double powerFR=FRA(currentpositionFR,8);
-    double powerBR=BRA(currentpositionBR,8);
-    frontright.setPower(powerFR);       
-    frontleft.setPower(powerFL);         
-    backleft.setPower(powerBL);            
-    backright.setPower(powerBR); 
-    intakespeed=intakeObjects(intakestatus);
-    intake.setPower(intakespeed);
-    double VelocityA=0;
-    double AccelerationA=0;
-    double KSshooterA=0;
-    double KVshooterA=0;
-    double KAshooterA=0;
-    powerA=shooterA(shooterwheelA.getCurrentPosition(), 100, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
-    double VelocityB=0;
-    double AccelerationB=0;
-    double KSshooterB=0;
-    double KVshooterB=0;
-    double KAshooterB=0;
-    powerB=shooterB(shooterwheelB.getCurrentPosition(), 100, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
-    shooterwheelA.setPower(powerA);
-    shooterwheelB.setPower(powerB);
+  
     USE_WEBCAM = true;
     test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
     test_colorA=hardwareMap.get(NormalizedColorSensor.class, "test_colorA");
@@ -514,8 +489,38 @@ public class autobest extends LinearOpMode {
     myExposure = 10;
     myGain = 50;
     waitForStart();
+    runtime.reset();
     while (opModeIsActive()) {
-
+      double currentpositionY=intake.getCurrentPosition();
+      double currentpositionX=X.getCurrentPosition();
+      double currentpositionBL=backleft.getCurrentPosition();
+      double currentpositionBR=backright.getCurrentPosition();
+      double currentpositionFR=frontright.getCurrentPosition();
+      double currentpositionFL=frontleft.getCurrentPosition();
+      double powerBL=BLA(currentpositionBL,8);
+      double powerFL=FLA(currentpositionFL,8);
+      double powerFR=FRA(currentpositionFR,8);
+      double powerBR=BRA(currentpositionBR,8);
+      frontright.setPower(powerFR);       
+      frontleft.setPower(powerFL);         
+      backleft.setPower(powerBL);            
+      backright.setPower(powerBR); 
+      intakespeed=intakeObjects(intakestatus);
+      intake.setPower(intakespeed);
+      double VelocityA=0;
+      double AccelerationA=0;
+      double KSshooterA=0;
+      double KVshooterA=0;
+      double KAshooterA=0;
+      powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), 100, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+      double VelocityB=0;
+      double AccelerationB=0;
+      double KSshooterB=0;
+      double KVshooterB=0;
+      double KAshooterB=0;
+      powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), 100, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+      shooterwheelA.setPower(powerA);
+      shooterwheelB.setPower(powerB);
       List<AprilTagDetection> myAprilTagDetections;
       AprilTagDetection myAprilTagDetection;
     
