@@ -11,7 +11,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 @TeleOp (name = "TELEOP_BESTD (Blocks to Java)")
-public class TELEOP_BESTC extends LinearOpMode {
+public class TELEOP_BESTD extends LinearOpMode {
+  double objectA=0;
+  double objectB=0;
+  double objectC=0;
+  double sumofobjects=5;
   boolean thisExpUp;
   boolean thisExpDn;
   boolean thisGainUp;
@@ -367,7 +371,7 @@ public class TELEOP_BESTC extends LinearOpMode {
         senseA=0;
         if(blue>=0.05 && i!=1){
                 sense=2;
-
+                objectA=sense;
                 motif[i]=sense;
 
                 i=i+1;
@@ -375,27 +379,32 @@ public class TELEOP_BESTC extends LinearOpMode {
                 
         }
         if(green>=0.05 && blue<0.05 && i!=1){
-                
+                objectA=sense;
                 sense=1;
                 motif[i]=sense;
                 i=i+1;
                   
         }
         if(blueA>=0.05 && i!=2 && sense!=1 || sense!=2){
+            
             senseA=2;
+            objectB=senseA;
             motif[i]=senseA;
             i=i+1;
             
         }
         if(greenA>=0.05 && blueA<0.05 && i!=2 && senseA!=1 || senseA!=2){
             senseA=1;
+            objectB=senseB;
             motif[i]=senseA;
             i=i+1;
         }
-        sleep(200); 
-        if(i==1){
-          sense=0;
+        if(i==2){
+           objectC=sumofobjects-(objectA-objectB);
+           motif[[i]=objectC;
+           i=i+1;
         }
+        sleep(200); 
         if(i==3){
           i=0;
         }
