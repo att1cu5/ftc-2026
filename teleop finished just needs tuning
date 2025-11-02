@@ -20,8 +20,9 @@ public class TELEOP_BESTC extends LinearOpMode {
   boolean lastExpDn;
   boolean lastGainUp;
   boolean lastGainDn;
+  double onerev=384;
   double desiredspeed=0;
-  public double intialspeed=100; //intial speed before change measured in ticks adjust value
+  public double intialspeed=1322; //intial speed before change measured in ticks adjust value
   private DcMotor backleft;
   private DcMotor backright;
   private DcMotor frontright;
@@ -65,77 +66,117 @@ public class TELEOP_BESTC extends LinearOpMode {
   double Ycenter=0;
   double Xcenter=0;
   int i=0;
+  public class FeedforwardB{
+      public double kSB;
+      public double kAB;
+      public double kVB;
+      double DesiredVB;
+      double DesiredAB;//find this value
+      public class FeedforwardB{
+       public double feedforwardtermB(double DesiredVB,double DesiredAB,double kSB,double kVB,double kAB){
+           this.kSB=kSB;
+           this.kVB=kVB;
+           this.kAB=kAB;
+           double outputffB=kSB*sign(DesiredVB)+kVB*DesiredVB+kAB*DesiredAB;
+           return outputffB;
+          }
+      }
   public class PIDCONTOLLERshooterB{
+      public double kpshooterB; 
+      public double kishooterB; 
+      public double kdshooterB;
+      double previousErrorshooterB=0;
+      double intergralshooterB=0; //assign a value in the future to intergral
+      double minOutputshooterB=0; //assign a value in the future to minoutput
+      double maxOutputshooterB=0; //assign a value in the future to maxoutput
+      public class PIDCONTOLLERshooterB{
+       public double PIDshooterB(double kpshooterB, double kishooterB, double kdshooterB, double shooterB1, double shooterB2, double shooterB3){
     
+         this.kpshooterB=kpshooterB;
+         this.kishooterB=kishooterB;
+         this.kdshooterB=kdshooterB;
+         double outputshooterBa = kpshooterB * shooterB1 + kishooterB * shooterB3 + kdshooterB * shooterB2;
+         return outputshooterBa;
+       }
+       public double calcshooterB(double targetshooterB,double currentshooterB){
+          double errorshooterB = targetshooterB - currentshooterB;
+          double integralmaxB=1000;//update this value if needed
+          double timeBs=0.2; //update if needed
+          double integralshooterB =+ errorshooterB*timeBs;
+          if(integralshooterB>integralmaxB){
+              integralshooterB=integralmaxB;
+          if(integralshooterB<-integralmaxB){
+              integralshooterB=integralmaxB*-1;
+          }
+          double derivativeshooterB = errorshooterB - previousErrorshooterB/timeBs;
+          double outputshooterBa = PIDshooterB(kpshooterB, kishooterB, kdshooterB, errorshooterB, derivativeshooterB, integralshooterB);
+          double outputshooterB = Math.max(minOutputshooterB, Math.min(maxOutputshooterB, outputshooterBa));
+  
+          double previousErrorshooterB = errorshooterB;
+          return outputshooterB;
+      }
+      public void resetshooterB(){
+         double previousErrorshooterB=0;
+         double intergralshooterB=0;
+      }
 
-
-    public double kpshooterB; 
-    public double kishooterB; 
-    public double kdshooterB;
-    
-    double previousErrorshooterB=0;
-    double intergralshooterB=0; //assign a value in the future to intergral
-    double minOutputshooterB=0; //assign a value in the future to minoutput
-    double maxOutputshooterB=0; //assign a value in the future to maxoutput
-    public class PIDCONTOLLERshooterB{
-     public double PIDshooterB(double kpshooterB, double kishooterB, double kdshooterB, double shooterB1, double shooterB2, double shooterB3){
-       
-       this.kpshooterB=kpshooterB;
-       this.kishooterB=kishooterB;
-       this.kdshooterB=kdshooterB;
-       double outputshooterBa = kpshooterB * shooterB1 + kishooterB * shooterB3 + kdshooterB * shooterB2;
-       return outputshooterBa;
-     }
-     public double calcshooterB(double targetshooterB,double currentshooterB){
-        double errorshooterB = targetshooterB - currentshooterB;
-        double integralshooterB =+ errorshooterB;
-        double derivativeshooterB = errorshooterB - previousErrorshooterB;
-        double outputshooterBa = PIDshooterB(kpshooterB, kishooterB, kdshooterB, errorshooterB, derivativeshooterB, integralshooterB);
-        double outputshooterB = Math.max(minOutputshooterB, Math.min(maxOutputshooterB, outputshooterBa));
-
-        double previousErrorshooterB = errorshooterB;
-        return outputshooterB;
-    }
-    public void resetshooterB(){
-       double previousErrorshooterB=0;
-       double intergralshooterB=0;
-    }
   }
+  public class FeedforwardA{
+      public double kSA;
+      public double kAA;
+      public double kVA;
+      double DesiredVA;
+      double DesiredAA;//find this value
+      public class FeedforwardA{
+       public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
+           this.kSA=kSA;
+           this.kVA=kVA;
+           this.kAA=kAA;
+           double outputffA=kSA*sign(DesiredVA)+kVA*DesiredVA+kAA*DesiredAA;
+           return outputffA;
+          }
+      }
   public class PIDCONTOLLERshooterA{
-    
+      
 
-
-    public double kpshooterA; 
-    public double kishooterA; 
-    public double kdshooterA;
-    
-    double previousErrorshooterA=0;
-    double intergralshooterA=0; //assign a value in the future to intergral
-    double minOutputshooterA=0; //assign a value in the future to minoutput
-    double maxOutputshooterA=0; //assign a value in the future to maxoutput
-    public class PIDCONTOLLERshooterA{
-     public double PIDshooterA(double kpshooterA, double kishooterA, double kdshooterA, double shooterA1, double shooterA2, double shooterA3){
-       
-       this.kpshooterA=kpshooterA;
-       this.kishooterA=kishooterA;
-       this.kdshooterA=kdshooterA;
-       double outputshooterAa = kpshooterA * shooterA1 + kishooterA * shooterA3 + kdshooterA * shooterA2;
-       return outputshooterAa;
-     }
-     public double calcshooterA(double targetshooterA,double currentshooterA){
-        double errorshooterA = targetshooterA - currentshooterA;
-        double integralshooterA =+ errorshooterA;
-        double derivativeshooterA = errorshooterA - previousErrorshooterA;
-        double outputshooterAa = PIDshooterA(kpshooterA, kishooterA, kdshooterA, errorshooterA, derivativeshooterA, integralshooterA);
-        double outputshooterA = Math.max(minOutputshooterA, Math.min(maxOutputshooterA, outputshooterAa));
-
-        double previousErrorshooterA = errorshooterA;
-        return outputshooterA;
-    }    
-    public void resetshooterA(){
-       double previousErrorshooterA=0;
-       double intergralshooterA=0;
-    }
+      public double kpshooterA; 
+      public double kishooterA; 
+      public double kdshooterA;
+      
+      double previousErrorshooterA=0;
+      double intergralshooterA=0; //assign a value in the future to intergral
+      double minOutputshooterA=0; //assign a value in the future to minoutput
+      double maxOutputshooterA=0; //assign a value in the future to maxoutput
+      public class PIDCONTOLLERshooterA{
+       public double PIDshooterA(double kpshooterA, double kishooterA, double kdshooterA, double shooterA1, double shooterA2, double shooterA3){
+         
+         this.kpshooterA=kpshooterA;
+         this.kishooterA=kishooterA;
+         this.kdshooterA=kdshooterA;
+         double outputshooterAa = kpshooterA * shooterA1 + kishooterA * shooterA3 + kdshooterA * shooterA2;
+         return outputshooterAa;
+       }
+       public double calcshooterA(double targetshooterA,double currentshooterA){
+          double errorshooterA = targetshooterA - currentshooterA;
+          
+          double integralmaxA=1000;//update this value if needed
+          double timeAs=0.2; //update if needed
+          double integralshooterA =+ errorshooterA*timeAs;
+          if(integralshooterA>integralmaxA){
+              integralshooterA=integralmaxA;
+          if(integralshooterA<-integralmaxA){
+              integralshooterA=integralmaxA*-1;
+          }
+          double outputshooterAa = PIDshooterA(kpshooterA, kishooterA, kdshooterA, errorshooterA, derivativeshooterA, integralshooterA);
+          double outputshooterA = Math.max(minOutputshooterA, Math.min(maxOutputshooterA, outputshooterAa));
+  
+          double previousErrorshooterA = errorshooterA;
+          return outputshooterA;
+      }    
+      public void resetshooterA(){
+         double previousErrorshooterA=0;
+         double intergralshooterA=0;
+      }
   }
   @Override
   public void runOpMode() {
@@ -182,7 +223,7 @@ public class TELEOP_BESTC extends LinearOpMode {
     telemetry.addData(">", "Touch START to start OpMode");
     telemetry.update();
     waitForStart();
-  while (opModeIsActive()) {
+    while (opModeIsActive()) {
         
       y = gamepad2.left_stick_y;
       x = gamepad2.left_stick_x;
@@ -235,20 +276,41 @@ public class TELEOP_BESTC extends LinearOpMode {
             desiredspeed=intialspeed;
       }
       if(gamepad1.right_stick_button){
+          feedforwardtermB termB=feedforwardtermB();
+          PIDCONTOLLERshooterB ShooterB=PIDCONTOLLERshooterB();
           double currentspeedB=shooterB.getCurrentPosition();
-          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB);    
+          double VelocityB=0;
+          double AccelerationB=0;
+          double KSshooterB=0;
+          double KVshooterB=0;
+          double KAshooterB=0;
+          double feedforwardB=termB.feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB;    
           shooterwheelB.setPower(speedB);
       }
-      if(gamepad1.left_stick_button)
+      if(gamepad1.left_stick_button){
+          feedforwardtermA termA=feedforwardtermA();
+          PIDCONTOLLERshooterA ShooterA=PIDCONTOLLERshooterA();
           double currentspeedA=shooterA.getCurrentPosition();
-          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA);
-          shooterwheelA.setPower(speedA); 
+          double VelocityA=0;
+          double AccelerationA=0;
+          double KSshooterA=0;
+          double KVshooterA=0;
+          double KAshooterA=0;
+          double feedforwardA=termA.feedforwardtermA(VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA)+feedforwardA;    
+          shooterwheelA.setPower(speedA);
+      }
       if(rotater<0){
         belt.setPower(beltspeed1);
       }
       if(rotater>0){
         belt.setPower(beltspeed2);
       }
+      if(rotater==0){
+        belt.setPower(0);
+      }
+
       if (gamepad2.right_bumper) {
           double precision=1-gamepad2.left_trigger;               
           frontleft_A=precision*(frontleft_A);
