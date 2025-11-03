@@ -1,4 +1,6 @@
-
+# debug
+# tune 
+# and plan auto
 # documentation
 # april tags 
 # [text](https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/apriltag_library/apriltag-library.html)
