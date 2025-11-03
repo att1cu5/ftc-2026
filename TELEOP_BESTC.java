@@ -68,10 +68,10 @@ public class TELEOP_BESTC extends LinearOpMode {
   double Xcenter=0;
   int i=0;
   public class FeedforwardB{
-      public double kSB;
-      public double kAB;
-      public double kVB;
-      double DesiredVB;
+      public double kSB;//find this value
+      public double kAB;//find this value
+      public double kVB;//find this value
+      double DesiredVB;//find this value
       double DesiredAB;//find this value
       public class FeedforwardB{
        public double feedforwardtermB(double DesiredVB,double DesiredAB,double kSB,double kVB,double kAB){
@@ -83,9 +83,9 @@ public class TELEOP_BESTC extends LinearOpMode {
           }
       }
   public class PIDCONTOLLERshooterB{
-      public double kpshooterB; 
-      public double kishooterB; 
-      public double kdshooterB;
+      public double kpshooterB; //find this value
+      public double kishooterB; //find this value
+      public double kdshooterB;//find this value
       double previousErrorshooterB=0;
       double intergralshooterB=0; //assign a value in the future to intergral
       double minOutputshooterB=0; //assign a value in the future to minoutput
@@ -123,10 +123,10 @@ public class TELEOP_BESTC extends LinearOpMode {
 
   }
   public class FeedforwardA{
-      public double kSA;
-      public double kAA;
-      public double kVA;
-      double DesiredVA;
+      public double kSA;//find this value
+      public double kAA;//find this value
+      public double kVA;//find this value
+      double DesiredVA;//find this value
       double DesiredAA;//find this value
       public class FeedforwardA{
        public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
@@ -140,9 +140,9 @@ public class TELEOP_BESTC extends LinearOpMode {
   public class PIDCONTOLLERshooterA{
       
 
-      public double kpshooterA; 
-      public double kishooterA; 
-      public double kdshooterA;
+      public double kpshooterA; //find this value
+      public double kishooterA; //find this value
+      public double kdshooterA;//find this value
       
       double previousErrorshooterA=0;
       double intergralshooterA=0; //assign a value in the future to intergral
