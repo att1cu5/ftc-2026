@@ -58,6 +58,11 @@ public class autobest extends LinearOpMode {
   double myGain;  
   double onerev=384;
   public double rps=435/60;
+  double servostatusA=0;
+  double servostatusB=0;
+  double servoestatusC=0;
+  double servoestatusD=0;
+  double servoestatusE=0;
   double desiredvelocity=1305;
   double desiredspeed=0;
   double intakestatus=0;
@@ -101,9 +106,9 @@ public class autobest extends LinearOpMode {
     
 
 
-    public double kpFL; 
-    public double kiFL; 
-    public double kdFL;
+    public double kpFL; //find value
+    public double kiFL; //find value
+    public double kdFL;//find value
     
     double previousErrorFL=0;
     double intergralFL=0; //assign a value in the future to intergral
@@ -133,9 +138,9 @@ public class autobest extends LinearOpMode {
     }
  }
  public class PIDCONTOLLERFR{
-    public double kpFR; 
-    public double kiFR;
-    public double kdFR;
+    public double kpFR; //find value
+    public double kiFR;//find value
+    public double kdFR;//find value
     double previousErrorFR=0;
     double maxOutputFR=0; //assign a value in the future to maxoutput
     double intergralFR=0; //assign a value in the future to intergral
@@ -165,9 +170,9 @@ public class autobest extends LinearOpMode {
  }
 
  public class PIDCONTOLLERBR{
-    public double kpBR;
-    public double kiBR; 
-    public double kdBR;
+    public double kpBR;//find value
+    public double kiBR; //find value
+    public double kdBR; //find value
     double previousErrorBR=0;
     double maxOutputBR=0; //assign a value in the future to maxoutput
     double intergralBR=0; //assign a value in the future to intergral
@@ -198,9 +203,9 @@ public class autobest extends LinearOpMode {
     
 
 
-    public double kpBL; 
-    public double kiBL; 
-    public double kdBL;
+    public double kpBL; //find value
+    public double kiBL; //find value
+    public double kdBL;//find value
     double previousErrorBL=0;
     double intergralBL=0; //assign a value in the future to intergral
     double minOutputBL=0; //assign a value in the future to minoutput
@@ -227,29 +232,11 @@ public class autobest extends LinearOpMode {
        double intergralBL=0;
     }
   }
-  /**
-   * This OpMode illustrates the basics of AprilTag based localization.
-   *
-   * For an introduction to AprilTags, see the FTC-DOCS link below:
-   * https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/apriltag_intro/apriltag-intro.html
-   *
-   * In this sample, any visible tag ID will be detected and displayed, but only
-   * tags that are included in the default "TagLibrary" will be used to compute the
-   * robot's location and orientation. This default TagLibrary contains the current
-   * Season's AprilTags and a small set of "test Tags" in the high number range.
-   *
-   * When an AprilTag in the TagLibrary is detected, the SDK provides
-   * location and orientation of the robot, relative to the field origin. This
-   * information is provided in the "robotPose" member of the returned "detection".
-   *
-   * To learn about the Field Coordinate System that is defined for
-   * FTC (and used by this OpMode), see the FTC-DOCS link below:
-   * https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html
-   */
+
    public class FeedforwardB{
-      public double kSB;
-      public double kAB;
-      public double kVB;
+      public double kSB;//find value
+      public double kAB;//find value
+      public double kVB;//find value
       double DesiredVB=1305;
       double DesiredAB=0;//find this value
       public class FeedforwardB{
@@ -262,9 +249,9 @@ public class autobest extends LinearOpMode {
           }
       }
   public class PIDCONTOLLERshooterB{
-      public double kpshooterB; 
-      public double kishooterB; 
-      public double kdshooterB;
+      public double kpshooterB; //find value
+      public double kishooterB; //find value
+      public double kdshooterB;//find value
       double previousErrorshooterB=0;
       double intergralshooterB=0; //assign a value in the future to intergral
       double minOutputshooterB=0; //assign a value in the future to minoutput
@@ -302,9 +289,9 @@ public class autobest extends LinearOpMode {
 
     }
    public class FeedforwardA{
-      public double kSA;
-      public double kAA;
-      public double kVA;
+      public double kSA;//find value
+      public double kAA;//find value
+      public double kVA;//find value
       double DesiredVA=1305; //change if needed
       double DesiredAA=0;//find this value
       public class FeedforwardA{
@@ -319,9 +306,9 @@ public class autobest extends LinearOpMode {
     public class PIDCONTOLLERshooterA{
       
 
-      public double kpshooterA; 
-      public double kishooterA; 
-      public double kdshooterA;
+      public double kpshooterA; //find value
+      public double kishooterA; //find value
+      public double kdshooterA; //find value
       
       double previousErrorshooterA=0;
       double intergralshooterA=0; //assign a value in the future to intergral
@@ -401,10 +388,56 @@ public class autobest extends LinearOpMode {
          return 0;
        }
     }
+    public double servoA(double stateA){
+       if(stateA==1){
+         return 0.5; 
+       }
+       else{
+         return 0;
+       }  
+    }
+    public double servoB(double stateB){
+       if(stateB==1){
+         return 0.5; 
+       }
+       else{
+         return 0;
+       }  
+    }    
+    public double servoC(double stateC){
+       if(stateC==1){
+         return 1; 
+       }
+       if(stateC==-1){
+         return -1;
+       }
+       if(stateC==0){
+         return 0;
+       }  
+    }
+    public double servoD(double stateD){
+       if(stateD==1){
+         return 0.5; 
+       }
+       else{
+         return 0;
+       }  
+    } 
+    public double servoE(double stateE){
+       if(stateE==1){
+         return 0.5; 
+       }
+       else{
+         return 0;
+       }  
+    } 
   @Override
   public void runOpMode() {
     private ElapsedTime runtime = new ElapsedTime();
+    pivotintake = hardwareMap.get(Servo.class, "pivot intake");
+    pivotintakeA = hardwareMap.get(Servo.class, "pivot intakeA");
     shooterholder= hardwareMap.get(Servo.class, "shooterholder");
+    belt = hardwareMap.get(CRServo.class, "belt");
     artifactholder= hardwareMap.get(Servo.class, "artifactholder");
     shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
     shooterwheelB = hardwareMap.get(DcMotor.class, "shooterwheelB");
@@ -512,15 +545,30 @@ public class autobest extends LinearOpMode {
       double KSshooterA=0;
       double KVshooterA=0;
       double KAshooterA=0;
-      powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), 100, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+      double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), 100, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
       double VelocityB=0;
       double AccelerationB=0;
       double KSshooterB=0;
       double KVshooterB=0;
       double KAshooterB=0;
-      powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), 100, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+      double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), 100, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
       shooterwheelA.setPower(powerA);
       shooterwheelB.setPower(powerB);
+      servostatusA=0;
+      double pivotdegA=servoA(servostatusA);
+      artifactholder.setPosition(pivotdegA);
+      servostatusB=0;
+      double pivotdegB=servoB(servostatusB);
+      shooterholder.setPosition(pivotdegB);
+      servostatusC=0;
+      double pivotdegC=servoC(servostatusC);
+      belt.setPower(pivotdegC);
+      servostatusD=0;
+      double pivotdegD=servoD(servostatusD);
+      pivotintake.setPosition(pivotdegD);
+      servostatusE=0;
+      double pivotdegE=servoD(servostatusE);
+      pivotintakeA.setPosition(pivotdegE);
       List<AprilTagDetection> myAprilTagDetections;
       AprilTagDetection myAprilTagDetection;
     
