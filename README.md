@@ -19,7 +19,7 @@
 # april tag print outs A4
 # https://ftc-resources.firstinspires.org/ftc/archive/2026/field/apriltag-a4
 # lots of documentation here https://ftclib.org/
-
+# imu resources ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html
 # parts
 # four motor drive 
 # 312 rpm 
