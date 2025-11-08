@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import java.util.concurrent.TimeUnit;
 import static com.qualcomm.hardware.rev.RevHubOrientationOnRobot.xyzOrientation;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;\
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
