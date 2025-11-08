@@ -878,12 +878,14 @@ public class W_nonorthoA extends LinearOpMode {
       double KSshooterA=0;//tune this
       double KVshooterA=0;//tune this
       double KAshooterA=0;//tune this
+      double desiredvelocityA=0;//tune this
       double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
       double VelocityB=0;//tune this
       double AccelerationB=0;//tune this
       double KSshooterB=0;//tune this
       double KVshooterB=0;//tune this
       double KAshooterB=0;//tune this
+      double desiredvelocityB=0;//tune this
       double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
       shooterwheelA.setPower(powerA);
       shooterwheelB.setPower(powerB);
@@ -913,8 +915,8 @@ public class W_nonorthoA extends LinearOpMode {
       //}
 
       
-      telemetry.addData("Exposure", myExposure + "  (" + minExposure + " - " + maxExposure + ")");
-      telemetry.addData("Gain", myGain + "  (" + minGain + " - " + maxGain + ")");
+     // telemetry.addData("Exposure", myExposure + "  (" + minExposure + " - " + maxExposure + ")");
+      //telemetry.addData("Gain", myGain + "  (" + minGain + " - " + maxGain + ")");
       telemetry.update();
       //if (gamepad1.dpad_down) {
         // Temporarily stop the streaming session. This can save CPU
@@ -925,7 +927,7 @@ public class W_nonorthoA extends LinearOpMode {
         //myVisionPortal.resumeStreaming();
       //}
       // Share the CPU.
-      sleep(20);
+      //sleep(20);
     }
   }
   
