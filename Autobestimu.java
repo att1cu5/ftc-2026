@@ -44,6 +44,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class W_nonortho extends LinearOpMode {
   double objectA=0;
   IMU imu;
+  public double anglestartA=35.88648577;//degrees change angle if neccesary
+  public double anglestartB=34.21570213;//degrees change angle if neccesary
   public double Circumference=76.8*Math.PI; //in mm
   double objectB=0;
   double objectC=0;
