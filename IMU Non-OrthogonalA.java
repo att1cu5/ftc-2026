@@ -873,39 +873,154 @@ public class W_nonorthoA extends LinearOpMode {
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
       backright.setPower(powerBR);
-      double VelocityA=0;//tune this
-      double AccelerationA=0;//tune this
-      double KSshooterA=0;//tune this
-      double KVshooterA=0;//tune this
-      double KAshooterA=0;//tune this
-      double desiredvelocityA=0;//tune this
-      double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
-      double VelocityB=0;//tune this
-      double AccelerationB=0;//tune this
-      double KSshooterB=0;//tune this
-      double KVshooterB=0;//tune this
-      double KAshooterB=0;//tune this
-      double desiredvelocityB=0;//tune this
-      double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
-      shooterwheelA.setPower(powerA);
-      shooterwheelB.setPower(powerB);
-      servostatusA=0;
-      double pivotdegA=servoA(servostatusA);
-      artifactholder.setPosition(pivotdegA);
-      servostatusB=0;
-      double pivotdegB=servoB(servostatusB);
-      shooterholder.setPosition(pivotdegB);
-      servostatusC=0;
-      double pivotdegC=servoC(servostatusC);
-      belt.setPower(pivotdegC);
-      servostatusD=0;
-      double pivotdegD=servoD(servostatusD);
-      pivotintake.setPosition(pivotdegD);
-      servostatusE=0;
-      double pivotdegE=servoD(servostatusE);
-      pivotintakeA.setPosition(pivotdegE);
 
-    
+        
+
+      //servostatusA=0;
+      //double pivotdegA=servoA(servostatusA);
+      //artifactholder.setPosition(pivotdegA);
+      //servostatusB=0;
+      //double pivotdegB=servoB(servostatusB);
+      //shooterholder.setPosition(pivotdegB);
+      //servostatusC=0;
+      //double pivotdegC=servoC(servostatusC);
+      //belt.setPower(pivotdegC);
+
+      //servostatusE=0;
+      //double pivotdegE=servoD(servostatusE);
+      //pivotintakeA.setPosition(pivotdegE);
+      List<AprilTagDetection> myAprilTagDetections;
+      AprilTagDetection myAprilTagDetection;
+      myAprilTagDetections = myAprilTagProcessor.getDetections();
+      telemetry.addData("# AprilTags Detected", JavaUtil.listLength(myAprilTagDetections));
+    // Iterate through list and call a function to display info for each recognized AprilTag.
+      for (AprilTagDetection myAprilTagDetection_item : myAprilTagDetections) {
+        myAprilTagDetection = myAprilTagDetection_item;
+      // Display info about the detection.
+        telemetry.addLine("");
+        if (myAprilTagDetection.metadata != null) {
+          telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") " + myAprilTagDetection.metadata.name);
+         // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
+          test=myAprilTagDetection.id;
+          motifs=test;
+          
+          if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
+            Y=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
+            X=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
+            Z=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
+            Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
+            Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
+            Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
+ 
+            //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
+            telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
+            telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
+            
+          }
+        } else {
+           telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
+           telemetry.addLine("Center " + JavaUtil.formatNumber(myAprilTagDetection.center.x, 6, 0) + "" + JavaUtil.formatNumber(myAprilTagDetection.center.y, 6, 0) + " (pixels)");
+          }
+
+      }
+      telemetry.addLine("");
+      telemetry.addLine("key:");
+      telemetry.addLine("XYZ = X (Right), Y (Forward), Z (Up) dist.");
+      telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+      
+      }
+      if(correctmotif[0]!=motif[0] && correctmotif[1]==motif[1]){
+          servostatusC=-1;
+          pivotdegC=servoC(servostatusC);
+          belt.setPower(pivotdegC);
+          servostatusE=1;
+          // might need a delay
+          pivotdegE=servoE(servostatusE);
+          pivotintakeA.setPosition(pivotdegE);
+          servostatusB=1;
+          // might need a delay
+          pivotdegB=servoB(servostatusB);
+          shooterholder.setPosition(pivotdegB);
+          double VelocityB=0;//tune this
+          double AccelerationB=0;//tune this
+          double KSshooterB=0;//tune this
+          double KVshooterB=0;//tune this
+          double KAshooterB=0;//tune this
+          double desiredvelocityB=0;//tune this
+          double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+          shooterwheelB.setPower(powerB);
+          //might need a delay
+          shooterwheelB.setPower(0);
+      }
+      if(correctmotif[1]==motif[1] && correctmotif[0]==motif[0]{
+          servostatusD=1;
+          // might need a delay
+          double pivotdegD=servoD(servostatusD);
+          pivotintake.setPosition(pivotdegD);
+          servostatusC=1;
+          double pivotdegC=servoC(servostatusC);
+          
+          belt.setPower(pivotdegC);
+          servostatusD=0;
+          pivotdegD=servoD(servostatusD);
+          // might need a delay
+          pivotintake.setPosition(pivotdegD);
+          double VelocityA=0;//tune this
+          double AccelerationA=0;//tune this
+          double KSshooterA=0;//tune this
+          double KVshooterA=0;//tune this
+          double KAshooterA=0;//tune this
+          double desiredvelocityA=0;//tune this
+          double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+          shooterwheelA.setPower(powerA);
+          // might need a delay
+          shooterwheelA.setPower(0);
+      }
+      if(correctmotif[1]!=motif[1]){
+          servostatusD=1;
+          // might need a delay
+          double pivotdegD=servoD(servostatusD);
+          pivotintake.setPosition(pivotdegD);
+          servostatusC=1;
+          double pivotdegC=servoC(servostatusC);
+          
+          belt.setPower(pivotdegC);
+          servostatusD=0;
+          pivotdegD=servoD(servostatusD);
+          // might need a delay
+          pivotintake.setPosition(pivotdegD);
+          double VelocityA=0;//tune this
+          double AccelerationA=0;//tune this
+          double KSshooterA=0;//tune this
+          double KVshooterA=0;//tune this
+          double KAshooterA=0;//tune this
+          double desiredvelocityA=0;//tune this
+          double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+          shooterwheelA.setPower(powerA);
+          // might need a delay
+          shooterwheelA.setPower(0);
+          servostatusC=-1;
+          pivotdegC=servoC(servostatusC);
+          belt.setPower(pivotdegC);
+          servostatusE=1;
+          // might need a delay
+          pivotdegE=servoE(servostatusE);
+          pivotintakeA.setPosition(pivotdegE);
+          servostatusB=1;
+          // might need a delay
+          pivotdegB=servoB(servostatusB);
+          shooterholder.setPosition(pivotdegB);
+          double VelocityB=0;//tune this
+          double AccelerationB=0;//tune this
+          double KSshooterB=0;//tune this
+          double KVshooterB=0;//tune this
+          double KAshooterB=0;//tune this
+          double desiredvelocityB=0;//tune this
+          double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+          shooterwheelB.setPower(powerB);
+          //might need a delay
+          shooterwheelB.setPower(0);
+      }  
       // Get a list of AprilTag detections.
     
       //if(correctmotif[2]!=motif[2] && motifs!=0 && correctmotif[1]!=motif[1] && correctmotif[0]!=motif[0]){
