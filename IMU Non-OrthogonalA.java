@@ -56,6 +56,7 @@ public class W_nonorthoA extends LinearOpMode {
   YawPitchRollAngles cameraOrientation;
   VisionPortal myVisionPortal;
   private NormalizedColorSensor test_color;
+  private NormalizedColorSensor test_colorA;
   double motifs=0;
   double targets=0;
   ExposureControl myExposureControl;
@@ -68,6 +69,8 @@ public class W_nonorthoA extends LinearOpMode {
   double myGain;  
   double onerev=384;
   public double rps=435/60;
+  double rangeA=0;
+  double bearingA=0;
   double servostatusA=0;
   double servostatusB=0;
   double servoestatusC=0;
@@ -145,6 +148,111 @@ public class W_nonorthoA extends LinearOpMode {
     public void resetFL(){
        double previousErrorFL=0;
        double intergralFL=0;
+    }
+ }
+public class PIDCONTOLLERbearing{
+    
+
+
+    public double kpbearing; //find value
+    public double kibearing; //find value
+    public double kdbearing;//find value
+    
+    double previousErrorbearing=0;
+    double intergralbearing=0; //assign a value in the future to intergral
+    double minOutputbearing=0; //assign a value in the future to minoutput
+    double maxOutputbearing=0; //assign a value in the future to maxoutput
+    public double PIDbearing(double kpbearing, double kibearing, double kdbearing, double bearing1, double bearing2, double bearing3){
+       
+       this.kpbeaing=kpbearing;
+       this.kibearing=kibearing;
+       this.kdbearing=kdbearing;
+       double outputbearinga = kpbearing * bearing1 + kibearing * bearing3 + kdbearing * bearing2;
+       return outputbearinga;
+    }
+    public double calcbearing(double targetbearing,double currentbearing){
+        double errorbearing = targetbearing - currentbearing;
+        double integralbearing  =+ errorbearing;
+        double derivativebearing  = errorbearing - previousErrorbearing;
+        double outputbearinga = PIDbearing(kpbearing, kibearing, kdbearing, errorbearing, derivativebearing, integralbearing);
+        double outputbearing  = Math.max(minOutputbearing, Math.min(maxOutputbearing , outputbearinga));
+
+        double previousErrorbearing = errorbearing;
+        return outputbearing;
+    }
+    public void resetbearing(){
+       double previousErrorbearing=0;
+       double intergralbearing=0;
+    }
+ }
+ public class PIDCONTOLLERrange{
+    
+
+
+    public double kprange; //find value
+    public double kirange; //find value
+    public double kdrange;//find value
+    
+    double previousErrorrange=0;
+    double intergralrange=0; //assign a value in the future to intergral
+    double minOutputrange=0; //assign a value in the future to minoutput
+    double maxOutputrange=0; //assign a value in the future to maxoutput
+    public double PIDrange(double kprange, double kirange, double kdrange, double range1, double range2, double range3){
+       
+       this.kprange=kprange;
+       this.kirange=kirange;
+       this.kdrange=kdrange;
+       double outputrangea = kprange * range1 + kirange * range3 + kdrange * range2;
+       return outputbearinga;
+    }
+    public double calcrange(double targetrange,double currentrange){
+        double errorrange = targetrange - currentrange;
+        double integralrange  =+ errorrange;
+        double derivativerange  = errorrange - previousErrorrange;
+        double outputrangea = PIDrange(kprange, kirange, kdrange, errorrange, derivativerange, integralrange);
+        double outputrange  = Math.max(minOutputrange, Math.min(maxOutputrange , outputrangea));
+
+        double previousErrorrange = errorrange;
+        return outputrange;
+    }
+    public void resetrange(){
+       double previousErrorrange=0;
+       double intergralrange=0;
+    }
+ }
+ public class PIDCONTOLLERyaw{
+    
+
+
+    public double kpyaw; //find value
+    public double kiyaw; //find value
+    public double kdyaw;//find value
+    
+    double previousErroryaw=0;
+    double intergralyaw=0; //assign a value in the future to intergral
+    double minOutputyaw=0; //assign a value in the future to minoutput
+    double maxOutputyaw=0; //assign a value in the future to maxoutput
+    public double PIDyaw(double kpyaw, double kiyaw, double kdyaw, double yaw1, double yaw2, double yaw3){
+       
+       this.kpyaw=kpyaw;
+       this.kiyaw=kiyaw;
+       this.kdyaw=kdyaw;
+       double outputyawa = kpyaw * yaw1 + kiyaw * yaw3 + kdyaw * yaw2;
+       return outputyawa;
+    }
+    public double calcyaw(double targetyaw,double currentyaw){
+        double erroryaw = targetyaw - currentyaw;
+        double integralyaw  =+ erroryaw;
+        double derivativeyaw  = erroryaw - previousErroryaw;
+        double outputyawa = PIDyaw(kpyaw, kiyaw, kdyaw, erroryaw, derivativeyaw, integralyaw);
+        double outputyaw  = Math.max(minOutputyaw, Math.min(maxOutputyaw , outputyawa));
+
+        double previousErroryaw = erroryaw;
+        return outputyaw;
+    }
+    public void resetyaw(){
+       double previousErroryaw=0;
+       double intergralyaw=0;
     }
  }
  public class PIDCONTOLLERFR{
@@ -354,6 +462,21 @@ public class W_nonorthoA extends LinearOpMode {
          double previousErrorshooterA=0;
          double intergralshooterA=0;
       }
+    }
+    public double rangeAcontrol(double rangeCcontrol, double rangeDcontrol){
+      PIDCONTOLLERrange rangeA=new PIDCONTOLLERrange();
+      double powerRange=rangeA.calcrange(rangeDcontrol,rangeCcontrol);
+      return powerRange;
+    }
+    public double YawAcontrol(double YawCcontrol, double YawDcontrol){
+      PIDCONTOLLERyaw yawA=new PIDCONTOLLERyaw();
+      double powerYaw=yawA.calcyaw(YawDcontrol,YawCcontrol);
+      return powerYaw;
+    }
+    public double BearingAcontrol(double BearingCcontrol, double BearingDcontrol){
+      PIDCONTOLLERbearing bearingA=new PIDCONTOLLERbearing();
+      double powerBearing=bearingA.calcbearing(BearingDcontrol,BearingCcontrol);
+      return powerBearing;
     }
     public double BLA(double BLC,double BLD){
       PIDCONTOLLERBL BL=new PIDCONTOLLERBL();
@@ -732,7 +855,7 @@ public class W_nonorthoA extends LinearOpMode {
             Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
             Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
             Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
- 
+            
             //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
             telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
             telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
@@ -841,22 +964,7 @@ public class W_nonorthoA extends LinearOpMode {
           //go to next april tag and shot
         }
       }
-      backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      currentpositionBL=backleft.getCurrentPosition();
-      currentpositionBR=backright.getCurrentPosition();
-      currentpositionFR=frontright.getCurrentPosition();
-      currentpositionFL=frontleft.getCurrentPosition();
-      powerBL=BLA(currentpositionBL,1504);//change sign if needed
-      powerFL=FLA(currentpositionFL,-1504);//change sign if needed
-      powerFR=FRA(currentpositionFR,1504);//change sign if needed
-      powerBR=BRA(currentpositionBR,-1504);//change sign if needed
-      frontright.setPower(powerFR);       
-      frontleft.setPower(powerFL);         
-      backleft.setPower(powerBL);            
-      backright.setPower(powerBR);
+
       backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -889,46 +997,66 @@ public class W_nonorthoA extends LinearOpMode {
       //servostatusE=0;
       //double pivotdegE=servoD(servostatusE);
       //pivotintakeA.setPosition(pivotdegE);
+      
       List<AprilTagDetection> myAprilTagDetections;
       AprilTagDetection myAprilTagDetection;
       myAprilTagDetections = myAprilTagProcessor.getDetections();
       telemetry.addData("# AprilTags Detected", JavaUtil.listLength(myAprilTagDetections));
-    // Iterate through list and call a function to display info for each recognized AprilTag.
+      // Iterate through list and call a function to display info for each recognized AprilTag.
       for (AprilTagDetection myAprilTagDetection_item : myAprilTagDetections) {
-        myAprilTagDetection = myAprilTagDetection_item;
-      // Display info about the detection.
-        telemetry.addLine("");
-        if (myAprilTagDetection.metadata != null) {
-          telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") " + myAprilTagDetection.metadata.name);
-         // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
-          test=myAprilTagDetection.id;
-          motifs=test;
-          
-          if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
-            Y=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
-            X=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
-            Z=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
-            Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
-            Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
-            Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
- 
-            //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
-            telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
-            telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
+          myAprilTagDetection = myAprilTagDetection_item;
+        // Display info about the detection.
+          telemetry.addLine("");
+          if (myAprilTagDetection.metadata != null) {
+            telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") " + myAprilTagDetection.metadata.name);
+           // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
+            test=myAprilTagDetection.id;
+            motifs=test;
             
-          }
-        } else {
-           telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
-           telemetry.addLine("Center " + JavaUtil.formatNumber(myAprilTagDetection.center.x, 6, 0) + "" + JavaUtil.formatNumber(myAprilTagDetection.center.y, 6, 0) + " (pixels)");
-          }
+            if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
+              Y=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
+              X=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
+              Z=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
+              Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
+              Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
+              Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
+              rangeA = Math.sqrt(Math.pow(X/10, 2) + Math.pow(Y/10, 2) + Math.pow(Z/10, 2));
+              bearingA=Math.toDegrees(Math.atan2(X/10, Y/10));
+              //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
+              telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
+              telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
+              backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              currentpositionBL=orientation.getYaw(AngleUnit.DEGREES);
+              currentpositionBR=orientation.getYaw(AngleUnit.DEGREES);
+              currentpositionFR=orientation.getYaw(AngleUnit.DEGREES);
+              currentpositionFL=orientation.getYaw(AngleUnit.DEGREES);
+              powerBL=YawAcontrol(currentpositionBL,(Yaw/-10));//change sign if needed
+              powerFL=YawAcontrol(currentpositionFL,(Yaw/10));//change sign if needed
+              powerFR=YawAcontrol(currentpositionFR,(Yaw/-10));//change sign if needed
+              powerBR=YawAcontrol(currentpositionBR,(Yaw/10));//change sign if needed
+              frontright.setPower(powerFR);       
+              frontleft.setPower(powerFL);         
+              backleft.setPower(powerBL);            
+              backright.setPower(powerBR);
 
+            }
+        } else {
+             telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
+             telemetry.addLine("Center " + JavaUtil.formatNumber(myAprilTagDetection.center.x, 6, 0) + "" + JavaUtil.formatNumber(myAprilTagDetection.center.y, 6, 0) + " (pixels)");
+            }
+  
+        }
+        telemetry.addLine("");
+        telemetry.addLine("key:");
+        telemetry.addLine("XYZ = X (Right), Y (Forward), Z (Up) dist.");
+        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+        
+        }
       }
-      telemetry.addLine("");
-      telemetry.addLine("key:");
-      telemetry.addLine("XYZ = X (Right), Y (Forward), Z (Up) dist.");
-      telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
       
-      }
       if(correctmotif[0]!=motif[0] && correctmotif[1]==motif[1]){
           servostatusC=-1;
           pivotdegC=servoC(servostatusC);
