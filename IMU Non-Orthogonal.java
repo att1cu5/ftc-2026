@@ -733,6 +733,98 @@ public class W_nonortho extends LinearOpMode {
           //sleep(50000);
           //go to next april tag and shot
         }
+        if(correctmotif[0]!=motif[0] && correctmotif[1]==motif[1]){
+          servostatusC=-1;
+          pivotdegC=servoC(servostatusC);
+          belt.setPower(pivotdegC);
+          servostatusE=1;
+          // might need a delay
+          pivotdegE=servoE(servostatusE);
+          pivotintakeA.setPosition(pivotdegE);
+          servostatusB=1;
+          // might need a delay
+          pivotdegB=servoB(servostatusB);
+          shooterholder.setPosition(pivotdegB);
+          double VelocityB=0;//tune this
+          double AccelerationB=0;//tune this
+          double KSshooterB=0;//tune this
+          double KVshooterB=0;//tune this
+          double KAshooterB=0;//tune this
+          double desiredvelocityB=0;//tune this
+          double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+          shooterwheelB.setPower(powerB);
+          //might need a delay
+          shooterwheelB.setPower(0);
+      }
+      if(correctmotif[1]==motif[1] && correctmotif[0]==motif[0]{
+          servostatusD=1;
+          // might need a delay
+          double pivotdegD=servoD(servostatusD);
+          pivotintake.setPosition(pivotdegD);
+          servostatusC=1;
+          double pivotdegC=servoC(servostatusC);
+          
+          belt.setPower(pivotdegC);
+          servostatusD=0;
+          pivotdegD=servoD(servostatusD);
+          // might need a delay
+          pivotintake.setPosition(pivotdegD);
+          double VelocityA=0;//tune this
+          double AccelerationA=0;//tune this
+          double KSshooterA=0;//tune this
+          double KVshooterA=0;//tune this
+          double KAshooterA=0;//tune this
+          double desiredvelocityA=0;//tune this
+          double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+          shooterwheelA.setPower(powerA);
+          // might need a delay
+          shooterwheelA.setPower(0);
+      }
+      if(correctmotif[1]!=motif[1]){
+          servostatusD=1;
+          // might need a delay
+          double pivotdegD=servoD(servostatusD);
+          pivotintake.setPosition(pivotdegD);
+          servostatusC=1;
+          double pivotdegC=servoC(servostatusC);
+          
+          belt.setPower(pivotdegC);
+          servostatusD=0;
+          pivotdegD=servoD(servostatusD);
+          // might need a delay
+          pivotintake.setPosition(pivotdegD);
+          double VelocityA=0;//tune this
+          double AccelerationA=0;//tune this
+          double KSshooterA=0;//tune this
+          double KVshooterA=0;//tune this
+          double KAshooterA=0;//tune this
+          double desiredvelocityA=0;//tune this
+          double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+          shooterwheelA.setPower(powerA);
+          // might need a delay
+          shooterwheelA.setPower(0);
+          servostatusC=-1;
+          pivotdegC=servoC(servostatusC);
+          belt.setPower(pivotdegC);
+          servostatusE=1;
+          // might need a delay
+          pivotdegE=servoE(servostatusE);
+          pivotintakeA.setPosition(pivotdegE);
+          servostatusB=1;
+          // might need a delay
+          pivotdegB=servoB(servostatusB);
+          shooterholder.setPosition(pivotdegB);
+          double VelocityB=0;//tune this
+          double AccelerationB=0;//tune this
+          double KSshooterB=0;//tune this
+          double KVshooterB=0;//tune this
+          double KAshooterB=0;//tune this
+          double desiredvelocityB=0;//tune this
+          double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+          shooterwheelB.setPower(powerB);
+          //might need a delay
+          shooterwheelB.setPower(0);
+      }  
       //if(correctmotif[2]!=motif[2] && motifs!=0 && correctmotif[1]!=motif[1] && correctmotif[0]!=motif[0]){
       //  telemetry.addLine("all balls are in incorrect placement");
         //sleep(50000);
