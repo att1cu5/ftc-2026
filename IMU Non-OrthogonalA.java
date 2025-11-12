@@ -43,7 +43,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous((name = "Sensor: IMU Non-OrthogonalA", group = "Sensor")
 public class W_nonorthoA extends LinearOpMode {
   double objectA=0;
+  double bearingangle=0;
+  double currentheading=0;
   IMU imu;
+  double bearingofbot=0;
+  dopuble bearingoftag=0;
+  double deltaX=0;
+  double deltaY=0;
+  double bearingB=0;
+  double ZA=0;
+  double XA=0;
+  double YA=0;
+  double cicumferenceofwheel=104*Math.PI;
   public double anglestartA=35.89;//degrees change angle if neccesary //red basket
   public double anglestartB=;//degrees change angle if neccesary //robot start on around white line of start
   public double Circumference=76.8*Math.PI; //in mm
@@ -62,11 +73,13 @@ public class W_nonorthoA extends LinearOpMode {
   ExposureControl myExposureControl;
   long minExposure;
   long maxExposure;
+  double angletarget=0;
   GainControl myGainControl;
   double myExposure;
   int minGain;
   int maxGain;
-  double myGain;  
+  double myGain;
+  double onerevA=537.7;
   double onerev=384;
   public double rps=435/60;
   double rangeA=0;
@@ -150,6 +163,28 @@ public class W_nonorthoA extends LinearOpMode {
        double intergralFL=0;
     }
  }
+public double normalizecurrentangle(double angle){
+    double turingangle=angle % 360; //try this if not working
+  if(turningangleA>=180){
+     turningangleA-=360;
+     return turningangleA;
+     
+  } else if(turningangleA<-180){
+     turningangleA+=360;
+     return turningangleA;
+  }
+}
+public double bearingAngleFound(double cheading,double bangle){
+  double turingangle=(bangle-cheading) % 360; //try this if not working
+  if(turningangle>=180){
+     turningangle-=360;
+     return turningangle;
+     
+  } else if(turningangle<-180){
+     turningangle+=360;
+     return turningangle;
+  }
+}
 public class PIDCONTOLLERbearing{
     
 
@@ -171,7 +206,13 @@ public class PIDCONTOLLERbearing{
        return outputbearinga;
     }
     public double calcbearing(double targetbearing,double currentbearing){
-        double errorbearing = targetbearing - currentbearing;
+        double errorbearing=(targetbearing-currentbearing)%360;
+        if(errorbearing>=180){
+            erorrbearing-=360;
+          }  
+        } else if(errorbearing<-180){
+             errorbearing+=360;
+        }
         double integralbearing  =+ errorbearing;
         double derivativebearing  = errorbearing - previousErrorbearing;
         double outputbearinga = PIDbearing(kpbearing, kibearing, kdbearing, errorbearing, derivativebearing, integralbearing);
@@ -241,7 +282,13 @@ public class PIDCONTOLLERbearing{
        return outputyawa;
     }
     public double calcyaw(double targetyaw,double currentyaw){
-        double erroryaw = targetyaw - currentyaw;
+        double erroryaw = (targetyaw - currentyaw)%360;
+        if(erroryaw>=180){
+            erorryaw-=360;
+          }  
+        } else if(erroryaw<-180){
+             erroryaw+=360;
+        }
         double integralyaw  =+ erroryaw;
         double derivativeyaw  = erroryaw - previousErroryaw;
         double outputyawa = PIDyaw(kpyaw, kiyaw, kdyaw, erroryaw, derivativeyaw, integralyaw);
@@ -475,6 +522,7 @@ public class PIDCONTOLLERbearing{
     }
     public double BearingAcontrol(double BearingCcontrol, double BearingDcontrol){
       PIDCONTOLLERbearing bearingA=new PIDCONTOLLERbearing();
+      
       double powerBearing=bearingA.calcbearing(BearingDcontrol,BearingCcontrol);
       return powerBearing;
     }
@@ -600,8 +648,7 @@ public class PIDCONTOLLERbearing{
     frontleft.setDirection(DcMotor.Direction.REVERSE);
     backright.setDirection(DcMotor.Direction.REVERSE);
 
-    
-  
+
     USE_WEBCAM = true;
     test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
     test_colorA=hardwareMap.get(NormalizedColorSensor.class, "test_colorA");
@@ -973,10 +1020,10 @@ public class PIDCONTOLLERbearing{
       currentpositionBR=backright.getCurrentPosition();
       currentpositionFR=frontright.getCurrentPosition();
       currentpositionFL=frontleft.getCurrentPosition();
-      powerBL=BLA(currentpositionBL,788);//change sign if needed
-      powerFL=FLA(currentpositionFL,788);//change sign if needed
-      powerFR=FRA(currentpositionFR,788);//change sign if needed
-      powerBR=BRA(currentpositionBR,788);//change sign if needed
+      powerBL=BLA(currentpositionBL,788);//change sign if needed //change value if needed
+      powerFL=FLA(currentpositionFL,788);//change sign if needed //change value if needed
+      powerFR=FRA(currentpositionFR,788);//change sign if needed //change value if needed
+      powerBR=BRA(currentpositionBR,788);//change sign if needed //change value if needed
       frontright.setPower(powerFR);       
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
@@ -1014,13 +1061,17 @@ public class PIDCONTOLLERbearing{
             motifs=test;
             
             if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
+              
               Y=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
               X=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
               Z=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
               Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
               Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
-              Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
-              rangeA = Math.sqrt(Math.pow(X/10, 2) + Math.pow(Y/10, 2) + Math.pow(Z/10, 2));
+              Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);              
+              YA=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
+              XA=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
+              ZA=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
+              rangeA = Math.sqrt(Math.pow(((XA-X)/10), 2) + Math.pow(((YA-Y)/10), 2) + Math.pow(((ZA-Z)/10), 2)); //only when a 90 degree angle is present
               bearingA=Math.toDegrees(Math.atan2(X/10, Y/10));
               //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
               telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
@@ -1029,19 +1080,39 @@ public class PIDCONTOLLERbearing{
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-              currentpositionBL=orientation.getYaw(AngleUnit.DEGREES);
-              currentpositionBR=orientation.getYaw(AngleUnit.DEGREES);
-              currentpositionFR=orientation.getYaw(AngleUnit.DEGREES);
-              currentpositionFL=orientation.getYaw(AngleUnit.DEGREES);
-              powerBL=YawAcontrol(currentpositionBL,(Yaw/-10));//change sign if needed
-              powerFL=YawAcontrol(currentpositionFL,(Yaw/10));//change sign if needed
-              powerFR=YawAcontrol(currentpositionFR,(Yaw/-10));//change sign if needed
-              powerBR=YawAcontrol(currentpositionBR,(Yaw/10));//change sign if needed
+              currentpositionBL=normalizecurrentangle(orientation.getYaw(AngleUnit.DEGREES));
+              currentpositionBR=normalizecurrentangle(orientation.getYaw(AngleUnit.DEGREES));
+              currentpositionFR=normalizecurrentangle(orientation.getYaw(AngleUnit.DEGREES));
+              currentpositionFL=normalizecurrentangle(orientation.getYaw(AngleUnit.DEGREES));
+              powerBL=YawAcontrol(currentpositionBL,normalizecurrentangle((Yaw/-10)));//change sign if needed
+              powerFL=YawAcontrol(currentpositionFL,normalizecurrentangle((Yaw/-10)));//change sign if needed
+              powerFR=YawAcontrol(currentpositionFR,normalizecurrentangle((Yaw/10)));//change sign if needed
+              powerBR=YawAcontrol(currentpositionBR,normalizecurrentangle((Yaw/10)));//change sign if needed
               frontright.setPower(powerFR);       
               frontleft.setPower(powerFL);         
               backleft.setPower(powerBL);            
               backright.setPower(powerBR);
-
+              currentpositionY=intake.getCurrentPosition();
+              currentpositionX=X.getCurrentPosition(); 
+              deltaX=(X/10)-currentpositionX;
+              deltaY=(Y/10)-currentpositionY;
+              angletarget=Math.toDegrees(Math.atan2(deltaY,deltaX));
+              currentheading=orientation.getYaw(AngleUnit.DEGREES);
+              bearingoftag=normalizecurrentangle(bearingA);
+              bearingofbot=bearingAngleFound(currentheading,angletarget);
+              backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              powerBL=bearingAcontrol(bearingoftag,bearingofbot);//change sign if needed
+              powerFL=bearingAcontrol(bearingoftag,bearingofbot);//change sign if needed
+              powerFR=bearingAcontrol(bearingoftag,bearingofbot);//change sign if needed
+              powerBR=bearingAcontrol(bearingoftag,bearingofbot);//change sign if needed
+              frontright.setPower(powerFR);       
+              frontleft.setPower(powerFL);         
+              backleft.setPower(powerBL);            
+              backright.setPower(powerBR);
+              
             }
         } else {
              telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
