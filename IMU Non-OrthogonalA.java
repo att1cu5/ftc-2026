@@ -47,7 +47,8 @@ public class W_nonorthoA extends LinearOpMode {
   double currentheading=0;
   IMU imu;
   double bearingofbot=0;
-  dopuble bearingoftag=0;
+  double currentrangeofbot=0;
+  double bearingoftag=0;
   double deltaX=0;
   double deltaY=0;
   double bearingB=0;
@@ -56,7 +57,7 @@ public class W_nonorthoA extends LinearOpMode {
   double YA=0;
   double cicumferenceofwheel=104*Math.PI;
   public double anglestartA=35.89;//degrees change angle if neccesary //red basket
-  public double anglestartB=;//degrees change angle if neccesary //robot start on around white line of start
+  //public double anglestartB=;//degrees change angle if neccesary //robot start on around white line of start
   public double Circumference=76.8*Math.PI; //in mm
   double objectB=0;
   double objectC=0;
@@ -83,6 +84,7 @@ public class W_nonorthoA extends LinearOpMode {
   double onerev=384;
   public double rps=435/60;
   double rangeA=0;
+  double rangeofrobot=0;
   double bearingA=0;
   double servostatusA=0;
   double servostatusB=0;
@@ -115,6 +117,7 @@ public class W_nonorthoA extends LinearOpMode {
   private Servo shooterholder;
   private Servo artifactholder;
   private CRServo belt;
+  private CRServo holder;
   private DcMotor shooterwheelA;
   private DcMotor shooterwheelB; 
   public double sign(double v){
@@ -620,6 +623,7 @@ public class PIDCONTOLLERbearing{
     pivotintakeA = hardwareMap.get(Servo.class, "pivot intakeA");
     shooterholder= hardwareMap.get(Servo.class, "shooterholder");
     belt = hardwareMap.get(CRServo.class, "belt");
+    holder = hardwareMap.get(CRServo.class, "holder");
     artifactholder= hardwareMap.get(Servo.class, "artifactholder");
     shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
     shooterwheelB = hardwareMap.get(DcMotor.class, "shooterwheelB");
@@ -1108,6 +1112,20 @@ public class PIDCONTOLLERbearing{
               powerFL=bearingAcontrol(bearingoftag,bearingofbot);//change sign if needed
               powerFR=bearingAcontrol(bearingoftag,bearingofbot);//change sign if needed
               powerBR=bearingAcontrol(bearingoftag,bearingofbot);//change sign if needed
+              frontright.setPower(powerFR);       
+              frontleft.setPower(powerFL);         
+              backleft.setPower(powerBL);            
+              backright.setPower(powerBR);
+              double spot=50;//find this value
+              rangeofbot=rangeAcontrol(rangeA,spot);
+              backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              powerBL=rangeofbot;//change sign if needed
+              powerFL=rangeofbot;//change sign if needed
+              powerFR=rangeofbot;//change sign if needed
+              powerBR=rangeofbot;
               frontright.setPower(powerFR);       
               frontleft.setPower(powerFL);         
               backleft.setPower(powerBL);            
