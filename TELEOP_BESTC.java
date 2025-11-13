@@ -35,6 +35,7 @@ public class TELEOP_BESTC extends LinearOpMode {
   private DcMotor intake;
   private DcMotor shooterwheelA;
   private DcMotor shooterwheelB;
+  private CRServo holder;
   public double change=10; //adjust value
   public double degree1=0.5;
   public double degree2=0;
@@ -202,6 +203,7 @@ public class TELEOP_BESTC extends LinearOpMode {
     artifactholder= hardwareMap.get(Servo.class, "artifactholder");
     shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
     shooterwheelB = hardwareMap.get(DcMotor.class, "shooterwheelB");
+    holder = hardwareMap.get(CRServo.class, "holder");
     X=hardwareMap.get(DcMotor.class, "odometrywheelone");
     intake = hardwareMap.get(DcMotor.class, "intake");
     backleft = hardwareMap.get(DcMotor.class, "backleft");
@@ -232,7 +234,7 @@ public class TELEOP_BESTC extends LinearOpMode {
       x = gamepad2.left_stick_x;
       turn = gamepad2.right_stick_x;
       rotater= gamepad1.left_stick_y;
-
+      
       frontleft_A = y - x - turn;
       frontright_A = (y + x) + turn;
       backleft_A = (y + x) - turn;
@@ -262,11 +264,13 @@ public class TELEOP_BESTC extends LinearOpMode {
         pivotintake.setPosition(degree2);
       }
       if(gamepad1.left_bumper){
-           intake.setPower(speedOfintakeOn);   
+           intake.setPower(speedOfintakeOn); 
+           holder.setPower(speedOfintakeOn);
       }
       if(gamepad1.right_bumper){
         
           intake.setPower(speedOfintakeOff); 
+          holder.setPower(speedOfintakeOff);
 
       }
       if(gamepad1.right_trigger>0){
