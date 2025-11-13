@@ -785,6 +785,7 @@ public class PIDCONTOLLERbearing{
       intakestatus=1;
       intakespeed=intakeObjects(intakestatus);
       intake.setPower(intakespeed);
+      holder.setPower(intakespeed);
       backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -820,6 +821,7 @@ public class PIDCONTOLLERbearing{
       intakestatus=0;
       intakespeed=intakeObjects(intakestatus);
       intake.setPower(intakespeed);
+      holder.setPower(intakespeed);
       backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
