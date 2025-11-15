@@ -1166,10 +1166,25 @@ public class PIDCONTOLLERbearing{
           double KVshooterB=0;//tune this
           double KAshooterB=0;//tune this
           double desiredvelocityB=0;//tune this
+          double VelocityA=0;//tune this
+          double AccelerationA=0;//tune this
+          double KSshooterA=0;//tune this
+          double KVshooterA=0;//tune this
+          double KAshooterA=0;//tune this
+          double desiredvelocityA=0;//tune this
           double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+          double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+          shooterwheelA.setPower(powerA);
+          
+          
+          
+      
+        
+          
           shooterwheelB.setPower(powerB);
           //might need a delay
-          shooterwheelB.setPower(0);
+          shooterwheelB.setPower(0);  
+          shooterwheelA.setPower(0);
       }
       if(correctmotif[1]==motif[1] && correctmotif[0]==motif[0]{
           servostatusD=1;
@@ -1184,15 +1199,30 @@ public class PIDCONTOLLERbearing{
           pivotdegD=servoD(servostatusD);
           // might need a delay
           pivotintake.setPosition(pivotdegD);
+          double VelocityB=0;//tune this
+          double AccelerationB=0;//tune this
+          double KSshooterB=0;//tune this
+          double KVshooterB=0;//tune this
+          double KAshooterB=0;//tune this
+          double desiredvelocityB=0;//tune this
           double VelocityA=0;//tune this
           double AccelerationA=0;//tune this
           double KSshooterA=0;//tune this
           double KVshooterA=0;//tune this
           double KAshooterA=0;//tune this
           double desiredvelocityA=0;//tune this
+          double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
           double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
           shooterwheelA.setPower(powerA);
+          
+          
+          
           // might need a delay
+        
+          
+          shooterwheelB.setPower(powerB);
+          //might need a delay
+          shooterwheelB.setPower(0);  
           shooterwheelA.setPower(0);
       }
       if(correctmotif[1]!=motif[1]){
@@ -1208,13 +1238,21 @@ public class PIDCONTOLLERbearing{
           pivotdegD=servoD(servostatusD);
           // might need a delay
           pivotintake.setPosition(pivotdegD);
+          double VelocityB=0;//tune this
+          double AccelerationB=0;//tune this
+          double KSshooterB=0;//tune this
+          double KVshooterB=0;//tune this
+          double KAshooterB=0;//tune this
+          double desiredvelocityB=0;//tune this
           double VelocityA=0;//tune this
           double AccelerationA=0;//tune this
           double KSshooterA=0;//tune this
           double KVshooterA=0;//tune this
           double KAshooterA=0;//tune this
           double desiredvelocityA=0;//tune this
+          double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
           double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+          shooterwheelB.setPower(powerB);
           shooterwheelA.setPower(powerA);
           // might need a delay
           shooterwheelA.setPower(0);
@@ -1229,16 +1267,7 @@ public class PIDCONTOLLERbearing{
           // might need a delay
           pivotdegB=servoB(servostatusB);
           shooterholder.setPosition(pivotdegB);
-          double VelocityB=0;//tune this
-          double AccelerationB=0;//tune this
-          double KSshooterB=0;//tune this
-          double KVshooterB=0;//tune this
-          double KAshooterB=0;//tune this
-          double desiredvelocityB=0;//tune this
-          double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
-          shooterwheelB.setPower(powerB);
-          //might need a delay
-          shooterwheelB.setPower(0);
+          shooterwheelA.setPower(0);
       }  
       // Get a list of AprilTag detections.
     
