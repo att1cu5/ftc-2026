@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
-@TeleOp (name = "TELEOP_BESTC (Blocks to Java)")
-public class TELEOP_BESTC extends LinearOpMode {
+@TeleOp (name = "shootermotortest (Blocks to Java)")
+public class shootermotortest extends LinearOpMode {
   boolean thisExpUp;
   boolean thisExpDn;
   boolean thisGainUp;
