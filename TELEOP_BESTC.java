@@ -298,10 +298,7 @@ public class TELEOP_BESTC extends LinearOpMode {
           double KVshooterB=0;
           double KAshooterB=0;
           double feedforwardB=termB.feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
-          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB;    
-          shooterwheelB.setPower(speedB);
-      }
-      if(gamepad1.left_stick_button){
+          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB; 
           feedforwardtermA termA=feedforwardtermA();
           PIDCONTOLLERshooterA ShooterA=PIDCONTOLLERshooterA();
           double currentspeedA=((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
@@ -311,9 +308,11 @@ public class TELEOP_BESTC extends LinearOpMode {
           double KVshooterA=0;
           double KAshooterA=0;
           double feedforwardA=termA.feedforwardtermA(VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
-          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA)+feedforwardA;    
+          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA)+feedforwardA;   
+          shooterwheelB.setPower(speedB);
           shooterwheelA.setPower(speedA);
       }
+
       if(rotater<0){
         belt.setPower(beltspeed1);
       }
