@@ -1,0 +1,583 @@
+package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
+@TeleOp (name = "TELEOP_BESTC (Blocks to Java)")
+public class TELEOP_BESTC extends LinearOpMode {
+  boolean thisExpUp;
+  boolean thisExpDn;
+  boolean thisGainUp;
+  boolean thisGainDn;
+  boolean lastExpUp;
+  boolean lastExpDn;
+  boolean lastGainUp;
+  boolean lastGainDn;
+  double onerev=383.6;
+  double desiredspeed=0;
+  public double intialspeed=1295; //intial speed before change measured in ticks adjust value
+  private DcMotor backleft;
+  private DcMotor backright;
+  private DcMotor frontright;
+  private DcMotor frontleft;
+  private Servo pivotintake;
+  private Servo pivotintakeA;
+  private Servo shooterholder;
+  private Servo artifactholder;
+  private CRServo belt;
+  private DcMotor intake;
+  private DcMotor shooterwheelA;
+  private DcMotor shooterwheelB;
+  private CRServo holder;
+  public double change=10; //adjust value
+  public double degree1=0.5;
+  public double degree2=0;
+  public double latchopen=0.5; 
+  public double latchclose=0;
+  public double artifactholderopen=0.5; // adjust value in the future
+  public double artifactholderclose=0; // adjust value in the future
+  public double shooterholderopen=0.5; // adjust value in the future
+  public double shooterholderclose=0; // adjust value in the future 
+  public double beltspeed1=-1; // adjust value in the future
+  public double beltspeed2=1; // adjust value in the future
+  public double Circumference=76.8*Math.PI; //in mm
+  USE_WEBCAM = true;
+  test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
+  double[] motif={0,0,0,0};
+  double[] correctmotif={0,0,0,0};
+  double red=0;
+  double green=0;
+  double blue=0;
+  double test=0;
+  double sense=0;
+  double Xa=0;
+  double Ya=0;
+  double y=0;
+  double x=0;
+  double Za=0;
+  double Pitch=0;
+  double Yaw=0;
+  double Roll=0;
+  double Ycenter=0;
+  double Xcenter=0;
+  int i=0;
+  public class FeedforwardB{
+      public double kSB;//find this value
+      public double kAB;//find this value
+      public double kVB;//find this value
+      double DesiredVB;//find this value
+      double DesiredAB;//find this value
+      public class FeedforwardB{
+       public double feedforwardtermB(double DesiredVB,double DesiredAB,double kSB,double kVB,double kAB){
+           this.kSB=kSB;
+           this.kVB=kVB;
+           this.kAB=kAB;
+           double outputffB=kSB*sign(DesiredVB)+kVB*DesiredVB+kAB*DesiredAB;
+           return outputffB;
+          }
+      }
+  public class PIDCONTOLLERshooterB{
+      public double kpshooterB; //find this value
+      public double kishooterB; //find this value
+      public double kdshooterB;//find this value
+      double previousErrorshooterB=0;
+      double intergralshooterB=0; //assign a value in the future to intergral
+      double minOutputshooterB=0; //assign a value in the future to minoutput
+      double maxOutputshooterB=0; //assign a value in the future to maxoutput
+      public class PIDCONTOLLERshooterB{
+       public double PIDshooterB(double kpshooterB, double kishooterB, double kdshooterB, double shooterB1, double shooterB2, double shooterB3){
+    
+         this.kpshooterB=kpshooterB;
+         this.kishooterB=kishooterB;
+         this.kdshooterB=kdshooterB;
+         double outputshooterBa = kpshooterB * shooterB1 + kishooterB * shooterB3 + kdshooterB * shooterB2;
+         return outputshooterBa;
+       }
+       public double calcshooterB(double targetshooterB,double currentshooterB){
+          double errorshooterB = targetshooterB - currentshooterB;
+          double integralmaxB=1000;//update this value if needed
+          double timeBs=0.2; //update if needed
+          double integralshooterB =+ errorshooterB*timeBs;
+          if(integralshooterB>integralmaxB){
+              integralshooterB=integralmaxB;
+          if(integralshooterB<-integralmaxB){
+              integralshooterB=integralmaxB*-1;
+          }
+          double derivativeshooterB = errorshooterB - previousErrorshooterB/timeBs;
+          double outputshooterBa = PIDshooterB(kpshooterB, kishooterB, kdshooterB, errorshooterB, derivativeshooterB, integralshooterB);
+          double outputshooterB = Math.max(minOutputshooterB, Math.min(maxOutputshooterB, outputshooterBa));
+  
+          double previousErrorshooterB = errorshooterB;
+          return outputshooterB;
+      }
+      public void resetshooterB(){
+         double previousErrorshooterB=0;
+         double intergralshooterB=0;
+      }
+
+  }
+  public class FeedforwardA{
+      public double kSA;//find this value
+      public double kAA;//find this value
+      public double kVA;//find this value
+      double DesiredVA;//find this value
+      double DesiredAA;//find this value
+      public class FeedforwardA{
+       public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
+           this.kSA=kSA;
+           this.kVA=kVA;
+           this.kAA=kAA;
+           double outputffA=kSA*sign(DesiredVA)+kVA*DesiredVA+kAA*DesiredAA;
+           return outputffA;
+          }
+      }
+  public class PIDCONTOLLERshooterA{
+      
+
+      public double kpshooterA; //find this value
+      public double kishooterA; //find this value
+      public double kdshooterA;//find this value
+      
+      double previousErrorshooterA=0;
+      double intergralshooterA=0; //assign a value in the future to intergral
+      double minOutputshooterA=0; //assign a value in the future to minoutput
+      double maxOutputshooterA=0; //assign a value in the future to maxoutput
+      public class PIDCONTOLLERshooterA{
+       public double PIDshooterA(double kpshooterA, double kishooterA, double kdshooterA, double shooterA1, double shooterA2, double shooterA3){
+         
+         this.kpshooterA=kpshooterA;
+         this.kishooterA=kishooterA;
+         this.kdshooterA=kdshooterA;
+         double outputshooterAa = kpshooterA * shooterA1 + kishooterA * shooterA3 + kdshooterA * shooterA2;
+         return outputshooterAa;
+       }
+       public double calcshooterA(double targetshooterA,double currentshooterA){
+          double errorshooterA = targetshooterA - currentshooterA;
+          
+          double integralmaxA=1000;//update this value if needed
+          double timeAs=0.2; //update if needed
+          double integralshooterA =+ errorshooterA*timeAs;
+          if(integralshooterA>integralmaxA){
+              integralshooterA=integralmaxA;
+          if(integralshooterA<-integralmaxA){
+              integralshooterA=integralmaxA*-1;
+          }
+          double outputshooterAa = PIDshooterA(kpshooterA, kishooterA, kdshooterA, errorshooterA, derivativeshooterA, integralshooterA);
+          double outputshooterA = Math.max(minOutputshooterA, Math.min(maxOutputshooterA, outputshooterAa));
+  
+          double previousErrorshooterA = errorshooterA;
+          return outputshooterA;
+      }    
+      public void resetshooterA(){
+         double previousErrorshooterA=0;
+         double intergralshooterA=0;
+      }
+  }
+  @Override
+  public void runOpMode() {
+    private ElapsedTime runtime = new ElapsedTime();
+    pivotintake = hardwareMap.get(Servo.class, "pivot intake");
+    pivotintakeA = hardwareMap.get(Servo.class, "pivot intakeA");
+    belt = hardwareMap.get(CRServo.class, "belt");
+    double speedOfintakeOff=0;
+    double speedOfintakeOn=0.8;
+    double yAxis= -gamepad2.left_stick_y;
+    double xAxis= gamepad2.left_stick_x;
+    double zAxis= gamepad1.right_stick_y;
+    
+    double x=0;
+    double y=0;
+    double turn=0;
+    double backleft_A;
+    double backright_A;
+    double frontleft_A;
+    double frontright_A;
+    shooterholder= hardwareMap.get(Servo.class, "shooterholder");
+    artifactholder= hardwareMap.get(Servo.class, "artifactholder");
+    shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
+    shooterwheelB = hardwareMap.get(DcMotor.class, "shooterwheelB");
+    holder = hardwareMap.get(CRServo.class, "holder");
+    X=hardwareMap.get(DcMotor.class, "odometrywheelone");
+    intake = hardwareMap.get(DcMotor.class, "intake");
+    backleft = hardwareMap.get(DcMotor.class, "backleft");
+    backright = hardwareMap.get(DcMotor.class, "backright");
+    frontright = hardwareMap.get(DcMotor.class, "frontright");
+    frontleft = hardwareMap.get(DcMotor.class, "frontleft");  
+    intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    X.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    shooterwheelA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    shooterwheelB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    shooterwheelB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    shooterwheelA.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    X.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    initAprilTag();
+    getCameraSetting();
+    myExposure = 10;
+    myGain = 50;
+    setManualExposure();
+    telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
+    telemetry.addData(">", "Touch START to start OpMode");
+    telemetry.update();
+    waitForStart();
+    runtime.reset();
+    while (opModeIsActive()) {
+        
+      y = gamepad2.left_stick_y;
+      x = gamepad2.left_stick_x;
+      turn = gamepad2.right_stick_x;
+      rotater= gamepad1.left_stick_y;
+      
+      frontleft_A = y - x - turn;
+      frontright_A = (y + x) + turn;
+      backleft_A = (y + x) - turn;
+      backright_A = (y - x) + turn;
+      if(gamepad1.y){
+         artifactholder.setPosition(artifactholderopen);
+      }
+      if(gamepad1.x){
+         artifactholder.setPosition(artifactholderclose);
+      }
+      if(gamepad1.dpad_up){
+         shooterholder.setPosition(shooterholderclose);
+      }
+      if(gamepad1.dpad_down){
+         shooterholder.setPosition(shooterholderopen);
+      }     
+      if(gampad1.dpad_left){
+        pivotintakeA.setPosition(latchopen);
+      }
+      if(gampad1.dpad_right){
+        pivotintakeA.setPosition(latchclose);
+      }
+      if(gampad1.a){
+        pivotintake.setPosition(degree1);
+      }
+      if(gampad1.b){
+        pivotintake.setPosition(degree2);
+      }
+      if(gamepad2.y){
+         holder.setPower(speedOfintakeOn);
+      }
+      if(gamepad2.x){
+         holder.setPower(speedOfintakeOff);
+      }
+      if(gamepad1.left_bumper){
+           intake.setPower(speedOfintakeOn); 
+           
+      }
+      if(gamepad1.right_bumper){
+        
+          intake.setPower(speedOfintakeOff); 
+          
+
+      }
+      if(gamepad1.right_trigger>0){
+            desiredspeed=intialspeed-(change*gamepad1.right_trigger);
+      }
+      if(gamepad1.left_trigger>0){
+            desiredspeed=intialspeed+(change*gamepad1.left_trigger);
+      }
+      if(gamepad1.left_trigger>0 && gamepad1.right_trigger>0){
+            desiredspeed=intialspeed;
+      }
+      if(gamepad1.right_stick_button){
+          feedforwardtermB termB=feedforwardtermB();
+          PIDCONTOLLERshooterB ShooterB=PIDCONTOLLERshooterB();
+          double currentspeedB=((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
+          double VelocityB=1305;
+          double AccelerationB=0;
+          double KSshooterB=0;
+          double KVshooterB=0;
+          double KAshooterB=0;
+          double feedforwardB=termB.feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB;    
+          shooterwheelB.setPower(0.8);
+      }
+      if(gamepad1.left_stick_button){
+          feedforwardtermA termA=feedforwardtermA();
+          PIDCONTOLLERshooterA ShooterA=PIDCONTOLLERshooterA();
+          double currentspeedA=((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
+          double VelocityA=1305;
+          double AccelerationA=0;
+          double KSshooterA=0;
+          double KVshooterA=0;
+          double KAshooterA=0;
+          double feedforwardA=termA.feedforwardtermA(VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA)+feedforwardA;    
+          shooterwheelA.setPower(speedA);
+      }
+      if(rotater<0){
+        belt.setPower(beltspeed1);
+      }
+      if(rotater>0){
+        belt.setPower(beltspeed2);
+      }
+      if(rotater==0){
+        belt.setPower(0);
+      }
+
+      if (gamepad2.right_bumper) {
+          double precision=1-gamepad2.left_trigger;               
+          frontleft_A=precision*(frontleft_A);
+          frontright_A=precision*(frontright_A);
+          backleft_A=precision*(backleft_A);
+          backright_A=precision*(backright_A);
+      }
+
+      if (gamepad2.left_bumper) {
+          double precision=0.3-(gamepad2.left_trigger*0.3);                 
+          frontleft_A=precision*(frontleft_A);
+          frontright_A=precision*(frontright_A);
+          backleft_A=precision*(backleft_A);
+          backright_A=precision*(backright_A);
+      }
+      if(!gamepad2.left_bumper && !gamepad2.right_bumper){
+          double precision=0.6-(gamepad2.left_trigger*0.6);                  
+                                                     
+          frontleft_A=precision*(frontleft_A);
+          frontright_A=precision*(frontright_A);
+          backleft_A=precision*(backleft_A);
+          backright_A=precision*(backright_A);
+      }
+                 
+
+      if(gamepad2.a){
+              frontright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+              frontleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+              backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+              backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); 
+      }
+      else if(gamepad2.b){
+              frontright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);    
+              frontleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); 
+              backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);     
+              backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+      }
+      else{
+              frontright.setPower(-frontright_A);        
+              frontleft.setPower(-frontleft_A);          
+              backleft.setPower(backleft_A);            
+              backright.setPower(backright_A);
+      }
+      List<AprilTagDetection> myAprilTagDetections;
+      AprilTagDetection myAprilTagDetection;
+    
+      // Get a list of AprilTag detections.
+      myAprilTagDetections = myAprilTagProcessor.getDetections();
+      telemetry.addData("# AprilTags Detected", JavaUtil.listLength(myAprilTagDetections));
+  
+      for (AprilTagDetection myAprilTagDetection_item : myAprilTagDetections) {
+        myAprilTagDetection = myAprilTagDetection_item;
+      // Display info about the detection.
+        telemetry.addLine("");
+        if (myAprilTagDetection.metadata != null) {
+          telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") " + myAprilTagDetection.metadata.name);
+         // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
+          test=myAprilTagDetection.id;
+          motifs=test;
+          
+          if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
+            Ya=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
+            Xa=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
+            Za=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
+            Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
+            Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
+            Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
+ 
+            //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
+            telemetry.addLine("XYZ " + Xa/10 + " " + Ya/10 + " " + Za/10 + "  (inch)");
+            telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
+            
+          }
+        } else {
+           telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
+           telemetry.addLine("Center " + JavaUtil.formatNumber(myAprilTagDetection.center.x, 6, 0) + "" + JavaUtil.formatNumber(myAprilTagDetection.center.y, 6, 0) + " (pixels)");
+         }
+
+      }
+      telemetry.addLine("");
+      telemetry.addLine("key:");
+      telemetry.addLine("XYZ = X (Right), Y (Forward), Z (Up) dist.");
+      telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+      if(motifs!=20 && motifs!=24){
+       if(motifs==23){
+         correctmotif[0]=2;
+         correctmotif[1]=2;
+         correctmotif[2]=1;
+       }
+       if(motifs==21){
+        correctmotif[0]=1;
+        correctmotif[1]=2;
+        correctmotif[2]=2;
+       }
+       if(motifs==22){
+        correctmotif[0]=2;
+        correctmotif[1]=1;
+        correctmotif[2]=2;
+       }
+      
+
+        NormalizedRGBA colors = test_color.getNormalizedColors();
+        red=colors.red*10;
+        green=colors.green*10;
+        blue=colors.blue*10;
+        sense=0;
+
+        if(blue>=0.05){
+                sense=2;
+
+                motif[i]=sense;
+
+                i=i+1;
+                   
+                
+        }
+        if(green>=0.05 && blue<0.05){
+                //telemetry.addLine("got green artifact");
+                sense=1;
+                motif[i]=sense;
+                i=i+1;
+                  
+        }
+        sleep(200); 
+        if(i==3){
+          i=0;
+        }
+      
+        if(correctmotif[0]==motif[0] && motifs!=0){
+          telemetry.addLine("first ball is correct");
+        }
+        else{
+          telemetry.addLine("first ball is incorrect");
+        }
+        if(correctmotif[1]==motif[1] && motifs!=0){
+            telemetry.addLine("second ball is correct");
+        }
+        else{
+          telemetry.addLine("second ball is incorrect");
+        }
+        if(correctmotif[2]==motif[2] && motifs!=0){
+              telemetry.addLine("third ball is correct");
+        }
+      
+        else{
+          telemetry.addLine("third ball is incorrect");
+        }
+        if(correctmotif[2]==motif[2] && motifs!=0 && correctmotif[1]==motif[1] && correctmotif[0]==motif[0]){
+          telemetry.addLine("all balls are in correct placement");
+
+        }
+
+      }
+
+      telemetry.update();
+
+      lastExpUp = thisExpUp;
+      lastExpDn = thisExpDn;
+      lastGainUp = thisGainUp;
+      lastGainDn = thisGainDn;
+      sleep(20);
+        
+       
+
+        
+      
+
+      
+      
+    }
+  }
+  
+  /**
+   * Initialize AprilTag Detection.
+   */
+  private void initAprilTag() {
+    AprilTagProcessor.Builder myAprilTagProcessorBuilder;
+    VisionPortal.Builder myVisionPortalBuilder;
+
+    // First, create an AprilTagProcessor.Builder.
+    myAprilTagProcessorBuilder = new AprilTagProcessor.Builder();
+    myAprilTagProcessorBuilder.setCameraPose(cameraPosition, cameraOrientation);
+    // Create an AprilTagProcessor by calling build.
+    myAprilTagProcessor = myAprilTagProcessorBuilder.build();
+
+    myVisionPortalBuilder = new VisionPortal.Builder();
+    if (USE_WEBCAM) {
+      // Use a webcam.
+      myVisionPortalBuilder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+    } else {
+      myVisionPortalBuilder.setCamera(BuiltinCameraDirection.BACK);
+    }
+    // Add myAprilTagProcessor to the VisionPortal.Builder.
+    myVisionPortalBuilder.addProcessor(myAprilTagProcessor);
+    // Create a VisionPortal by calling build.
+    myVisionPortal = myVisionPortalBuilder.build();
+  }
+
+
+
+
+  private boolean contains(String stringToSearch, String containText) {
+    if (stringToSearch.indexOf(containText) + 1 == 0) {
+      return false;
+    }
+    return true;
+  }
+  private void getCameraSetting() {
+
+    waitForCamera();
+    // Get camera control values unless we are stopping.
+    if (!isStopRequested()) {
+      myExposureControl = myVisionPortal.getCameraControl(ExposureControl.class);
+      minExposure = 10;
+      maxExposure = 30;
+      myGainControl = myVisionPortal.getCameraControl(GainControl.class);
+      minGain = 0;
+      maxGain = 100;
+    }
+  }
+
+
+  private void waitForCamera() {
+    if (!myVisionPortal.getCameraState().equals(VisionPortal.CameraState.STREAMING)) {
+      telemetry.addData("Camera", "Waiting");
+      telemetry.update();
+      while (!isStopRequested() && !myVisionPortal.getCameraState().equals(VisionPortal.CameraState.STREAMING)) {
+        sleep(20);
+      }
+      telemetry.addData("Camera", "Ready");
+      telemetry.update();
+    }
+  }
+
+
+  private void setManualExposure() {
+
+    waitForCamera();
+    // Set camera controls unless we are stopping.
+    if (!isStopRequested()) {
+      
+      if (!myExposureControl.getMode().equals(ExposureControl.Mode.Manual)) {
+        myExposureControl.setMode(ExposureControl.Mode.Manual);
+        sleep(50);
+      }
+      myExposureControl.setExposure((long) myExposure, TimeUnit.MILLISECONDS);
+      sleep(20);
+      
+      
+      // Set Gain.
+      myGainControl.setGain((int) myGain);
+      sleep(20);
+    }
+  }
+}
+ 
+      
