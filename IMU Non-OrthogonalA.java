@@ -46,10 +46,14 @@ public class W_nonorthoA extends LinearOpMode {
   double bearingangle=0;
   double currentheading=0;
   IMU imu;
+  double deltaXa=0;
+  double deltaYa=0;
   double bearingofbot=0;
   double currentrangeofbot=0;
   double bearingoftag=0;
   double deltaX=0;
+  double startx=0;
+  double starty=0;
   double deltaY=0;
   double bearingB=0;
   double ZA=0;
@@ -101,7 +105,11 @@ public class W_nonorthoA extends LinearOpMode {
   public double latchopen=0.5; 
   public double latchclose=0;
   public double offsetX=23.1886685741;
-  public double offsetY=46.68866857;
+  public double offsetY=13.08;//fine tune this
+  double pointAx=-42;//tune this value
+  double pointBx=0;
+  double pointCx=0;
+  double rangeB=0;
   public double gravity=9.81;
   public double artifactholderopen=0.5; // adjust value in the future
   public double artifactholderclose=0; // adjust value in the future
@@ -1077,10 +1085,8 @@ public class PIDCONTOLLERbearing{
               Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
               Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
               Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);              
-              YA=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
-              XA=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
-              ZA=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
-              rangeA = Math.sqrt(Math.pow(((XA-X)/10), 2) + Math.pow(((YA-Y)/10), 2) + Math.pow(((ZA-Z)/10), 2)); //only when a 90 degree angle is present
+
+
               bearingA=Math.toDegrees(Math.atan2(X/10, Y/10));
               //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
               telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
@@ -1121,8 +1127,11 @@ public class PIDCONTOLLERbearing{
               frontleft.setPower(powerFL);         
               backleft.setPower(powerBL);            
               backright.setPower(powerBR);
-              double spot=50;//find this value
-              rangeofbot=rangeAcontrol(rangeA,spot);
+              startx=X.getCurrentPosition();
+              starty=intake.getCurrentPosition();
+              rangeA=Math.sqrt(Math.pow(((X)/10), 2) + Math.pow(((Y)/10), 2));
+              rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
+              rangeofbot=rangeAcontrol(rangeA,rangeB);
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
