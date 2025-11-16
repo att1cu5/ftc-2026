@@ -106,12 +106,12 @@ public class W_nonorthoA extends LinearOpMode {
   public double latchclose=0;
   public double offsetX=9.129397076417323;
   public double offsetY=5.1496063;//fine tune this
-  double pointAx=-16.5354;//tune this value
+  double pointAx=-16.5354;//tune this value robot length in inches times -1
   double pointBx=0;
   double pointCx=0;
   double pointAy=0;
-  double pointBy=16.5354;
-  double pointCy=43.9094488;
+  double pointBy=16.5354;// robot height of camera in inches
+  double pointCy=38.759843+offsetY;
   double rangeB=0;
   public double gravity=386.08858267717;
   public double artifactholderopen=0.5; // adjust value in the future
