@@ -104,13 +104,16 @@ public class W_nonorthoA extends LinearOpMode {
   public double degree2=0;
   public double latchopen=0.5; 
   public double latchclose=0;
-  public double offsetX=23.1886685741;
-  public double offsetY=13.08;//fine tune this
-  double pointAx=-42;//tune this value
+  public double offsetX=9.129397076417323;
+  public double offsetY=5.1496063;//fine tune this
+  double pointAx=-16.5354;//tune this value
   double pointBx=0;
   double pointCx=0;
+  double pointAy=0;
+  double pointBy=16.5354;
+  double pointCy=43.9094488;
   double rangeB=0;
-  public double gravity=9.81;
+  public double gravity=386.08858267717;
   public double artifactholderopen=0.5; // adjust value in the future
   public double artifactholderclose=0; // adjust value in the future
   public double shooterholderopen=0.5; // adjust value in the future
@@ -1131,6 +1134,7 @@ public class PIDCONTOLLERbearing{
               starty=intake.getCurrentPosition();
               rangeA=Math.sqrt(Math.pow(((X)/10), 2) + Math.pow(((Y)/10), 2));
               rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
+              pointCx=rangeB+offsetX;
               rangeofbot=rangeAcontrol(rangeA,rangeB);
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
