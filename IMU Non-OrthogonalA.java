@@ -100,6 +100,9 @@ public class W_nonorthoA extends LinearOpMode {
   public double degree2=0;
   public double latchopen=0.5; 
   public double latchclose=0;
+  public double offsetX=23.1886685741;
+  public double offsetY=46.68866857;
+  public double gravity=9.81;
   public double artifactholderopen=0.5; // adjust value in the future
   public double artifactholderclose=0; // adjust value in the future
   public double shooterholderopen=0.5; // adjust value in the future
