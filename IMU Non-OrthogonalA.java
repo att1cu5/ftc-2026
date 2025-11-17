@@ -149,8 +149,8 @@ public class W_nonorthoA extends LinearOpMode {
             return -1;
          }
   }
-  public double ball(double x1, double y1, double x2, double y2, double state){
-       double c=(x2 * x3 * (x2 - x3) * y1 + x3 * x1 * (x3 - x1) * y2 + x1 * x2 * (x1 - x2) * y3)/((x3*x3 - x2*x2) * (x2 - x1) - (x2*x2 - x1*x1) * (x3 - x2));
+  public double ball(double x1, double y1, double x2, double y2, double x3, double y3, double state){
+       double c= (x2 * x3 * (x2 - x3) * y1 + x3 * x1 * (x3 - x1) * y2 + x1 * x2 * (x1 - x2) * y3)/((x3*x3 - x2*x2) * (x2 - x1) - (x2*x2 - x1*x1) * (x3 - x2));
        double a = ((y3 - y2) * ((x2 - x1) - (y2 - y1)) * (x3 - x2)) / ((x3*x3 - x2*x2) * (x2 - x1) - (x2*x2 - x1*x1) * (x3 - x2));
        double b=0;
        if (Math.abs(x2 - x1) > 1e-9) {
@@ -162,10 +162,10 @@ public class W_nonorthoA extends LinearOpMode {
            return a;
        }
        if(state==2){
-           return c;
+           return b;
        }
        if(state==3){
-           return b;
+           return c;
        }
 
   }
@@ -695,7 +695,7 @@ public class PIDCONTOLLERbearing{
     test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
     test_colorA=hardwareMap.get(NormalizedColorSensor.class, "test_colorA");
     double[] motif={0,0,0,0};
-    double [] solutions={0,0,0,0};
+    double outputball=0;
     double[] correctmotif={0,0,0,0};
     double red=0;
     double green=0;
@@ -1159,6 +1159,9 @@ public class PIDCONTOLLERbearing{
               rangeA=Math.sqrt(Math.pow(((X)/10), 2) + Math.pow(((Y)/10), 2));
               rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
               pointCx=rangeB+offsetX;
+              A=ball(pointAx,pointAy,pointBx,pointBy,pointCx,pointCy,1);
+              B=ball(pointAx,pointAy,pointBx,pointBy,pointCx,pointCy,2);
+              C=ball(pointAx,pointAy,pointBx,pointBy,pointCx,pointCy,3);
               rangeofbot=rangeAcontrol(rangeA,rangeB);
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
