@@ -107,10 +107,10 @@ public class W_nonorthoA extends LinearOpMode {
   public double latchclose=0;
   public double offsetX=9.129397076417323;
   public double offsetY=5.1496063;//fine tune this
-  double pointAx=-16.5354;//tune this value robot length in inches times -1
-  double pointBx=0;
+  double pointAx=-16.5354;//tune this in inches times -1
+  double pointBx=0.0001;
   double pointCx=0;
-  double pointAy=0;
+  double pointAy=0.0001;
   double pointBy=16.5354;// robot height of camera in inches
   double pointCy=38.759843+offsetY;
   double A=0;
@@ -149,8 +149,8 @@ public class W_nonorthoA extends LinearOpMode {
             return -1;
          }
   }
-  public double ball(double x1, double y1, double x2, double y2, double x3, double y3, double state){
-       double c=y2;
+  public double ball(double x1, double y1, double x2, double y2, double state){
+       double c=(x2 * x3 * (x2 - x3) * y1 + x3 * x1 * (x3 - x1) * y2 + x1 * x2 * (x1 - x2) * y3)/((x3*x3 - x2*x2) * (x2 - x1) - (x2*x2 - x1*x1) * (x3 - x2));
        double a = ((y3 - y2) * ((x2 - x1) - (y2 - y1)) * (x3 - x2)) / ((x3*x3 - x2*x2) * (x2 - x1) - (x2*x2 - x1*x1) * (x3 - x2));
        double b=0;
        if (Math.abs(x2 - x1) > 1e-9) {
