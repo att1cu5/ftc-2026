@@ -43,6 +43,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous((name = "Sensor: IMU Non-OrthogonalA", group = "Sensor")
 public class W_nonorthoA extends LinearOpMode {
   double objectA=0;
+  
   double bearingangle=0;
   double currentheading=0;
   IMU imu;
@@ -112,6 +113,9 @@ public class W_nonorthoA extends LinearOpMode {
   double pointAy=0;
   double pointBy=16.5354;// robot height of camera in inches
   double pointCy=38.759843+offsetY;
+  double A=0;
+  double B=0;
+  double C=0;
   double rangeB=0;
   public double gravity=386.08858267717;
   public double artifactholderopen=0.5; // adjust value in the future
@@ -144,6 +148,26 @@ public class W_nonorthoA extends LinearOpMode {
          if(v<0){
             return -1;
          }
+  }
+  public double ball(double x1, double y1, double x2, double y2, double x3, double y3, double state){
+       double c=y2;
+       double a = ((y3 - y2) * ((x2 - x1) - (y2 - y1)) * (x3 - x2)) / ((x3*x3 - x2*x2) * (x2 - x1) - (x2*x2 - x1*x1) * (x3 - x2));
+       double b=0;
+       if (Math.abs(x2 - x1) > 1e-9) {
+            b = ((y2 - y1) - a * (x2*x2 - x1*x1)) / (x2 - x1);
+       } else {
+            b = ((y3 - y2) - a * (x3*x3 - x2*x2)) / (x3 - x2);
+       }
+       if(state==1){
+           return a;
+       }
+       if(state==2){
+           return c;
+       }
+       if(state==3){
+           return b;
+       }
+
   }
   public class PIDCONTOLLERFL{
     
@@ -671,7 +695,7 @@ public class PIDCONTOLLERbearing{
     test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
     test_colorA=hardwareMap.get(NormalizedColorSensor.class, "test_colorA");
     double[] motif={0,0,0,0};
-    
+    double [] solutions={0,0,0,0};
     double[] correctmotif={0,0,0,0};
     double red=0;
     double green=0;
