@@ -149,26 +149,22 @@ public class W_nonorthoA extends LinearOpMode {
             return -1;
          }
   }
-  public double ball(double x1, double y1, double x2, double y2, double x3, double y3, double state){
-       double c= (x2 * x3 * (x2 - x3) * y1 + x3 * x1 * (x3 - x1) * y2 + x1 * x2 * (x1 - x2) * y3)/((x3*x3 - x2*x2) * (x2 - x1) - (x2*x2 - x1*x1) * (x3 - x2));
-       double a = ((y3 - y2) * ((x2 - x1) - (y2 - y1)) * (x3 - x2)) / ((x3*x3 - x2*x2) * (x2 - x1) - (x2*x2 - x1*x1) * (x3 - x2));
-       double b=0;
-       if (Math.abs(x2 - x1) > 1e-9) {
-            b = ((y2 - y1) - a * (x2*x2 - x1*x1)) / (x2 - x1);
-       } else {
-            b = ((y3 - y2) - a * (x3*x3 - x2*x2)) / (x3 - x2);
-       }
-       if(state==1){
-           return a;
-       }
-       if(state==2){
-           return b;
-       }
-       if(state==3){
-           return c;
-       }
-
+  public double m(double x1, double x2, double x3, double y1, double y2, double y3){
+       double n=3;
+       double sumofx=x1+x2+x3;
+       double sumofy=y1+y2+y3;
+       double sumofxy=(y1*x1)+(y2*x2)+(y3*x3);
+       double sumofxsqr=(x1*x1)+(x2*x2)+(x3*x3);
+       double m=(n*sumofxy-sumofx*sumofy)/(sumofxsqr-(sumofx*sumofx);
+       return m;
   }
+  public double b(double slope, double x1, double x2, double x3, double y1, double y2, double y3){
+       double n=3;
+       double sumofx=x1+x2+x3;
+       double sumofy=y1+y2+y3;
+       double b=(sumofy-slope*sumofx)/n;
+       return b;
+  }  
   public class PIDCONTOLLERFL{
     
 
