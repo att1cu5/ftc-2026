@@ -165,7 +165,18 @@ public class W_nonorthoA extends LinearOpMode {
        double b=(sumofy-slope*sumofx)/n;
        return b;
   }  
-  
+  public double sumofx(double x1, double x2, double x3){
+     double sumofx=x1+x2+x3;
+     return sumofx;
+  }
+  public double sumofy(double y1, double y2, double y3){
+     double sumofy=y1+y2+y3;
+     return sumofy;
+  }
+  public double sumofxy(double x1, double y1, double x2, double y2, double x3, double y3){
+     double sumofxy=(x1*y1)+(y2*x2)+(y3*x3);
+     return sumofxy;
+  }
   public double sumofx2yA(double x1, double y1, double x2, double y2, double x3, double y3){
      double sumofx2y=(x1*x1*y1)+(x2*x2*y2)+(x3*x3*y3);
      return sumofx2y;
