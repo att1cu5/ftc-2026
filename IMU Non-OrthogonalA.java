@@ -165,6 +165,65 @@ public class W_nonorthoA extends LinearOpMode {
        double b=(sumofy-slope*sumofx)/n;
        return b;
   }  
+  
+  public double sumofx2yA(double x1, double y1, double x2, double y2, double x3, double y3){
+     double sumofx2y=(x1*x1*y1)+(x2*x2*y2)+(x3*x3*y3);
+     return sumofx2y;
+  }
+  public double sumxpowerfour(double x1, double x2, double x3){
+     double sumofx4=(x1*x1*x1*x1)+(x2*x2*x2*x2)+(x3*x3*x3*x3);
+     return sumofx4;
+  }
+  public double sumxpowerthree(double x1, double x2, double x3){
+      double sumofx3=(x1*x1*x1)+(x2*x2*x2)+(x3*x3*x3);
+      return sumofx3;
+  }
+  //public double[] solve() {
+  //      double sx = sumX();
+  //      double sy = sumY();
+  //      double sx2 = sumX2();
+  //      double sx3 = sumxpowerthree();
+  //      double sx4 = sumxpowerfour();
+  //      double sxy = sumXY();
+  //      double sx2y = sumofx2yA();
+
+   //     double[][] matrix = {
+   //         {sx4, sx3, sx2, sx2y},
+   //         {sx3, sx2, sx, sxy},
+   //         {sx2, sx, 3, sy}
+    //    };
+
+        // Perform Gaussian elimination
+      //  int numRows = 3;
+      //  int numCols = 4;
+
+        //for (int i = 0; i < numRows; i++) {
+
+          //  double pivot = matrix[i][i];
+           // for (int j = i; j < numCols; j++) {
+           //     matrix[i][j] /= pivot;
+            //}
+
+            //for (int k = 0; k < numRows; k++) {
+              //  if (k != i) {
+               //     double factor = matrix[k][i];
+               //     for (int j = i; j < numCols; j++) {
+               //         matrix[k][j] -= factor * matrix[i][j];
+               //     }
+               // }
+            //}
+       // }
+
+
+        //return new double[]{matrix[0][3], matrix[1][3], matrix[2][3]}; 
+   // }
+   // going to make this without arrays instead other values
+    public double predict(double x, double[] coeffs) {
+        double a = coeffs[0];
+        double b = coeffs[1];
+        double c = coeffs[2];
+        return a * x * x + b * x + c;
+  }
   public class PIDCONTOLLERFL{
     
 
