@@ -1159,9 +1159,8 @@ public class PIDCONTOLLERbearing{
               rangeA=Math.sqrt(Math.pow(((X)/10), 2) + Math.pow(((Y)/10), 2));
               rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
               pointCx=rangeB+offsetX;
-              A=ball(pointAx,pointAy,pointBx,pointBy,pointCx,pointCy,1);
-              B=ball(pointAx,pointAy,pointBx,pointBy,pointCx,pointCy,2);
-              C=ball(pointAx,pointAy,pointBx,pointBy,pointCx,pointCy,3);
+              //use a regression function instead
+
               rangeofbot=rangeAcontrol(rangeA,rangeB);
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
