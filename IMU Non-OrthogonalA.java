@@ -1263,7 +1263,7 @@ public class PIDCONTOLLERbearing{
               matrixB=matrixAij(sumxpowerfour(pointAx, pointBx, pointCx), sumxpowerthree(pointAx, pointBx, pointCx), sumofxsqr(pointAx, pointBx, pointCx), sumofx(pointAx, pointBx, pointCx),sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy), sumofy(pointAy, pointBy, pointCy),sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),3);
               matrixC=matrixAki(sumxpowerthree(pointAx, pointBx, pointCx),sumofxsqr(pointAx, pointBx, pointCx),sumofx(pointAx, pointBx, pointCx));
               matrixD=matrixAIJ(sumxpowerfour(pointAx, pointBx, pointCx),sumxpowerthree(pointAx, pointBx, pointCx),sumofxsqr(pointAx, pointBx, pointCx),sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),sumofx(pointAx, pointBx, pointCx),sumofy(pointAy, pointBy, pointCy),sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),3);
-              
+              matrixE=matrixAkj(sumxpowerfour(pointAx, pointBx, pointCx),sumxpowerthree(pointAx, pointBx, pointCx),sumofxsqr(pointAx, pointBx, pointCx), sumofx(pointAx, pointBx, pointCx), 3,sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy), sumofy(pointAy, pointBy, pointCy));
               rangeofbot=rangeAcontrol(rangeA,rangeB);
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
