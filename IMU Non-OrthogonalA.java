@@ -169,6 +169,10 @@ public class W_nonorthoA extends LinearOpMode {
      double sumofx=x1+x2+x3;
      return sumofx;
   }
+  public double sumofxsqr(double x1, double x2, double x3){
+     double sumofxsqr=(x1*x1)+(x2*x2)+(x3*x3);
+     return sumofxsqr;
+  }
   public double sumofy(double y1, double y2, double y3){
      double sumofy=y1+y2+y3;
      return sumofy;
