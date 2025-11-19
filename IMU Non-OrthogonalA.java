@@ -100,6 +100,13 @@ public class W_nonorthoA extends LinearOpMode {
   double desiredspeed=0;
   double intakestatus=0;
   double intakespeed=0;
+  double M=0;
+  double yintercept=0;
+  double matrixA=0;
+  double matrixB=0;
+  double matrixC=0;
+  double matrixD=0;
+  double matrixE=0;
   public double intialspeed=0; //intial speed before change measured in ticks adjust value
   public double degree1=0.5;
   public double degree2=0;
@@ -189,6 +196,18 @@ public class W_nonorthoA extends LinearOpMode {
       double sumofx3=(x1*x1*x1)+(x2*x2*x2)+(x3*x3*x3);
       return sumofx3;
   }
+  public double matrixAii(double termA, double termB, double termC){
+        answerA=termA+termB+termC;
+        return answerA;
+  }
+  public double matrixAij(double termAA, double termBA, double termCA, double termDA, double termEA,double termFA,double termGA,double termHA){
+        answerB=termAA+(2*termBA)+(3*termCA)+(2*termDA)+termEA+termFA+termGA+termHA;
+        return answerB;
+  } 
+  public double matrixAki(double termAB,double termBB,double termCB){
+        answerC=(2*termAB)+(3*termBB)+termCB;
+        return answerC;
+  }
   //public double[] solve() {
   //      double sx = sumX();
   //      double sy = sumY();
@@ -229,12 +248,12 @@ public class W_nonorthoA extends LinearOpMode {
         //return new double[]{matrix[0][3], matrix[1][3], matrix[2][3]}; 
    // }
    // going to make this without arrays instead other values
-    public double predict(double x, double[] coeffs) {
-        double a = coeffs[0];
-        double b = coeffs[1];
-        double c = coeffs[2];
-        return a * x * x + b * x + c;
-  }
+//    public double predict(double x, double[] coeffs) {
+//        double a = coeffs[0];
+//        double b = coeffs[1];
+//        double c = coeffs[2];
+//        return a * x * x + b * x + c;
+//  }
   public class PIDCONTOLLERFL{
     
 
@@ -1226,7 +1245,9 @@ public class PIDCONTOLLERbearing{
               rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
               pointCx=rangeB+offsetX;
               //use a regression function instead
-
+              M=m(pointAx, pointBx, pointCx, pointAy, pointBy, pointCy);
+              yintercept=b(M,pointAx, pointBx, pointCx, pointAy, pointBy, pointCy);
+              matrixA=matrixAii(sumxpowerfour(pointAx, pointBx, pointCx), , 3);
               rangeofbot=rangeAcontrol(rangeA,rangeB);
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
