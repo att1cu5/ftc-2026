@@ -212,7 +212,15 @@ public class W_nonorthoA extends LinearOpMode {
         answerC=(2*termAB)+(3*termBB)+termCB;
         return answerC;
   }
-  //public double[] solve() {
+  public double matrixAIJ(double termAC,double termHB,double termJC,double termYA,double termUA,double termIA,double termOA,double termPA){
+        answerD=(termAC*2)+(termHB*4)+(6*termJC)+(2*termYA)+(4*termUA)+(2*termIA)+(termOA*2)+(2*termPA);
+        return answerD;
+  }
+  public double matrixAkj(double termMA, double termPA, double termXA, double termQA, double termWA,double termVA,double termVB, double termVF){
+       answerE=(2*termMA)+(4*termPA)+(termXA*6)+(termQA*4)+(termWA*2)+(termVA*2)+(termVB*2)+(2*termVF);
+       return answerE;
+  }
+    //public double[] solve() {
   //      double sx = sumX();
   //      double sy = sumY();
   //      double sx2 = sumX2();
@@ -1251,7 +1259,11 @@ public class PIDCONTOLLERbearing{
               //use a regression function instead
               M=m(pointAx, pointBx, pointCx, pointAy, pointBy, pointCy);
               yintercept=b(M,pointAx, pointBx, pointCx, pointAy, pointBy, pointCy);
-              matrixA=matrixAii(sumxpowerfour(pointAx, pointBx, pointCx), , 3);
+              matrixA=matrixAii(sumxpowerfour(pointAx, pointBx, pointCx), sumofxsqr(pointAx, pointBx, pointCx), 3);
+              matrixB=matrixAij(sumxpowerfour(pointAx, pointBx, pointCx), sumxpowerthree(pointAx, pointBx, pointCx), sumofxsqr(pointAx, pointBx, pointCx), sumofx(pointAx, pointBx, pointCx),sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy), sumofy(pointAy, pointBy, pointCy),sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),3);
+              matrixC=matrixAki(sumxpowerthree(pointAx, pointBx, pointCx),sumofxsqr(pointAx, pointBx, pointCx),sumofx(pointAx, pointBx, pointCx));
+              matrixD=matrixAIJ(sumxpowerfour(pointAx, pointBx, pointCx),sumxpowerthree(pointAx, pointBx, pointCx),sumofxsqr(pointAx, pointBx, pointCx),sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),sumofx(pointAx, pointBx, pointCx),sumofy(pointAy, pointBy, pointCy),sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),3);
+              
               rangeofbot=rangeAcontrol(rangeA,rangeB);
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
