@@ -498,7 +498,7 @@ public class PIDCONTOLLERbearing{
       public double kSB;//find value
       public double kAB;//find value
       public double kVB;//find value
-      double DesiredVB=1305;
+      double DesiredVB=0;// find this value
       double DesiredAB=0;//find this value
       public class FeedforwardB{
        public double feedforwardtermB(double DesiredVB,double DesiredAB,double kSB,double kVB,double kAB){
@@ -553,7 +553,7 @@ public class PIDCONTOLLERbearing{
       public double kSA;//find value
       public double kAA;//find value
       public double kVA;//find value
-      double DesiredVA=1305; //change if needed
+      double DesiredVA=0; //find this value
       double DesiredAA=0;//find this value
       public class FeedforwardA{
        public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
@@ -750,7 +750,7 @@ public class PIDCONTOLLERbearing{
     test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
     test_colorA=hardwareMap.get(NormalizedColorSensor.class, "test_colorA");
     double[] motif={0,0,0,0};
-    double outputball=0;
+    double outputballheight=0;
     double[] correctmotif={0,0,0,0};
     double red=0;
     double green=0;
@@ -1214,7 +1214,7 @@ public class PIDCONTOLLERbearing{
               rangeA=Math.sqrt(Math.pow(((X)/10), 2) + Math.pow(((Y)/10), 2));
               rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
               pointCx=rangeB+offsetX;
-              //use a regression function instead
+              
               M=m(pointAx, pointBx, pointCx, pointAy, pointBy, pointCy);
               yintercept=b(M,pointAx, pointBx, pointCx, pointAy, pointBy, pointCy);
               matrixA=matrixAii(4*sumxpowerfour(pointAx, pointBx, pointCx), 3*sumofxsqr(pointAx, pointBx, pointCx), 6);
@@ -1225,7 +1225,8 @@ public class PIDCONTOLLERbearing{
               A=(3*(sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofy(pointAy, pointBy, pointCy)))/(3*((sumxpowerfour(pointAx, pointBx, pointCx))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofxsqr(pointAx, pointBx, pointCx))));
               B=((3*sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofy(pointAy, pointBy, pointCy)*sumofx(pointAx, pointBx, pointCx)))/((3*sumofxsqr(pointAx, pointBx, pointCx))-(sumofx(pointAx, pointBx, pointCx)*sumofx(pointAx, pointBx, pointCx)));
               C=(sumofy(pointAy, pointBy, pointCy)/3)-B*(sumofx(pointAx, pointBx, pointCx)/3)-A*((sumofx(pointAx, pointBx, pointCx)/3)*(sumofx(pointAx, pointBx, pointCx)/3));
-              height=C-((B*B)/4*A);
+              height=C-((B*B)/(4*A));
+              
               rangeofbot=rangeAcontrol(rangeA,rangeB);
               
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -1255,7 +1256,9 @@ public class PIDCONTOLLERbearing{
         
         }
       }
+      String message="f(x)="+A+"x²+"+B+"x"+"+"C;  
       
+      telemetry.addData(message);
       if(correctmotif[0]!=motif[0] && correctmotif[1]==motif[1]){
           servostatusC=-1;
           pivotdegC=servoC(servostatusC);
