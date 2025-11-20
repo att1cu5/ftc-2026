@@ -1276,7 +1276,7 @@ public class PIDCONTOLLERbearing{
           double KSshooterB=0;//tune this
           double KVshooterB=0;//tune this
           double KAshooterB=0;//tune this
-          double desiredvelocityB=MATH.sprt(2*gravity*height);//tune this
+          double desiredvelocityB=MATH.sprt(2*gravity*height);
           double VelocityA=0;//tune this
           double AccelerationA=0;//tune this
           double KSshooterA=0;//tune this
