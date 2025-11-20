@@ -201,71 +201,28 @@ public class W_nonorthoA extends LinearOpMode {
       return sumofx3;
   }
   public double matrixAii(double termA, double termB, double termC){
-        answerA=termA+termB+termC;
+        answerA=(termA)+(termB)+(termC);
         return answerA;
   }
   public double matrixAij(double termAA, double termBA, double termCA, double termDA, double termEA,double termFA,double termGA,double termHA){
-        answerB=termAA+(2*termBA)+(3*termCA)+(2*termDA)+termEA+termFA+termGA+termHA;
+        answerB=termAA+(termBA)+(termCA)+(termDA)+termEA+termFA+termGA+termHA;
         return answerB;
   } 
   public double matrixAki(double termAB,double termBB,double termCB){
-        answerC=(2*termAB)+(3*termBB)+termCB;
+        answerC=(termAB)+(termBB)+(termCB);
         return answerC;
   }
   public double matrixAIJ(double termAC,double termHB,double termJC,double termYA,double termUA,double termIA,double termOA,double termPA){
-        answerD=(termAC*2)+(termHB*4)+(6*termJC)+(2*termYA)+(4*termUA)+(2*termIA)+(termOA*2)+(2*termPA);
+        answerD=(termAC)+(termHB)+(termJC)+(termYA)+(termUA)+(termIA)+(termOA)+(termPA);
         return answerD;
-  }
+ }
   public double matrixAkj(double termMA, double termPA, double termXA, double termQA, double termWA,double termVA,double termVB, double termVF){
-       answerE=(2*termMA)+(4*termPA)+(termXA*6)+(termQA*4)+(termWA*2)+(termVA*2)+(termVB*2)+(2*termVF);
+       answerE=(termMA)+(termPA)+(termXA)+(termQA)+(termWA)+(termVA)+(termVB)+(termVF);
        return answerE;
   }
-    //public double[] solve() {
-  //      double sx = sumX();
-  //      double sy = sumY();
-  //      double sx2 = sumX2();
-  //      double sx3 = sumxpowerthree();
-  //      double sx4 = sumxpowerfour();
-  //      double sxy = sumXY();
-  //      double sx2y = sumofx2yA();
-
-   //     double[][] matrix = {
-   //         {sx4, sx3, sx2, sx2y},
-   //         {sx3, sx2, sx, sxy},
-   //         {sx2, sx, 3, sy}
-    //    };
-
-        // Perform Gaussian elimination
-      //  int numRows = 3;
-      //  int numCols = 4;
-
-        //for (int i = 0; i < numRows; i++) {
-
-          //  double pivot = matrix[i][i];
-           // for (int j = i; j < numCols; j++) {
-           //     matrix[i][j] /= pivot;
-            //}
-
-            //for (int k = 0; k < numRows; k++) {
-              //  if (k != i) {
-               //     double factor = matrix[k][i];
-               //     for (int j = i; j < numCols; j++) {
-               //         matrix[k][j] -= factor * matrix[i][j];
-               //     }
-               // }
-            //}
-       // }
 
 
-        //return new double[]{matrix[0][3], matrix[1][3], matrix[2][3]}; 
-   // }
-   // going to make this without arrays instead other values
-//    public double predict(double x, double[] coeffs) {
-//        double a = coeffs[0];
-//        double b = coeffs[1];
-//        double c = coeffs[2];
-//        return a * x * x + b * x + c;
-//  }
+
   public class PIDCONTOLLERFL{
     
 
@@ -1259,11 +1216,14 @@ public class PIDCONTOLLERbearing{
               //use a regression function instead
               M=m(pointAx, pointBx, pointCx, pointAy, pointBy, pointCy);
               yintercept=b(M,pointAx, pointBx, pointCx, pointAy, pointBy, pointCy);
-              matrixA=matrixAii(sumxpowerfour(pointAx, pointBx, pointCx), sumofxsqr(pointAx, pointBx, pointCx), 3);
-              matrixB=matrixAij(sumxpowerfour(pointAx, pointBx, pointCx), sumxpowerthree(pointAx, pointBx, pointCx), sumofxsqr(pointAx, pointBx, pointCx), sumofx(pointAx, pointBx, pointCx),sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy), sumofy(pointAy, pointBy, pointCy),sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),3);
-              matrixC=matrixAki(sumxpowerthree(pointAx, pointBx, pointCx),sumofxsqr(pointAx, pointBx, pointCx),sumofx(pointAx, pointBx, pointCx));
-              matrixD=matrixAIJ(sumxpowerfour(pointAx, pointBx, pointCx),sumxpowerthree(pointAx, pointBx, pointCx),sumofxsqr(pointAx, pointBx, pointCx),sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),sumofx(pointAx, pointBx, pointCx),sumofy(pointAy, pointBy, pointCy),sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),3);
-              matrixE=matrixAkj(sumxpowerfour(pointAx, pointBx, pointCx),sumxpowerthree(pointAx, pointBx, pointCx),sumofxsqr(pointAx, pointBx, pointCx), sumofx(pointAx, pointBx, pointCx), 3,sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy), sumofy(pointAy, pointBy, pointCy));
+              matrixA=matrixAii(4*sumxpowerfour(pointAx, pointBx, pointCx), 3*sumofxsqr(pointAx, pointBx, pointCx), 6);
+              matrixB=matrixAij(sumxpowerfour(pointAx, pointBx, pointCx), sumxpowerthree(pointAx, pointBx, pointCx), 2*sumofxsqr(pointAx, pointBx, pointCx), sumofx(pointAx, pointBx, pointCx),sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy), sumofy(pointAy, pointBy, pointCy),sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),3);
+              matrixD=matrixAIJ(2*sumxpowerfour(pointAx, pointBx, pointCx),2*sumxpowerthree(pointAx, pointBx, pointCx),4*sumofxsqr(pointAx, pointBx, pointCx),2*sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),2*sumofx(pointAx, pointBx, pointCx),sumofy(pointAy, pointBy, pointCy),2*sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),6);
+              matrixC=matrixAki(7*sumxpowerthree(pointAx, pointBx, pointCx),6*sumofxsqr(pointAx, pointBx, pointCx),5*sumofx(pointAx, pointBx, pointCx));
+              matrixE=matrixAkj(0*sumxpowerfour(pointAx, pointBx, pointCx),2*sumxpowerthree(pointAx, pointBx, pointCx),4*sumofxsqr(pointAx, pointBx, pointCx), 4*sumofx(pointAx, pointBx, pointCx), 6,2*sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),2*sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy), 2*sumofy(pointAy, pointBy, pointCy));
+              A=(3*(sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofy(pointAy, pointBy, pointCy)))/(3*((sumxpowerfour(pointAx, pointBx, pointCx))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofxsqr(pointAx, pointBx, pointCx))));
+              B=((3*sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofy(pointAy, pointBy, pointCy)*sumofx(pointAx, pointBx, pointCx)))/((3*sumofxsqr(pointAx, pointBx, pointCx))-(sumofx(pointAx, pointBx, pointCx)*sumofx(pointAx, pointBx, pointCx)));
+              C=(sumofy(pointAy, pointBy, pointCy)/3)-B*(sumofx(pointAx, pointBx, pointCx)/3)-A*((sumofx(pointAx, pointBx, pointCx)/3)*(sumofx(pointAx, pointBx, pointCx)/3));
               rangeofbot=rangeAcontrol(rangeA,rangeB);
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
