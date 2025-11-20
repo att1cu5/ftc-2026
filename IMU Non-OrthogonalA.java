@@ -101,6 +101,7 @@ public class W_nonorthoA extends LinearOpMode {
   double intakestatus=0;
   double intakespeed=0;
   double M=0;
+  double maxheight=0;
   double yintercept=0;
   double matrixA=0;
   double matrixB=0;
@@ -1224,7 +1225,9 @@ public class PIDCONTOLLERbearing{
               A=(3*(sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofy(pointAy, pointBy, pointCy)))/(3*((sumxpowerfour(pointAx, pointBx, pointCx))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofxsqr(pointAx, pointBx, pointCx))));
               B=((3*sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofy(pointAy, pointBy, pointCy)*sumofx(pointAx, pointBx, pointCx)))/((3*sumofxsqr(pointAx, pointBx, pointCx))-(sumofx(pointAx, pointBx, pointCx)*sumofx(pointAx, pointBx, pointCx)));
               C=(sumofy(pointAy, pointBy, pointCy)/3)-B*(sumofx(pointAx, pointBx, pointCx)/3)-A*((sumofx(pointAx, pointBx, pointCx)/3)*(sumofx(pointAx, pointBx, pointCx)/3));
+              height=C-((B*B)/4*A);
               rangeofbot=rangeAcontrol(rangeA,rangeB);
+              
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -1270,13 +1273,13 @@ public class PIDCONTOLLERbearing{
           double KSshooterB=0;//tune this
           double KVshooterB=0;//tune this
           double KAshooterB=0;//tune this
-          double desiredvelocityB=0;//tune this
+          double desiredvelocityB=MATH.sprt(2*gravity*height);//tune this
           double VelocityA=0;//tune this
           double AccelerationA=0;//tune this
           double KSshooterA=0;//tune this
           double KVshooterA=0;//tune this
           double KAshooterA=0;//tune this
-          double desiredvelocityA=0;//tune this
+          double desiredvelocityA=MATH.sprt(2*gravity*height);//tune this
           double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
           double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
           shooterwheelA.setPower(powerA);
@@ -1309,13 +1312,13 @@ public class PIDCONTOLLERbearing{
           double KSshooterB=0;//tune this
           double KVshooterB=0;//tune this
           double KAshooterB=0;//tune this
-          double desiredvelocityB=0;//tune this
+          double desiredvelocityB=MATH.sprt(2*gravity*height);//tune this
           double VelocityA=0;//tune this
           double AccelerationA=0;//tune this
           double KSshooterA=0;//tune this
           double KVshooterA=0;//tune this
           double KAshooterA=0;//tune this
-          double desiredvelocityA=0;//tune this
+          double desiredvelocityA=MATH.sprt(2*gravity*height);//tune this
           double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
           double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
           shooterwheelA.setPower(powerA);
@@ -1348,13 +1351,13 @@ public class PIDCONTOLLERbearing{
           double KSshooterB=0;//tune this
           double KVshooterB=0;//tune this
           double KAshooterB=0;//tune this
-          double desiredvelocityB=0;//tune this
+          double desiredvelocityB=MATH.sprt(2*gravity*height);//tune this
           double VelocityA=0;//tune this
           double AccelerationA=0;//tune this
           double KSshooterA=0;//tune this
           double KVshooterA=0;//tune this
           double KAshooterA=0;//tune this
-          double desiredvelocityA=0;//tune this
+          double desiredvelocityA=MATH.sprt(2*gravity*height);//tune this
           double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
           double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
           shooterwheelB.setPower(powerB);
