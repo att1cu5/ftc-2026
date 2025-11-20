@@ -12,6 +12,25 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 @TeleOp (name = "TELEOP_BESTC (Blocks to Java)")
 public class TELEOP_BESTC extends LinearOpMode {
+  double deltaX=0;
+  double startx=0;
+  double starty=0;
+  double deltaY=0;
+  double rangeB=0; 
+  public double offsetX=9.129397076417323;
+  public double offsetY=5.1496063;//fine tune this
+  double pointAx=-16.5354;//tune this in inches times -1
+  double pointBx=0.0001;
+  double pointCx=0;
+  double pointAy=0.0001;
+  double pointBy=16.5354;// robot height of camera in inches
+  double pointCy=38.759843+offsetY;
+  double A=0;
+  double B=0;
+  double C=0;
+  double currentpositionY=0;
+  double currentpositionX=0; 
+  public double gravity=386.08858267717;
   boolean thisExpUp;
   boolean thisExpDn;
   boolean thisGainUp;
@@ -22,7 +41,7 @@ public class TELEOP_BESTC extends LinearOpMode {
   boolean lastGainDn;
   double onerev=383.6;
   double desiredspeed=0;
-  public double intialspeed=1295; //intial speed before change measured in ticks adjust value
+  double intialspeed=0; //intial speed before change measured in ticks adjust value
   private DcMotor backleft;
   private DcMotor backright;
   private DcMotor frontright;
@@ -68,6 +87,9 @@ public class TELEOP_BESTC extends LinearOpMode {
   double Ycenter=0;
   double Xcenter=0;
   int i=0;
+  double A=0;
+  double B=0;
+  double C=0;
   public class FeedforwardB{
       public double kSB;//find this value
       public double kAB;//find this value
@@ -180,6 +202,34 @@ public class TELEOP_BESTC extends LinearOpMode {
          double intergralshooterA=0;
       }
   }
+  public double sumofx(double x1, double x2, double x3){
+     double sumofx=x1+x2+x3;
+     return sumofx;
+  }
+  public double sumofxsqr(double x1, double x2, double x3){
+     double sumofxsqr=(x1*x1)+(x2*x2)+(x3*x3);
+     return sumofxsqr;
+  }
+  public double sumofy(double y1, double y2, double y3){
+     double sumofy=y1+y2+y3;
+     return sumofy;
+  }
+  public double sumofxy(double x1, double y1, double x2, double y2, double x3, double y3){
+     double sumofxy=(x1*y1)+(y2*x2)+(y3*x3);
+     return sumofxy;
+  }
+  public double sumofx2yA(double x1, double y1, double x2, double y2, double x3, double y3){
+     double sumofx2y=(x1*x1*y1)+(x2*x2*y2)+(x3*x3*y3);
+     return sumofx2y;
+  }
+  public double sumxpowerfour(double x1, double x2, double x3){
+     double sumofx4=(x1*x1*x1*x1)+(x2*x2*x2*x2)+(x3*x3*x3*x3);
+     return sumofx4;
+  }
+  public double sumxpowerthree(double x1, double x2, double x3){
+      double sumofx3=(x1*x1*x1)+(x2*x2*x2)+(x3*x3*x3);
+      return sumofx3;
+  }
   @Override
   public void runOpMode() {
     private ElapsedTime runtime = new ElapsedTime();
@@ -279,39 +329,8 @@ public class TELEOP_BESTC extends LinearOpMode {
           
 
       }
-      if(gamepad1.right_trigger>0){
-            desiredspeed=intialspeed-(change*gamepad1.right_trigger);
-      }
-      if(gamepad1.left_trigger>0){
-            desiredspeed=intialspeed+(change*gamepad1.left_trigger);
-      }
-      if(gamepad1.left_trigger>0 && gamepad1.right_trigger>0){
-            desiredspeed=intialspeed;
-      }
-      if(gamepad1.right_stick_button){
-          feedforwardtermB termB=feedforwardtermB();
-          PIDCONTOLLERshooterB ShooterB=PIDCONTOLLERshooterB();
-          double currentspeedB=((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
-          double VelocityB=1305;
-          double AccelerationB=0;
-          double KSshooterB=0;
-          double KVshooterB=0;
-          double KAshooterB=0;
-          double feedforwardB=termB.feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
-          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB; 
-          feedforwardtermA termA=feedforwardtermA();
-          PIDCONTOLLERshooterA ShooterA=PIDCONTOLLERshooterA();
-          double currentspeedA=((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
-          double VelocityA=1305;
-          double AccelerationA=0;
-          double KSshooterA=0;
-          double KVshooterA=0;
-          double KAshooterA=0;
-          double feedforwardA=termA.feedforwardtermA(VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
-          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA)+feedforwardA;   
-          shooterwheelB.setPower(speedB);
-          shooterwheelA.setPower(speedA);
-      }
+
+      
 
       if(rotater<0){
         belt.setPower(beltspeed1);
@@ -384,13 +403,20 @@ public class TELEOP_BESTC extends LinearOpMode {
           motifs=test;
           
           if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
+            currentpositionY=intake.getCurrentPosition();
+            currentpositionX=X.getCurrentPosition(); 
             Ya=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
             Xa=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
             Za=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
             Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
             Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
             Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
- 
+            rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
+            pointCx=rangeB+offsetX;
+            A=(3*(sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofy(pointAy, pointBy, pointCy)))/(3*((sumxpowerfour(pointAx, pointBx, pointCx))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofxsqr(pointAx, pointBx, pointCx))));
+            B=((3*sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofy(pointAy, pointBy, pointCy)*sumofx(pointAx, pointBx, pointCx)))/((3*sumofxsqr(pointAx, pointBx, pointCx))-(sumofx(pointAx, pointBx, pointCx)*sumofx(pointAx, pointBx, pointCx)));
+            C=(sumofy(pointAy, pointBy, pointCy)/3)-B*(sumofx(pointAx, pointBx, pointCx)/3)-A*((sumofx(pointAx, pointBx, pointCx)/3)*(sumofx(pointAx, pointBx, pointCx)/3));
+            height=C-((B*B)/(4*A));
             //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
             telemetry.addLine("XYZ " + Xa/10 + " " + Ya/10 + " " + Za/10 + "  (inch)");
             telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
@@ -446,7 +472,7 @@ public class TELEOP_BESTC extends LinearOpMode {
                 i=i+1;
                   
         }
-        sleep(200); 
+        sleep(200); //change delay to less if you want
         if(i==3){
           i=0;
         }
@@ -476,9 +502,42 @@ public class TELEOP_BESTC extends LinearOpMode {
         }
 
       }
-
+      intialspeed=MATH.sprt(2*gravity*height);
+      if(gamepad1.right_trigger>0){
+            desiredspeed=intialspeed-(change*gamepad1.right_trigger);
+      }
+      if(gamepad1.left_trigger>0){
+            desiredspeed=intialspeed+(change*gamepad1.left_trigger);
+      }
+      if(gamepad1.left_trigger>0 && gamepad1.right_trigger>0){
+            desiredspeed=intialspeed;
+      }
+      if(gamepad1.right_stick_button){
+          feedforwardtermB termB=feedforwardtermB();
+          PIDCONTOLLERshooterB ShooterB=PIDCONTOLLERshooterB();
+          double currentspeedB=((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
+          double VelocityB=0;//tune this
+          double AccelerationB=0;//tune this
+          double KSshooterB=0;//tune this
+          double KVshooterB=0;//tune this
+          double KAshooterB=0;//tune this
+          double feedforwardB=termB.feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB; 
+          feedforwardtermA termA=feedforwardtermA();
+          PIDCONTOLLERshooterA ShooterA=PIDCONTOLLERshooterA();
+          double currentspeedA=((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
+          double VelocityA=1305;
+          double AccelerationA=0;
+          double KSshooterA=0;
+          double KVshooterA=0;
+          double KAshooterA=0;
+          double feedforwardA=termA.feedforwardtermA(VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
+          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA)+feedforwardA;   
+          shooterwheelB.setPower(speedB);
+          shooterwheelA.setPower(speedA);
+      }
       telemetry.update();
-
+       
       lastExpUp = thisExpUp;
       lastExpDn = thisExpDn;
       lastGainUp = thisGainUp;
