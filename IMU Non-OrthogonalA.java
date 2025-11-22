@@ -119,8 +119,8 @@ public class W_nonorthoA extends LinearOpMode {
   public double latchclose=0;
   public double offsetX=9.129397076417323;
   public double offsetY=5.1496063;//fine tune this
-  double pointAx=;//tune this in inches times -1
-  double pointBx=0.0001;
+  double pointAx=0;//tune this value the x value of ball while in air axis of symetry
+  double pointBx=0;
   double pointCx=0;
   double pointAy=38.759843+offsetY;
   double pointBy=16.5354;// robot height of camera in inches
