@@ -42,6 +42,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainCon
 import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous((name = "Sensor: IMU Non-OrthogonalA", group = "Sensor"))
 public class W_nonorthoA extends LinearOpMode {
+    
   double objectA=0;
   double fixedtheta=0;//find this angle
   double bearingangle=0;
@@ -61,9 +62,9 @@ public class W_nonorthoA extends LinearOpMode {
   double XA=0;
   double YA=0;
   double cicumferenceofwheel=104*Math.PI;
-  public double anglestartA=35.89;//degrees change angle if neccesary //red basket
+  double anglestartA=35.89;//degrees change angle if neccesary //red basket
   //public double anglestartB=;//degrees change angle if neccesary //robot start on around white line of start
-  public double Circumference=76.8*Math.PI; //in mm
+  double Circumference=76.8*Math.PI; //in mm
   double objectB=0;
   double objectC=0;
   double sumofobjects=5;
@@ -75,6 +76,8 @@ public class W_nonorthoA extends LinearOpMode {
   private NormalizedColorSensor test_color;
   private NormalizedColorSensor test_colorA;
   double motifs=0;
+  
+  
   double targets=0;
   ExposureControl myExposureControl;
   long minExposure;
@@ -87,7 +90,7 @@ public class W_nonorthoA extends LinearOpMode {
   double myGain;
   double onerevA=537.7;
   double onerev=384;
-  public double rps=435/60;
+  double rps=435/60;
   double rangeA=0;
   double rangeofrobot=0;
   double bearingA=0;
@@ -112,13 +115,13 @@ public class W_nonorthoA extends LinearOpMode {
   double verticalvelocityA=0;
   double verticalvelocityB=0;
   double horizontalvelocityB=0;
-  public double intialspeed=0; //intial speed before change measured in ticks adjust value
-  public double degree1=0.5;
-  public double degree2=0;
-  public double latchopen=0.5; 
-  public double latchclose=0;
-  public double offsetX=9.129397076417323;
-  public double offsetY=5.1496063;//fine tune this
+  double intialspeed=0; //intial speed before change measured in ticks adjust value
+  double degree1=0.5;
+  double degree2=0;
+  double latchopen=0.5; 
+  double latchclose=0;
+  double offsetX=9.129397076417323;
+  double offsetY=5.1496063;//fine tune this
   double pointAx=0;//tune this value the x value of ball while in air axis of symetry
   double pointBx=0;
   double pointCx=0;
@@ -129,13 +132,15 @@ public class W_nonorthoA extends LinearOpMode {
   double B=0;
   double C=0;
   double rangeB=0;
-  public double gravity=386.08858267717;
-  public double artifactholderopen=0.5; // adjust value in the future
-  public double artifactholderclose=0; // adjust value in the future
-  public double shooterholderopen=0.5; // adjust value in the future
-  public double shooterholderclose=0; // adjust value in the future 
-  public double beltspeed1=-1; // adjust value in the future
-  public double beltspeed2=1; // adjust value in the future
+  
+  double gravity=386.08858267717;
+  double artifactholderopen=0.5; // adjust value in the future
+  double artifactholderclose=0; // adjust value in the future
+  double shooterholderopen=0.5; // adjust value in the future
+  double shooterholderclose=0; // adjust value in the future 
+  double beltspeed1=-1; // adjust value in the future
+  double beltspeed2=1; // adjust value in the future
+  
   private DcMotor backleft;
   private DcMotor backright;
   private DcMotor frontright;
@@ -150,6 +155,8 @@ public class W_nonorthoA extends LinearOpMode {
   private CRServo holder;
   private DcMotor shooterwheelA;
   private DcMotor shooterwheelB; 
+  
+  
   public double sign(double v){
          if(v>0){
              return 1; 
@@ -163,54 +170,7 @@ public class W_nonorthoA extends LinearOpMode {
   }
   
  
-  public double sumofx(double x1, double x2, double x3){
-     double sumofx=x1+x2+x3;
-     return sumofx;
-  }
-  public double sumofxsqr(double x1, double x2, double x3){
-     double sumofxsqr=(x1*x1)+(x2*x2)+(x3*x3);
-     return sumofxsqr;
-  }
-  public double sumofy(double y1, double y2, double y3){
-     double sumofy=y1+y2+y3;
-     return sumofy;
-  }
-  public double sumofxy(double x1, double y1, double x2, double y2, double x3, double y3){
-     double sumofxy=(x1*y1)+(y2*x2)+(y3*x3);
-     return sumofxy;
-  }
-  public double sumofx2yA(double x1, double y1, double x2, double y2, double x3, double y3){
-     double sumofx2y=(x1*x1*y1)+(x2*x2*y2)+(x3*x3*y3);
-     return sumofx2y;
-  }
-  public double sumxpowerfour(double x1, double x2, double x3){
-     double sumofx4=(x1*x1*x1*x1)+(x2*x2*x2*x2)+(x3*x3*x3*x3);
-     return sumofx4;
-  }
-  public double sumxpowerthree(double x1, double x2, double x3){
-      double sumofx3=(x1*x1*x1)+(x2*x2*x2)+(x3*x3*x3);
-      return sumofx3;
-  }
-  public double matrixAii(double termA, double termB, double termC){
-        answerA=(termA)+(termB)+(termC);
-        return answerA;
-  }
-  public double matrixAij(double termAA, double termBA, double termCA, double termDA, double termEA,double termFA,double termGA,double termHA){
-        answerB=termAA+(termBA)+(termCA)+(termDA)+termEA+termFA+termGA+termHA;
-        return answerB;
-  } 
-  public double matrixAki(double termAB,double termBB,double termCB){
-        answerC=(termAB)+(termBB)+(termCB);
-        return answerC;
-  }
-  public double matrixAIJ(double termAC,double termHB,double termJC,double termYA,double termUA,double termIA,double termOA,double termPA){
-        answerD=(termAC)+(termHB)+(termJC)+(termYA)+(termUA)+(termIA)+(termOA)+(termPA);
-        return answerD;
- }
-  public double matrixAkj(double termMA, double termPA, double termXA, double termQA, double termWA,double termVA,double termVB, double termVF){
-       answerE=(termMA)+(termPA)+(termXA)+(termQA)+(termWA)+(termVA)+(termVB)+(termVF);
-       return answerE;
-  }
+
   public double answervelocity(double heightofgoal, double g, double theta){
        return (MATH.sqri(2*g*heightofgoal)/MATH.sin(theta));
   }
@@ -447,11 +407,13 @@ public class PIDCONTOLLERbearing{
         double previousErrorBR = errorBR;
         return outputBR;
     }
+    
     public void resetBR(){
        double previousErrorBR=0;
        double intergralBR=0;
     }
  }  
+ 
  public class PIDCONTOLLERBL{
     
 
@@ -704,7 +666,7 @@ public class PIDCONTOLLERbearing{
     } 
   @Override
   public void runOpMode() throws InterruptedException{
-    private ElapsedTime runtime = new ElapsedTime();
+    //private ElapsedTime runtime = new ElapsedTime();
     imu = hardwareMap.get(IMU.class, "imu");
     pivotintake = hardwareMap.get(Servo.class, "pivot intake");
     pivotintakeA = hardwareMap.get(Servo.class, "pivot intakeA");
@@ -801,10 +763,14 @@ public class PIDCONTOLLERbearing{
 
 
     RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(hubRotation);
+    
     imu.initialize(new IMU.Parameters(orientationOnRobot));
-
+    
+    //runtime.reset();
     waitForStart();
-    runtime.reset();
+    
+    
+    
     while (opModeIsActive()) {
       telemetry.addData("Hub orientation", "X=%.1f,  Y=%.1f,  Z=%.1f \n", xRotation, yRotation, zRotation);
       imu.resetYaw();
@@ -827,7 +793,7 @@ public class PIDCONTOLLERbearing{
       double currentpositionBR=backright.getCurrentPosition();
       double currentpositionFR=frontright.getCurrentPosition();
       double currentpositionFL=frontleft.getCurrentPosition();
-
+                
       double powerBL=BLA(currentpositionBL,-1254);
       double powerFL=FLA(currentpositionFL,-1254);
       double powerFR=FRA(currentpositionFR,1254);
