@@ -40,9 +40,9 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import com.qualcomm.robotcore.util.ElapsedTime;
-@Autonomous((name = "Sensor: IMU Non-OrthogonalA", group = "Sensor"))
-public class W_nonorthoA extends LinearOpMode {
-    
+@Autonomous(name = "Sensor: IMU Non-Orthogonal", group = "Sensor")
+public class W_nonortho extends LinearOpMode {
+  private ElapsedTime runtime = new ElapsedTime();    
   double objectA=0;
   double fixedtheta=0;//find this angle
   double bearingangle=0;
@@ -181,6 +181,7 @@ public class W_nonorthoA extends LinearOpMode {
 
 
     public double kpFL; //find value
+    
     public double kiFL; //find value
     public double kdFL;//find value
     
@@ -666,10 +667,10 @@ public class PIDCONTOLLERbearing{
     } 
   @Override
   public void runOpMode() throws InterruptedException{
-    //private ElapsedTime runtime = new ElapsedTime();
+    
     imu = hardwareMap.get(IMU.class, "imu");
-    pivotintake = hardwareMap.get(Servo.class, "pivot intake");
-    pivotintakeA = hardwareMap.get(Servo.class, "pivot intakeA");
+    pivotintake = hardwareMap.get(Servo.class, "pivotintake");
+    pivotintakeA = hardwareMap.get(Servo.class, "pivotintakeA");
     shooterholder= hardwareMap.get(Servo.class, "shooterholder");
     belt = hardwareMap.get(CRServo.class, "belt");
     holder = hardwareMap.get(CRServo.class, "holder");
@@ -677,7 +678,7 @@ public class PIDCONTOLLERbearing{
     shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
     shooterwheelB = hardwareMap.get(DcMotor.class, "shooterwheelB");
     intake=hardwareMap.get(DcMotor.class, "intake");
-    X=hardwareMap.get(DcMotor.class, "odometrywheelone");
+    X=hardwareMap.get(DcMotor.class, "X");
     backleft = hardwareMap.get(DcMotor.class, "backleft");
     backright = hardwareMap.get(DcMotor.class, "backright");
     frontright = hardwareMap.get(DcMotor.class, "frontright");
@@ -717,7 +718,7 @@ public class PIDCONTOLLERbearing{
     double blueA=0;
     double sense=0;
     double senseA=0;
-    double X=0;
+    double Xa=0;
     double Y=0;
     double Z=0;
     double Pitch=0;
@@ -761,17 +762,19 @@ public class PIDCONTOLLERbearing{
 
     Orientation hubRotation = xyzOrientation(xRotation, yRotation, zRotation);
 
-
+    
     RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(hubRotation);
     
     imu.initialize(new IMU.Parameters(orientationOnRobot));
     
-    //runtime.reset();
+    runtime.reset();
+    
     waitForStart();
     
     
     
     while (opModeIsActive()) {
+      
       telemetry.addData("Hub orientation", "X=%.1f,  Y=%.1f,  Z=%.1f \n", xRotation, yRotation, zRotation);
       imu.resetYaw();
       YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
@@ -956,14 +959,14 @@ public class PIDCONTOLLERbearing{
           
           if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
             Y=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
-            X=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
+            Xa=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
             Z=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
             Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
             Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
             Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
             
             //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
-            telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
+            telemetry.addLine("XYZ " + Xa/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
             telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
             
           }
@@ -1122,16 +1125,16 @@ public class PIDCONTOLLERbearing{
             if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
               
               Y=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
-              X=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
+              Xa=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
               Z=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
               Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
               Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
               Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);              
 
 
-              bearingA=Math.toDegrees(Math.atan2(X/10, Y/10));
+              bearingA=Math.toDegrees(Math.atan2(Xa/10, Y/10));
               //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
-              telemetry.addLine("XYZ " + X/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
+              telemetry.addLine("XYZ " + Xa/10 + " " + Y/10 + " " + Z/10 + "  (inch)");
               telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
               backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
               frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -1151,7 +1154,7 @@ public class PIDCONTOLLERbearing{
               backright.setPower(powerBR);
               currentpositionY=intake.getCurrentPosition();
               currentpositionX=X.getCurrentPosition(); 
-              deltaX=(X/10)-currentpositionX;
+              deltaX=(Xa/10)-currentpositionX;
               deltaY=(Y/10)-currentpositionY;
               angletarget=Math.toDegrees(Math.atan2(deltaY,deltaX));
               currentheading=orientation.getYaw(AngleUnit.DEGREES);
@@ -1171,7 +1174,7 @@ public class PIDCONTOLLERbearing{
               backright.setPower(powerBR);
               startx=X.getCurrentPosition();
               starty=intake.getCurrentPosition();
-              rangeA=Math.sqrt(Math.pow(((X)/10), 2) + Math.pow(((Y)/10), 2));
+              rangeA=Math.sqrt(Math.pow(((Xa)/10), 2) + Math.pow(((Y)/10), 2));
               rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
               pointCx=rangeB+offsetX;
               
