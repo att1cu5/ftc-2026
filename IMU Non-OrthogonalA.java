@@ -172,9 +172,9 @@ public class W_nonortho extends LinearOpMode {
  
 
   public double answervelocity(double heightofgoal, double g, double theta){
-       return (MATH.sqrt(2*g*heightofgoal)/MATH.sin(theta));
+       return (Math.sqrt(2*g*heightofgoal)/Math.sin(theta));
   }
- //hi
+ 
 
   public class PIDCONTOLLERFL{
     
