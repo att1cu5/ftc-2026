@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 @TeleOp (name = "TELEOP_BESTC (Blocks to Java)")
 public class TELEOP_BESTC extends LinearOpMode {
+  double fixedtheta=0;//find this
+  
   double deltaX=0;
   double startx=0;
   double starty=0;
@@ -30,7 +32,7 @@ public class TELEOP_BESTC extends LinearOpMode {
   double C=0;
   double currentpositionY=0;
   double currentpositionX=0; 
-  public double gravity=386.08858267717;
+  double gravity=386.08858267717;
   boolean thisExpUp;
   boolean thisExpDn;
   boolean thisGainUp;
@@ -67,8 +69,7 @@ public class TELEOP_BESTC extends LinearOpMode {
   public double beltspeed1=-1; // adjust value in the future
   public double beltspeed2=1; // adjust value in the future
   public double Circumference=76.8*Math.PI; //in mm
-  USE_WEBCAM = true;
-  test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
+  
   double[] motif={0,0,0,0};
   double[] correctmotif={0,0,0,0};
   double red=0;
@@ -129,7 +130,8 @@ public class TELEOP_BESTC extends LinearOpMode {
           double integralshooterB =+ errorshooterB*timeBs;
           if(integralshooterB>integralmaxB){
               integralshooterB=integralmaxB;
-          if(integralshooterB<-integralmaxB){
+          }
+          if(integralshooterB<(integralmaxB*-1)){
               integralshooterB=integralmaxB*-1;
           }
           double derivativeshooterB = errorshooterB - previousErrorshooterB/timeBs;
@@ -188,7 +190,8 @@ public class TELEOP_BESTC extends LinearOpMode {
           double integralshooterA =+ errorshooterA*timeAs;
           if(integralshooterA>integralmaxA){
               integralshooterA=integralmaxA;
-          if(integralshooterA<-integralmaxA){
+          }  
+          if(integralshooterA<(integralmaxA*-1)){
               integralshooterA=integralmaxA*-1;
           }
           double outputshooterAa = PIDshooterA(kpshooterA, kishooterA, kdshooterA, errorshooterA, derivativeshooterA, integralshooterA);
@@ -230,12 +233,17 @@ public class TELEOP_BESTC extends LinearOpMode {
       double sumofx3=(x1*x1*x1)+(x2*x2*x2)+(x3*x3*x3);
       return sumofx3;
   }
+  public double answervelocity(double heightofgoal, double g, double theta){
+       return (MATH.sqrt(2*g*heightofgoal)/MATH.sin(theta));
+  }
   @Override
   public void runOpMode() {
-    private ElapsedTime runtime = new ElapsedTime();
-    pivotintake = hardwareMap.get(Servo.class, "pivot intake");
-    pivotintakeA = hardwareMap.get(Servo.class, "pivot intakeA");
+    //private ElapsedTime runtime = new ElapsedTime();
+    pivotintake = hardwareMap.get(Servo.class, "pivotintake");
+    pivotintakeA = hardwareMap.get(Servo.class, "pivotintakeA");
     belt = hardwareMap.get(CRServo.class, "belt");
+    USE_WEBCAM = true;
+  
     double speedOfintakeOff=0;
     double speedOfintakeOn=0.8;
     double yAxis= -gamepad2.left_stick_y;
@@ -254,7 +262,7 @@ public class TELEOP_BESTC extends LinearOpMode {
     shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
     shooterwheelB = hardwareMap.get(DcMotor.class, "shooterwheelB");
     holder = hardwareMap.get(CRServo.class, "holder");
-    X=hardwareMap.get(DcMotor.class, "odometrywheelone");
+    X=hardwareMap.get(DcMotor.class, "X");
     intake = hardwareMap.get(DcMotor.class, "intake");
     backleft = hardwareMap.get(DcMotor.class, "backleft");
     backright = hardwareMap.get(DcMotor.class, "backright");
@@ -385,7 +393,9 @@ public class TELEOP_BESTC extends LinearOpMode {
               backleft.setPower(backleft_A);            
               backright.setPower(backright_A);
       }
+      
       List<AprilTagDetection> myAprilTagDetections;
+      
       AprilTagDetection myAprilTagDetection;
     
       // Get a list of AprilTag detections.
@@ -396,6 +406,7 @@ public class TELEOP_BESTC extends LinearOpMode {
         myAprilTagDetection = myAprilTagDetection_item;
       // Display info about the detection.
         telemetry.addLine("");
+        
         if (myAprilTagDetection.metadata != null) {
           telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") " + myAprilTagDetection.metadata.name);
          // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
@@ -413,10 +424,7 @@ public class TELEOP_BESTC extends LinearOpMode {
             Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
             rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
             pointCx=rangeB+offsetX;
-            A=(3*(sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofy(pointAy, pointBy, pointCy)))/(3*((sumxpowerfour(pointAx, pointBx, pointCx))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofxsqr(pointAx, pointBx, pointCx))));
-            B=((3*sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofy(pointAy, pointBy, pointCy)*sumofx(pointAx, pointBx, pointCx)))/((3*sumofxsqr(pointAx, pointBx, pointCx))-(sumofx(pointAx, pointBx, pointCx)*sumofx(pointAx, pointBx, pointCx)));
-            C=(sumofy(pointAy, pointBy, pointCy)/3)-B*(sumofx(pointAx, pointBx, pointCx)/3)-A*((sumofx(pointAx, pointBx, pointCx)/3)*(sumofx(pointAx, pointBx, pointCx)/3));
-            height=C-((B*B)/(4*A));
+            
             //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
             telemetry.addLine("XYZ " + Xa/10 + " " + Ya/10 + " " + Za/10 + "  (inch)");
             telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
@@ -450,59 +458,10 @@ public class TELEOP_BESTC extends LinearOpMode {
        }
       
 
-        NormalizedRGBA colors = test_color.getNormalizedColors();
-        red=colors.red*10;
-        green=colors.green*10;
-        blue=colors.blue*10;
-        sense=0;
-
-        if(blue>=0.05){
-                sense=2;
-
-                motif[i]=sense;
-
-                i=i+1;
-                   
-                
-        }
-        if(green>=0.05 && blue<0.05){
-                //telemetry.addLine("got green artifact");
-                sense=1;
-                motif[i]=sense;
-                i=i+1;
-                  
-        }
-        sleep(200); //change delay to less if you want
-        if(i==3){
-          i=0;
-        }
-      
-        if(correctmotif[0]==motif[0] && motifs!=0){
-          telemetry.addLine("first ball is correct");
-        }
-        else{
-          telemetry.addLine("first ball is incorrect");
-        }
-        if(correctmotif[1]==motif[1] && motifs!=0){
-            telemetry.addLine("second ball is correct");
-        }
-        else{
-          telemetry.addLine("second ball is incorrect");
-        }
-        if(correctmotif[2]==motif[2] && motifs!=0){
-              telemetry.addLine("third ball is correct");
-        }
-      
-        else{
-          telemetry.addLine("third ball is incorrect");
-        }
-        if(correctmotif[2]==motif[2] && motifs!=0 && correctmotif[1]==motif[1] && correctmotif[0]==motif[0]){
-          telemetry.addLine("all balls are in correct placement");
-
-        }
+        
 
       }
-      intialspeed=MATH.sprt(2*gravity*height);
+      intialspeed=answervelocity(pointCy, gravity, fixedtheta);
       if(gamepad1.right_trigger>0){
             desiredspeed=intialspeed-(change*gamepad1.right_trigger);
       }
@@ -526,11 +485,11 @@ public class TELEOP_BESTC extends LinearOpMode {
           feedforwardtermA termA=feedforwardtermA();
           PIDCONTOLLERshooterA ShooterA=PIDCONTOLLERshooterA();
           double currentspeedA=((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
-          double VelocityA=1305;
-          double AccelerationA=0;
-          double KSshooterA=0;
-          double KVshooterA=0;
-          double KAshooterA=0;
+          double VelocityA=0;//tune this 
+          double AccelerationA=0;//tune this
+          double KSshooterA=0;//tune this
+          double KVshooterA=0;//tune this
+          double KAshooterA=0;//tune this
           double feedforwardA=termA.feedforwardtermA(VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
           double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA)+feedforwardA;   
           shooterwheelB.setPower(speedB);
@@ -634,8 +593,12 @@ public class TELEOP_BESTC extends LinearOpMode {
       // Set Gain.
       myGainControl.setGain((int) myGain);
       sleep(20);
+       }
+     }
     }
+   }
   }
+ }
 }
  
       
