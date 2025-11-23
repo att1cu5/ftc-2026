@@ -40,7 +40,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import com.qualcomm.robotcore.util.ElapsedTime;
-@Autonomous((name = "Sensor: IMU Non-OrthogonalA", group = "Sensor")
+@Autonomous((name = "Sensor: IMU Non-OrthogonalA", group = "Sensor"))
 public class W_nonorthoA extends LinearOpMode {
   double objectA=0;
   double fixedtheta=0;//find this angle
@@ -161,22 +161,8 @@ public class W_nonorthoA extends LinearOpMode {
             return -1;
          }
   }
-  public double m(double x1, double x2, double x3, double y1, double y2, double y3){
-       double n=3;
-       double sumofx=x1+x2+x3;
-       double sumofy=y1+y2+y3;
-       double sumofxy=(y1*x1)+(y2*x2)+(y3*x3);
-       double sumofxsqr=(x1*x1)+(x2*x2)+(x3*x3);
-       double m=(n*sumofxy-sumofx*sumofy)/(sumofxsqr-(sumofx*sumofx);
-       return m;
-  }
-  public double b(double slope, double x1, double x2, double x3, double y1, double y2, double y3){
-       double n=3;
-       double sumofx=x1+x2+x3;
-       double sumofy=y1+y2+y3;
-       double b=(sumofy-slope*sumofx)/n;
-       return b;
-  }  
+  
+ 
   public double sumofx(double x1, double x2, double x3){
      double sumofx=x1+x2+x3;
      return sumofx;
@@ -311,7 +297,7 @@ public class PIDCONTOLLERbearing{
         double errorbearing=(targetbearing-currentbearing)%360;
         if(errorbearing>=180){
             erorrbearing-=360;
-          }  
+            
         } else if(errorbearing<-180){
              errorbearing+=360;
         }
@@ -387,7 +373,7 @@ public class PIDCONTOLLERbearing{
         double erroryaw = (targetyaw - currentyaw)%360;
         if(erroryaw>=180){
             erorryaw-=360;
-          }  
+           
         } else if(erroryaw<-180){
              erroryaw+=360;
         }
@@ -539,7 +525,8 @@ public class PIDCONTOLLERbearing{
           double integralshooterB =+ errorshooterB*timeBs;
           if(integralshooterB>integralmaxB){
               integralshooterB=integralmaxB;
-          if(integralshooterB<-integralmaxB){
+          }
+          if(integralshooterB<(integralmaxB*-1)){
               integralshooterB=integralmaxB*-1;
           }
           double derivativeshooterB = errorshooterB - previousErrorshooterB/timeBs;
@@ -598,7 +585,8 @@ public class PIDCONTOLLERbearing{
           double integralshooterA =+ errorshooterA*timeAs;
           if(integralshooterA>integralmaxA){
               integralshooterA=integralmaxA;
-          if(integralshooterA<-integralmaxA){
+          }
+          if(integralshooterA<(-1*integralmaxA)){
               integralshooterA=integralmaxA*-1;
           }
           double outputshooterAa = PIDshooterA(kpshooterA, kishooterA, kdshooterA, errorshooterA, derivativeshooterA, integralshooterA);
@@ -1221,18 +1209,7 @@ public class PIDCONTOLLERbearing{
               rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
               pointCx=rangeB+offsetX;
               
-              M=m(pointAx, pointBx, pointCx, pointAy, pointBy, pointCy);
-              yintercept=b(M,pointAx, pointBx, pointCx, pointAy, pointBy, pointCy);
-              matrixA=matrixAii(4*sumxpowerfour(pointAx, pointBx, pointCx), 3*sumofxsqr(pointAx, pointBx, pointCx), 6);
-              matrixB=matrixAij(sumxpowerfour(pointAx, pointBx, pointCx), sumxpowerthree(pointAx, pointBx, pointCx), 2*sumofxsqr(pointAx, pointBx, pointCx), sumofx(pointAx, pointBx, pointCx),sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy), sumofy(pointAy, pointBy, pointCy),sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),3);
-              matrixD=matrixAIJ(2*sumxpowerfour(pointAx, pointBx, pointCx),2*sumxpowerthree(pointAx, pointBx, pointCx),4*sumofxsqr(pointAx, pointBx, pointCx),2*sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),2*sumofx(pointAx, pointBx, pointCx),sumofy(pointAy, pointBy, pointCy),2*sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),6);
-              matrixC=matrixAki(7*sumxpowerthree(pointAx, pointBx, pointCx),6*sumofxsqr(pointAx, pointBx, pointCx),5*sumofx(pointAx, pointBx, pointCx));
-              matrixE=matrixAkj(0*sumxpowerfour(pointAx, pointBx, pointCx),2*sumxpowerthree(pointAx, pointBx, pointCx),4*sumofxsqr(pointAx, pointBx, pointCx), 4*sumofx(pointAx, pointBx, pointCx), 6,2*sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy),2*sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy), 2*sumofy(pointAy, pointBy, pointCy));
-              A=(3*(sumofx2yA(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofy(pointAy, pointBy, pointCy)))/(3*((sumxpowerfour(pointAx, pointBx, pointCx))-(sumofxsqr(pointAx, pointBx, pointCx)*sumofxsqr(pointAx, pointBx, pointCx))));
-              B=((3*sumofxy(pointAx, pointAy, pointBx, pointBy, pointCx, pointCy))-(sumofy(pointAy, pointBy, pointCy)*sumofx(pointAx, pointBx, pointCx)))/((3*sumofxsqr(pointAx, pointBx, pointCx))-(sumofx(pointAx, pointBx, pointCx)*sumofx(pointAx, pointBx, pointCx)));
-              C=(sumofy(pointAy, pointBy, pointCy)/3)-B*(sumofx(pointAx, pointBx, pointCx)/3)-A*((sumofx(pointAx, pointBx, pointCx)/3)*(sumofx(pointAx, pointBx, pointCx)/3));
-              
-              height=C-((B*B)/(4*A));
+             
               
               rangeofbot=rangeAcontrol(rangeA,rangeB);
               
@@ -1260,12 +1237,12 @@ public class PIDCONTOLLERbearing{
         telemetry.addLine("key:");
         telemetry.addLine("XYZ = X (Right), Y (Forward), Z (Up) dist.");
         telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-        
-        }
-      }
+    
+      
+      
       //String message="f(x)="+A+"x²+"+B+"x"+"+"C;  
       
-      //telemetry.addData(message);
+      }//telemetry.addData(message);
       if(correctmotif[0]!=motif[0] && correctmotif[1]==motif[1]){
           servostatusC=-1;
           pivotdegC=servoC(servostatusC);
@@ -1274,6 +1251,7 @@ public class PIDCONTOLLERbearing{
           // might need a delay
           pivotdegE=servoE(servostatusE);
           pivotintakeA.setPosition(pivotdegE);
+        
           servostatusB=1;
           // might need a delay
           pivotdegB=servoB(servostatusB);
@@ -1306,7 +1284,7 @@ public class PIDCONTOLLERbearing{
           shooterwheelB.setPower(0);  
           shooterwheelA.setPower(0);
       }
-      if(correctmotif[1]==motif[1] && correctmotif[0]==motif[0]{
+      if(correctmotif[1]==motif[1] && correctmotif[0]==motif[0]){
           servostatusD=1;
           // might need a delay
           double pivotdegD=servoD(servostatusD);
@@ -1489,5 +1467,5 @@ public class PIDCONTOLLERbearing{
     }
   }
 }
-}
+
 }}}
