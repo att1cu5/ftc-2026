@@ -207,7 +207,7 @@ public class TELEOP_BESTC extends LinearOpMode {
   }
 
   public double answervelocity(double heightofgoal, double g, double theta){
-       return (MATH.sqrt(2*g*heightofgoal)/MATH.sin(theta));
+       return (Math.sqrt(2*g*heightofgoal)/Math.sin(theta));
   }
   @Override
   public void runOpMode() {
