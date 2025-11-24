@@ -40,8 +40,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import com.qualcomm.robotcore.util.ElapsedTime;
-@Autonomous(name = "Sensor: IMU Non-Orthogonal", group = "Sensor")
-public class W_nonortho extends LinearOpMode {
+@Autonomous(name = "Sensor: IMU Non-OrthogonalA", group = "Sensor")
+public class W_nonorthoA extends LinearOpMode {
   private ElapsedTime runtime = new ElapsedTime();    
   double objectA=0;
   double fixedtheta=0;//find this angle
