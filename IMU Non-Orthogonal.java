@@ -798,10 +798,10 @@ public class PIDCONTOLLERbearing{
       double currentpositionFR=frontright.getCurrentPosition();
       double currentpositionFL=frontleft.getCurrentPosition();
                 
-      double powerBL=BLA(currentpositionBL,1254);
-      double powerFL=FLA(currentpositionFL,1254);
-      double powerFR=FRA(currentpositionFR,-1254);
-      double powerBR=BRA(currentpositionBR,-1254);
+      double powerBL=BLA(currentpositionBL,-1254);
+      double powerFL=FLA(currentpositionFL,-1254);
+      double powerFR=FRA(currentpositionFR,1254);
+      double powerBR=BRA(currentpositionBR,1254);
       frontright.setPower(powerFR);       
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
