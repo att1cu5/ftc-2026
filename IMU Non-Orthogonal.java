@@ -798,10 +798,10 @@ public class PIDCONTOLLERbearing{
       double currentpositionFR=frontright.getCurrentPosition();
       double currentpositionFL=frontleft.getCurrentPosition();
                 
-      double powerBL=BLA(currentpositionBL,1254);
-      double powerFL=FLA(currentpositionFL,1254);
-      double powerFR=FRA(currentpositionFR,-1254);
-      double powerBR=BRA(currentpositionBR,-1254);
+      double powerBL=BLA(currentpositionBL,-1254);
+      double powerFL=FLA(currentpositionFL,-1254);
+      double powerFR=FRA(currentpositionFR,1254);
+      double powerBR=BRA(currentpositionBR,1254);
       frontright.setPower(powerFR);       
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
@@ -831,10 +831,10 @@ public class PIDCONTOLLERbearing{
       currentpositionBR=backright.getCurrentPosition();
       currentpositionFR=frontright.getCurrentPosition();
       currentpositionFL=frontleft.getCurrentPosition();
-      powerBL=BLA(currentpositionBL,-1755);
-      powerFL=FLA(currentpositionFL,1755);
-      powerFR=FRA(currentpositionFR,-1755);
-      powerBR=BRA(currentpositionBR,1755);
+      powerBL=BLA(currentpositionBL,1755);
+      powerFL=FLA(currentpositionFL,-1755);
+      powerFR=FRA(currentpositionFR,1755);
+      powerBR=BRA(currentpositionBR,-1755);
       frontright.setPower(powerFR);       
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
@@ -851,10 +851,10 @@ public class PIDCONTOLLERbearing{
       currentpositionBR=backright.getCurrentPosition();
       currentpositionFR=frontright.getCurrentPosition();
       currentpositionFL=frontleft.getCurrentPosition();
-      powerBL=BLA(currentpositionBL,100);
-      powerFL=FLA(currentpositionFL,100);
-      powerFR=FRA(currentpositionFR,-100);
-      powerBR=BRA(currentpositionBR,-100);
+      powerBL=BLA(currentpositionBL,-100);
+      powerFL=FLA(currentpositionFL,-100);
+      powerFR=FRA(currentpositionFR,100);
+      powerBR=BRA(currentpositionBR,100);
       frontright.setPower(powerFR);       
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
@@ -867,10 +867,10 @@ public class PIDCONTOLLERbearing{
       currentpositionBR=backright.getCurrentPosition();
       currentpositionFR=frontright.getCurrentPosition();
       currentpositionFL=frontleft.getCurrentPosition();
-      powerBL=BLA(currentpositionBL,-100);
-      powerFL=FLA(currentpositionFL,-100);
-      powerFR=FRA(currentpositionFR,100);
-      powerBR=BRA(currentpositionBR,100);
+      powerBL=BLA(currentpositionBL,100);
+      powerFL=FLA(currentpositionFL,100);
+      powerFR=FRA(currentpositionFR,-100);
+      powerBR=BRA(currentpositionBR,-100);
       frontright.setPower(powerFR);       
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
@@ -919,10 +919,10 @@ public class PIDCONTOLLERbearing{
       currentpositionBR=backright.getCurrentPosition();
       currentpositionFR=frontright.getCurrentPosition();
       currentpositionFL=frontleft.getCurrentPosition();
-      powerBL=BLA(currentpositionBL,1254);//change sign if needed
-      powerFL=FLA(currentpositionFL,1254);//change sign if needed
-      powerFR=FRA(currentpositionFR,-1254);//change sign if needed
-      powerBR=BRA(currentpositionBR,-1254);//change sign if needed
+      powerBL=BLA(currentpositionBL,-1254);//change sign if needed
+      powerFL=FLA(currentpositionFL,-1254);//change sign if needed
+      powerFR=FRA(currentpositionFR,1254);//change sign if needed
+      powerBR=BRA(currentpositionBR,1254);//change sign if needed
       frontright.setPower(powerFR);       
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
@@ -935,10 +935,10 @@ public class PIDCONTOLLERbearing{
       currentpositionBR=backright.getCurrentPosition();
       currentpositionFR=frontright.getCurrentPosition();
       currentpositionFL=frontleft.getCurrentPosition();
-      powerBL=BLA(currentpositionBL,251);//change sign if needed
-      powerFL=FLA(currentpositionFL,-251);//change sign if needed
-      powerFR=FRA(currentpositionFR,251);//change sign if needed
-      powerBR=BRA(currentpositionBR,-251);//change sign if needed
+      powerBL=BLA(currentpositionBL,-251);//change sign if needed
+      powerFL=FLA(currentpositionFL,251);//change sign if needed
+      powerFR=FRA(currentpositionFR,-251);//change sign if needed
+      powerBR=BRA(currentpositionBR,251);//change sign if needed
       frontright.setPower(powerFR);       
       frontleft.setPower(powerFL);         
       backleft.setPower(powerBL);            
@@ -1169,10 +1169,10 @@ public class PIDCONTOLLERbearing{
               powerFL=bearingAcontrol(bearingoftag,bearingofbot);//change sign if needed
               powerFR=bearingAcontrol(bearingoftag,bearingofbot);//change sign if needed
               powerBR=bearingAcontrol(bearingoftag,bearingofbot);//change sign if needed
-              frontright.setPower(-powerFR);       
-              frontleft.setPower(-powerFL);         
-              backleft.setPower(-powerBL);            
-              backright.setPower(-powerBR);
+              frontright.setPower(powerFR);       
+              frontleft.setPower(powerFL);         
+              backleft.setPower(powerBL);            
+              backright.setPower(powerBR);
               startx=X.getCurrentPosition();
               starty=intake.getCurrentPosition();
               rangeA=Math.sqrt(Math.pow(((Xa)/10), 2) + Math.pow(((Y)/10), 2));
@@ -1191,10 +1191,10 @@ public class PIDCONTOLLERbearing{
               powerFL=rangeofbot;//change sign if needed
               powerFR=rangeofbot;//change sign if needed
               powerBR=rangeofbot;
-              frontright.setPower(-powerFR);       
-              frontleft.setPower(-powerFL);         
-              backleft.setPower(-powerBL);            
-              backright.setPower(-powerBR);
+              frontright.setPower(powerFR);       
+              frontleft.setPower(powerFL);         
+              backleft.setPower(powerBL);            
+              backright.setPower(powerBR);
               
             }
         } else {
