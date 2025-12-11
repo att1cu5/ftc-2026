@@ -1,5 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.vision.VisionPortal;
+import java.util.concurrent.TimeUnit;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -10,14 +19,38 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import java.io.Serializable;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import java.util.List;
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 @TeleOp (name = "TELEOP_BESTC (Blocks to Java)")
 public class TELEOP_BESTC extends LinearOpMode {
   double fixedtheta=0;//find this
-  
+  double rotater=0;
+  double motifs=0;
   double deltaX=0;
   double startx=0;
+  double runtime=0;
   double starty=0;
   double deltaY=0;
+  boolean USE_WEBCAM;
+  AprilTagProcessor myAprilTagProcessor;
+  Position cameraPosition;
+  YawPitchRollAngles cameraOrientation;
+  VisionPortal myVisionPortal;
   double rangeB=0; 
   public double offsetX=9.129397076417323;
   public double offsetY=5.1496063;//fine tune this
@@ -27,9 +60,7 @@ public class TELEOP_BESTC extends LinearOpMode {
   double pointAy=0.0001;
   double pointBy=16.5354;// robot height of camera in inches
   double pointCy=38.759843+offsetY;
-  double A=0;
-  double B=0;
-  double C=0;
+
   double currentpositionY=0;
   double currentpositionX=0; 
   double gravity=386.08858267717;
@@ -57,6 +88,8 @@ public class TELEOP_BESTC extends LinearOpMode {
   private DcMotor shooterwheelA;
   private DcMotor shooterwheelB;
   private CRServo holder;
+  private DcMotor X;
+  
   public double change=10; //adjust value
   public double degree1=0.5;
   public double degree2=0;
@@ -92,20 +125,31 @@ public class TELEOP_BESTC extends LinearOpMode {
   double B=0;
   double C=0;
   public class FeedforwardB{
-      public double kSB;//find this value
-      public double kAB;//find this value
-      public double kVB;//find this value
-      double DesiredVB;//find this value
-      double DesiredAB;//find this value
-      public class FeedforwardB{
-       public double feedforwardtermB(double DesiredVB,double DesiredAB,double kSB,double kVB,double kAB){
+      public double kSB=0;//find this value
+      public double kAB=0;//find this value
+      public double kVB=0;//find this value
+      double DesiredVB=0;//find this value
+      double DesiredAB=0;//find this value
+      
+      public double feedforwardtermB(double DesiredVB,double DesiredAB,double kSB,double kVB,double kAB){
            this.kSB=kSB;
            this.kVB=kVB;
            this.kAB=kAB;
            double outputffB=kSB*sign(DesiredVB)+kVB*DesiredVB+kAB*DesiredAB;
            return outputffB;
-          }
       }
+  }
+  public double sign(double v){
+         if(v>0){
+             return 1; 
+         }
+         if(v==0){
+             return 0;
+         }
+         if(v<0){
+            return -1;
+         }
+  } 
   public class PIDCONTOLLERshooterB{
       public double kpshooterB; //find this value
       public double kishooterB; //find this value
@@ -114,8 +158,8 @@ public class TELEOP_BESTC extends LinearOpMode {
       double intergralshooterB=0; //assign a value in the future to intergral
       double minOutputshooterB=0; //assign a value in the future to minoutput
       double maxOutputshooterB=0; //assign a value in the future to maxoutput
-      public class PIDCONTOLLERshooterB{
-       public double PIDshooterB(double kpshooterB, double kishooterB, double kdshooterB, double shooterB1, double shooterB2, double shooterB3){
+
+      public double PIDshooterB(double kpshooterB, double kishooterB, double kdshooterB, double shooterB1, double shooterB2, double shooterB3){
     
          this.kpshooterB=kpshooterB;
          this.kishooterB=kishooterB;
@@ -148,13 +192,13 @@ public class TELEOP_BESTC extends LinearOpMode {
 
   }
   public class FeedforwardA{
-      public double kSA;//find this value
-      public double kAA;//find this value
-      public double kVA;//find this value
-      double DesiredVA;//find this value
-      double DesiredAA;//find this value
-      public class FeedforwardA{
-       public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
+      public double kSA=0;//find this value
+      public double kAA=0;//find this value
+      public double kVA=0;//find this value
+      double DesiredVA=0;//find this value
+      double DesiredAA=0;//find this value
+
+      public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
            this.kSA=kSA;
            this.kVA=kVA;
            this.kAA=kAA;
@@ -173,8 +217,8 @@ public class TELEOP_BESTC extends LinearOpMode {
       double intergralshooterA=0; //assign a value in the future to intergral
       double minOutputshooterA=0; //assign a value in the future to minoutput
       double maxOutputshooterA=0; //assign a value in the future to maxoutput
-      public class PIDCONTOLLERshooterA{
-       public double PIDshooterA(double kpshooterA, double kishooterA, double kdshooterA, double shooterA1, double shooterA2, double shooterA3){
+      
+      public double PIDshooterA(double kpshooterA, double kishooterA, double kdshooterA, double shooterA1, double shooterA2, double shooterA3){
          
          this.kpshooterA=kpshooterA;
          this.kishooterA=kishooterA;
@@ -282,16 +326,16 @@ public class TELEOP_BESTC extends LinearOpMode {
       if(gamepad1.dpad_down){
          shooterholder.setPosition(shooterholderopen);
       }     
-      if(gampad1.dpad_left){
+      if(gamepad1.dpad_left){
         pivotintakeA.setPosition(latchopen);
       }
-      if(gampad1.dpad_right){
+      if(gamepad1.dpad_right){
         pivotintakeA.setPosition(latchclose);
       }
-      if(gampad1.a){
+      if(gamepad1.a){
         pivotintake.setPosition(degree1);
       }
-      if(gampad1.b){
+      if(gamepad1.b){
         pivotintake.setPosition(degree2);
       }
       if(gamepad2.y){
@@ -454,7 +498,7 @@ public class TELEOP_BESTC extends LinearOpMode {
           double KVshooterB=0;//tune this
           double KAshooterB=0;//tune this
           double feedforwardB=termB.feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
-          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB; 
+          
           feedforwardtermA termA=feedforwardtermA();
           PIDCONTOLLERshooterA ShooterA=PIDCONTOLLERshooterA();
           double currentspeedA=((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
@@ -464,7 +508,8 @@ public class TELEOP_BESTC extends LinearOpMode {
           double KVshooterA=0;//tune this
           double KAshooterA=0;//tune this
           double feedforwardA=termA.feedforwardtermA(VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
-          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA)+feedforwardA;   
+          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA)+feedforwardA; 
+          double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB; 
           shooterwheelB.setPower(speedB);
           shooterwheelA.setPower(speedA);
       }
@@ -547,31 +592,7 @@ public class TELEOP_BESTC extends LinearOpMode {
       telemetry.update();
     }
   }
-
-
-  private void setManualExposure() {
-
-    waitForCamera();
-    // Set camera controls unless we are stopping.
-    if (!isStopRequested()) {
-      
-      if (!myExposureControl.getMode().equals(ExposureControl.Mode.Manual)) {
-        myExposureControl.setMode(ExposureControl.Mode.Manual);
-        sleep(50);
-      }
-      myExposureControl.setExposure((long) myExposure, TimeUnit.MILLISECONDS);
-      sleep(20);
-      
-      
-      // Set Gain.
-      myGainControl.setGain((int) myGain);
-      sleep(20);
-    }
-  }
-  }
-  }
-  }
-  }
 }
- 
-      
+}
+
+  
