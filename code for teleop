@@ -38,10 +38,10 @@ public class TELEOP_BEST extends LinearOpMode {
         x = gamepad2.left_stick_x;
         turn = gamepad2.right_stick_x;
         
-        frontleft_A = y - x - turn;
-        frontright_A = (y + x) + turn;
-        backleft_A = (y + x) - turn;
-        backright_A = (y - x) + turn;
+        frontleft_A = y - x;
+        frontright_A = (y + x) ;
+        backleft_A = (y + x) ;
+        backright_A = (y - x);
 
         
        
@@ -84,13 +84,20 @@ public class TELEOP_BEST extends LinearOpMode {
               backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);     
               backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             }
-        else{
+        if(turn==0){
               frontright.setPower(-frontright_A);        
               frontleft.setPower(-frontleft_A);          
               backleft.setPower(backleft_A);            
               backright.setPower(backright_A);
             }
+        else{
+              frontright.setPower(frontright_A);        
+              frontleft.setPower(frontleft_A);          
+              backleft.setPower(backleft_A);            
+              backright.setPower(backright_A);
+        }    
+         
+
         }
     }
 }
-
