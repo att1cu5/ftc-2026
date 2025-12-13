@@ -27,6 +27,8 @@ public class TELEOP_BEST extends LinearOpMode {
     double backright_A;
     double frontleft_A;
     double frontright_A;
+    double swerve_A;
+    double swerve_B;
     backleft = hardwareMap.get(DcMotor.class, "backleft");
     backright = hardwareMap.get(DcMotor.class, "backright");
     frontright = hardwareMap.get(DcMotor.class, "frontright");
@@ -37,7 +39,8 @@ public class TELEOP_BEST extends LinearOpMode {
         y = gamepad2.left_stick_y;
         x = gamepad2.left_stick_x;
         turn = gamepad2.right_stick_x;
-        
+        swerve_A=-turn;
+        swerve_B=turn;
         frontleft_A = y - x;
         frontright_A = (y + x);
         backleft_A = (y + x);
@@ -48,7 +51,9 @@ public class TELEOP_BEST extends LinearOpMode {
 
         
         if (gamepad2.right_bumper) {
-          double precision=1-gamepad2.left_trigger;               
+          double precision=1-gamepad2.left_trigger;   
+          swerve_A=precision*(swerve_A);
+          swerve_B=precision*(swerve_B);
           frontleft_A=precision*(frontleft_A);
           frontright_A=precision*(frontright_A);
           backleft_A=precision*(backleft_A);
@@ -56,7 +61,9 @@ public class TELEOP_BEST extends LinearOpMode {
         }
 
         if (gamepad2.left_bumper) {
-          double precision=0.3-(gamepad2.left_trigger*0.3);                 
+          double precision=0.3-(gamepad2.left_trigger*0.3); 
+          swerve_A=precision*(swerve_A);
+          swerve_B=precision*(swerve_B);
           frontleft_A=precision*(frontleft_A);
           frontright_A=precision*(frontright_A);
           backleft_A=precision*(backleft_A);
@@ -64,7 +71,8 @@ public class TELEOP_BEST extends LinearOpMode {
         }
         if(!gamepad2.left_bumper && !gamepad2.right_bumper){
           double precision=0.6-(gamepad2.left_trigger*0.6);                  
-                                                     
+          swerve_A=precision*(swerve_A);
+          swerve_B=precision*(swerve_B);
           frontleft_A=precision*(frontleft_A);
           frontright_A=precision*(frontright_A);
           backleft_A=precision*(backleft_A);
@@ -85,10 +93,10 @@ public class TELEOP_BEST extends LinearOpMode {
               backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             }
         if(turn!=0){
-              frontright.setPower(-turn);        
-              frontleft.setPower(-turn);          
-              backleft.setPower(turn);            
-              backright.setPower(turn);
+              frontright.setPower(swerve_A);        
+              frontleft.setPower(swerve_A);          
+              backleft.setPower(swerve_B);            
+              backright.setPower(swerve_B);
             }
         else{
               frontright.setPower(frontright_A);        
@@ -101,4 +109,5 @@ public class TELEOP_BEST extends LinearOpMode {
         }
     }
 }
+
 
