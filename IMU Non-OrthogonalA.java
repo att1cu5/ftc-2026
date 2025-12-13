@@ -213,7 +213,7 @@ public class W_nonorthoA extends LinearOpMode {
     }
  }
 public double normalizecurrentangle(double angle){
-    double turingangle=angle % 360; //try this if not working
+    double turingangleA=angle % 360; //try this if not working
   if(turningangleA>=180){
      turningangleA-=360;
      return turningangleA;
