@@ -508,19 +508,10 @@ public class TELEOP_BESTD extends LinearOpMode {
           double KAshooterB=0;//tune this
           double feedforwardB=termB.feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
           
-          feedforwardtermA termA=feedforwardtermA();
-          PIDCONTOLLERshooterA ShooterA=PIDCONTOLLERshooterA();
-          double currentspeedA=((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
-          double VelocityA=0;//tune this 
-          double AccelerationA=0;//tune this
-          double KSshooterA=0;//tune this
-          double KVshooterA=0;//tune this
-          double KAshooterA=0;//tune this
-          double feedforwardA=termA.feedforwardtermA(VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
-          double speedA=shooterA.calcshooterA(desiredspeed,currentspeedA)+feedforwardA; 
+ 
           double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB; 
           shooterwheelB.setPower(speedB);
-          shooterwheelA.setPower(speedA);
+          shooterwheelA.setPower(-speedB);
       }
       telemetry.update();
        
