@@ -238,6 +238,7 @@ public class TELEOP_BESTD extends LinearOpMode {
           if(integralshooterA<(integralmaxA*-1)){
               integralshooterA=integralmaxA*-1;
           }
+          double derivativeshooterA = errorshooterA - previousErrorshooterA/timeAs;
           double outputshooterAa = PIDshooterA(kpshooterA, kishooterA, kdshooterA, errorshooterA, derivativeshooterA, integralshooterA);
           double outputshooterA = Math.max(minOutputshooterA, Math.min(maxOutputshooterA, outputshooterAa));
   
