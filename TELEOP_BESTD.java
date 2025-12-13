@@ -272,6 +272,8 @@ public class TELEOP_BESTD extends LinearOpMode {
     double y=0;
     double turn=0;
     double backleft_A;
+    double swerve_A;
+    double swerve_B;
     double backright_A;
     double frontleft_A;
     double frontright_A;
@@ -310,11 +312,12 @@ public class TELEOP_BESTD extends LinearOpMode {
       x = gamepad2.left_stick_x;
       turn = gamepad2.right_stick_x;
       rotater= gamepad1.left_stick_y;
-      
-      frontleft_A = y - x - turn;
-      frontright_A = (y + x) + turn;
-      backleft_A = (y + x) - turn;
-      backright_A = (y - x) + turn;
+      swerve_A=-turn;
+      swerve_B=turn;
+      frontleft_A = y - x ;
+      frontright_A = (y + x) ;
+      backleft_A = (y + x) ;
+      backright_A = (y - x) ;
       if(gamepad1.y){
          artifactholder.setPosition(artifactholderopen);
       }
@@ -369,7 +372,9 @@ public class TELEOP_BESTD extends LinearOpMode {
       }
 
       if (gamepad2.right_bumper) {
-          double precision=1-gamepad2.left_trigger;               
+          double precision=1-gamepad2.left_trigger;    
+          swerve_A=precision*(swerve_A);
+          swerve_B=precision*(swerve_B);
           frontleft_A=precision*(frontleft_A);
           frontright_A=precision*(frontright_A);
           backleft_A=precision*(backleft_A);
@@ -377,15 +382,18 @@ public class TELEOP_BESTD extends LinearOpMode {
       }
 
       if (gamepad2.left_bumper) {
-          double precision=0.9-(gamepad2.left_trigger*0.9);                 
+          double precision=0.3-(gamepad2.left_trigger*0.3); 
+          swerve_A=precision*(swerve_A);
+          swerve_B=precision*(swerve_B);
           frontleft_A=precision*(frontleft_A);
           frontright_A=precision*(frontright_A);
           backleft_A=precision*(backleft_A);
           backright_A=precision*(backright_A);
       }
       if(!gamepad2.left_bumper && !gamepad2.right_bumper){
-          double precision=0.8-(gamepad2.left_trigger*0.8);                  
-                                                     
+          double precision=0.6-(gamepad2.left_trigger*0.6);                  
+          swerve_A=precision*(swerve_A);
+          swerve_B=precision*(swerve_B);                                           
           frontleft_A=precision*(frontleft_A);
           frontright_A=precision*(frontright_A);
           backleft_A=precision*(backleft_A);
