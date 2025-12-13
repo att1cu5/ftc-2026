@@ -192,11 +192,12 @@ public class TELEOP_BESTD extends LinearOpMode {
 
   }
   public class FeedforwardA{
-      public double kSA=0;//find this value
-      public double kAA=0;//find this value
-      public double kVA=0;//find this value
-      double DesiredVA=0;//find this value
-      double DesiredAA=0;//find this value
+      //do not tune
+      public double kSA=0;
+      public double kAA=0;
+      public double kVA=0;
+      double DesiredVA=0;
+      double DesiredAA=0;
 
       public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
            this.kSA=kSA;
@@ -207,11 +208,11 @@ public class TELEOP_BESTD extends LinearOpMode {
           }
       }
   public class PIDCONTOLLERshooterA{
-      
+      //do not tune
 
-      public double kpshooterA; //find this value
-      public double kishooterA; //find this value
-      public double kdshooterA;//find this value
+      public double kpshooterA; 
+      public double kishooterA; 
+      public double kdshooterA;
       
       double previousErrorshooterA=0;
       double intergralshooterA=0; //assign a value in the future to intergral
