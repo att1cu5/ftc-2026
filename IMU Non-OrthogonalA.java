@@ -257,7 +257,7 @@ public class PIDCONTOLLERbearing{
     public double calcbearing(double targetbearing,double currentbearing){
         double errorbearing=(targetbearing-currentbearing)%360;
         if(errorbearing>=180){
-            erorrbearing-=360;
+            errorbearing-=360;
             
         } else if(errorbearing<-180){
              errorbearing+=360;
