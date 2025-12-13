@@ -258,7 +258,7 @@ public class PIDCONTOLLERbearing{
     public double calcbearing(double targetbearing,double currentbearing){
         double errorbearing=(targetbearing-currentbearing)%360;
         if(errorbearing>=180){
-            erorrbearing-=360;
+            errorbearing-=360;
             
         } else if(errorbearing<-180){
              errorbearing+=360;
@@ -294,7 +294,7 @@ public class PIDCONTOLLERbearing{
        this.kirange=kirange;
        this.kdrange=kdrange;
        double outputrangea = kprange * range1 + kirange * range3 + kdrange * range2;
-       return outputbearinga;
+       return outputrangea;
     }
     public double calcrange(double targetrange,double currentrange){
         double errorrange = targetrange - currentrange;
@@ -334,7 +334,7 @@ public class PIDCONTOLLERbearing{
     public double calcyaw(double targetyaw,double currentyaw){
         double erroryaw = (targetyaw - currentyaw)%360;
         if(erroryaw>=180){
-            erorryaw-=360;
+            erroryaw-=360;
            
         } else if(erroryaw<-180){
              erroryaw+=360;
@@ -456,7 +456,6 @@ public class PIDCONTOLLERbearing{
       public double kVB;//find value
       double DesiredVB=0;// find this value
       double DesiredAB=0;//find this value
-      public class FeedforwardB{
        public double feedforwardtermB(double DesiredVB,double DesiredAB,double kSB,double kVB,double kAB){
            this.kSB=kSB;
            this.kVB=kVB;
@@ -473,7 +472,6 @@ public class PIDCONTOLLERbearing{
       double intergralshooterB=0; //assign a value in the future to intergral
       double minOutputshooterB=0; //assign a value in the future to minoutput
       double maxOutputshooterB=0; //assign a value in the future to maxoutput
-      public class PIDCONTOLLERshooterB{
        public double PIDshooterB(double kpshooterB, double kishooterB, double kdshooterB, double shooterB1, double shooterB2, double shooterB3){
     
          this.kpshooterB=kpshooterB;
@@ -512,7 +510,6 @@ public class PIDCONTOLLERbearing{
       public double kVA;//find value
       double DesiredVA=0; //find this value
       double DesiredAA=0;//find this value
-      public class FeedforwardA{
        public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
            this.kSA=kSA;
            this.kVA=kVA;
@@ -532,7 +529,6 @@ public class PIDCONTOLLERbearing{
       double intergralshooterA=0; //assign a value in the future to intergral
       double minOutputshooterA=0; //assign a value in the future to minoutput
       double maxOutputshooterA=0; //assign a value in the future to maxoutput
-      public class PIDCONTOLLERshooterA{
        public double PIDshooterA(double kpshooterA, double kishooterA, double kdshooterA, double shooterA1, double shooterA2, double shooterA3){
          
          this.kpshooterA=kpshooterA;
@@ -553,6 +549,7 @@ public class PIDCONTOLLERbearing{
           if(integralshooterA<(-1*integralmaxA)){
               integralshooterA=integralmaxA*-1;
           }
+          double derivativeshooterA = errorshooterA - previousErrorshooterA/timeAs;
           double outputshooterAa = PIDshooterA(kpshooterA, kishooterA, kdshooterA, errorshooterA, derivativeshooterA, integralshooterA);
           double outputshooterA = Math.max(minOutputshooterA, Math.min(maxOutputshooterA, outputshooterAa));
   
@@ -1436,6 +1433,3 @@ public class PIDCONTOLLERbearing{
       telemetry.update();
     }
   }
-}
-
-}}}
