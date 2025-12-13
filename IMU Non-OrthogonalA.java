@@ -1321,7 +1321,7 @@ public class PIDCONTOLLERbearing{
           double powerB=shooterB(((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityB, VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
           double powerA=shooterA(((shooterwheelA.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds(), desiredvelocityA, VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
           shooterwheelB.setPower(powerB);
-          shooterwheelA.setPower(powerA);
+          shooterwheelA.setPower(-powerB);
           // might need a delay
           shooterwheelA.setPower(0);
           servostatusC=-1;
