@@ -414,11 +414,17 @@ public class TELEOP_BESTD extends LinearOpMode {
               backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);     
               backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       }
-      else{
+      if(turn==0){
               frontright.setPower(-frontright_A);        
               frontleft.setPower(-frontleft_A);          
               backleft.setPower(backleft_A);            
               backright.setPower(backright_A);
+      }
+      if(turn!=0){
+              frontright.setPower(swerve_A);        
+              frontleft.setPower(swerve_A);          
+              backleft.setPower(swerve_B);            
+              backright.setPower(swerve_B);
       }
       
       List<AprilTagDetection> myAprilTagDetections;
