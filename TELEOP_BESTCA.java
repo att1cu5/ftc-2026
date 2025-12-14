@@ -321,24 +321,7 @@ public class TELEOP_BESTC extends LinearOpMode {
         shooterwheelA.setPower(0);
         shooterwheelB.setPower(0);
       }
-      if(rotaterA<0){
-        belt.setPower(beltspeed1);
-      }
-      if(rotaterA>0){
-        belt.setPower(beltspeed2);
-      }
-      if(rotaterA==0){
-        belt.setPower(0);
-      }
-      if(rotater<0){
-        beltA.setPower(beltspeed1);
-      }
-      if(rotater>0){
-        beltA.setPower(beltspeed2);
-      }
-      if(rotater==0){
-        beltA.setPower(0);
-      }
+
 
       if (gamepad2.right_bumper) {
           double precision=1-gamepad2.left_trigger;    
