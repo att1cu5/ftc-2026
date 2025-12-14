@@ -41,6 +41,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 public class TELEOP_BESTC extends LinearOpMode {
   double fixedtheta=0;//find this
   double rotater=0;
+  double rotaterA=0;
   double motifs=0;
   double deltaX=0;
   double startx=0;
@@ -251,6 +252,7 @@ public class TELEOP_BESTC extends LinearOpMode {
       x = gamepad2.left_stick_x;
       turn = gamepad2.right_stick_x;
       rotater= gamepad1.left_stick_y;
+      rotaterA= gamepad1.right_stick_y;
       swerve_A=-turn;
       swerve_B=turn;
       frontleft_A = y - x ;
@@ -298,20 +300,20 @@ public class TELEOP_BESTC extends LinearOpMode {
 
       }
       if(gamepad1.a){
-          shooterwheelA.setPower(-0.4);
-          shooterwheelB.setPower(0.4);
+          shooterwheelA.setPower(-0.3);
+          shooterwheelB.setPower(0.3);
       }
       if(gamepad1.b){
         shooterwheelA.setPower(0);
         shooterwheelB.setPower(0);
       }
-      if(rotater<0){
+      if(rotaterA<0){
         belt.setPower(beltspeed1);
       }
-      if(rotater>0){
+      if(rotaterA>0){
         belt.setPower(beltspeed2);
       }
-      if(rotater==0){
+      if(rotaterA==0){
         belt.setPower(0);
       }
       if(rotater<0){
