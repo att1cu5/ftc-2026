@@ -292,18 +292,20 @@ public class TELEOP_BESTC extends LinearOpMode {
       //  pivotintake.setPosition(degree2);
       //}
       if(gamepad1.y){
-         holder.setPower(-speedOfintakeOn);
+         
+         
       }
       if(gamepad1.x){
          holder.setPower(speedOfintakeOff);
       }
       if(gamepad1.left_bumper){
            intake.setPower(speedOfintakeOn); 
+           holder.setPower(-speedOfintakeOn);
            
       }
       if(gamepad1.right_bumper){
            intake.setPower(-speedOfintakeOn); 
-           
+           holder.setPower(speedOfintakeOn);
       }
       else{
         
