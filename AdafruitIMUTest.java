@@ -382,15 +382,18 @@ public class AdafruitIMUTest extends LinearOpMode {
       //   holder.setPower(speedOfintakeOff);
       //}
       if(gamepad1.left_bumper){
+           visionPortal.close();
+           sleep(1000); 
            intake.setPower(speedOfintakeOn); 
            // holder.setPower(-speedOfintakeOn);
-           
+           initAprilTag();    
       }
       if(gamepad1.right_bumper){
-        
+          visionPortal.close();
+          sleep(1000); 
           intake.setPower(-speedOfintakeOn); 
           // holder.setPower(speedOfintakeOn);
-          
+          initAprilTag();
 
       }
       else{
