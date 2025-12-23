@@ -125,7 +125,7 @@ public class AdafruitIMUTest extends LinearOpMode {
   public double beltspeed1=-1; // adjust value in the future
   public double beltspeed2=1; // adjust value in the future
   public double Circumference=76.8*Math.PI; //in mm
-  
+  double rotaterA=0;
   double[] motif={0,0,0,0};
   double[] correctmotif={0,0,0,0};
   double red=0;
@@ -289,7 +289,7 @@ public class AdafruitIMUTest extends LinearOpMode {
     pivotintake = hardwareMap.get(Servo.class, "pivotintake");
     pivotintakeA = hardwareMap.get(Servo.class, "pivotintakeA");
     belt = hardwareMap.get(CRServo.class, "belt");
-    beltA = hardwareMap.get(CRServo.class, "belt");
+    beltA = hardwareMap.get(CRServo.class, "beltA");
     USE_WEBCAM = true;
 
   
@@ -344,6 +344,7 @@ public class AdafruitIMUTest extends LinearOpMode {
       x = gamepad2.left_stick_x;
       turn = gamepad2.right_stick_x;
       rotater= gamepad1.left_stick_y;
+      rotaterA= gamepad1.right_stick_y;
       swerve_A=-turn;
       swerve_B=turn;
       frontleft_A = y - x ;
@@ -374,23 +375,28 @@ public class AdafruitIMUTest extends LinearOpMode {
       if(gamepad1.b){
         pivotintake.setPosition(degree2);
       }
-      if(gamepad2.y){
-         holder.setPower(speedOfintakeOn);
-      }
-      if(gamepad2.x){
-         holder.setPower(speedOfintakeOff);
-      }
+      //if(gamepad2.y){
+        // holder.setPower(speedOfintakeOn);
+      //}
+      //if(gamepad2.x){
+      //   holder.setPower(speedOfintakeOff);
+      //}
       if(gamepad1.left_bumper){
            intake.setPower(speedOfintakeOn); 
+           // holder.setPower(-speedOfintakeOn);
            
       }
       if(gamepad1.right_bumper){
         
-          intake.setPower(speedOfintakeOff); 
+          intake.setPower(-speedOfintakeOn); 
+          // holder.setPower(speedOfintakeOn);
           
 
       }
-
+      else{
+        intake.setPower(speedOfintakeOff);
+        // holder.setPower(speedOfintakeOff);
+      }
       
 
       if(rotater<0){
@@ -402,13 +408,13 @@ public class AdafruitIMUTest extends LinearOpMode {
       if(rotater==0){
         belt.setPower(0);
       }
-      if(rotater<0){
+      if(rotaterA<0){
         beltA.setPower(beltspeed1);
       }
-      if(rotater>0){
+      if(rotaterA>0){
         beltA.setPower(beltspeed2);
       }
-      if(rotater==0){
+      if(rotaterA==0){
         beltA.setPower(0);
       }
       if (gamepad2.right_bumper) {
@@ -460,8 +466,8 @@ public class AdafruitIMUTest extends LinearOpMode {
               backright.setPower(backright_A);
       }
       if(turn!=0){
-              frontright.setPower(swerve_A);        
-              frontleft.setPower(swerve_A);          
+              frontright.setPower(-swerve_A);        
+              frontleft.setPower(-swerve_A);          
               backleft.setPower(swerve_B);            
               backright.setPower(swerve_B);
       }
@@ -620,7 +626,7 @@ public class AdafruitIMUTest extends LinearOpMode {
       telemetry.addData("Camera", "Waiting");
       telemetry.update();
       while (!isStopRequested() && !myVisionPortal.getCameraState().equals(VisionPortal.CameraState.STREAMING)) {
-        sleep(20);
+        sleep(2);
       }
       telemetry.addData("Camera", "Ready");
       telemetry.update();
