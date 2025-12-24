@@ -328,9 +328,9 @@ public class AdafruitIMUTest extends LinearOpMode {
    
     intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     X.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    cameraPosition = new Position(DistanceUnit.INCH, 0, 0, 0, 0);
-    cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, 0, -90, 0, 0);
-    initAprilTag();
+    //cameraPosition = new Position(DistanceUnit.INCH, 0, 0, 0, 0);
+    //cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, 0, -90, 0, 0);
+    //initAprilTag();
 
 
     telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
@@ -351,6 +351,14 @@ public class AdafruitIMUTest extends LinearOpMode {
       frontright_A = (y + x) ;
       backleft_A = (y + x) ;
       backright_A = (y - x) ;
+      if(gamepad1.start){
+        cameraPosition = new Position(DistanceUnit.INCH, 0, 0, 0, 0);
+        cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, 0, -90, 0, 0);
+        initAprilTag();
+      }
+      if(gamepad1.back){
+         myVisionPortal.close();
+      }
       if(gamepad1.y){
          artifactholder.setPosition(artifactholderopen);
       }
@@ -382,18 +390,16 @@ public class AdafruitIMUTest extends LinearOpMode {
       //   holder.setPower(speedOfintakeOff);
       //}
       if(gamepad1.left_bumper){
-           visionPortal.close();
-           sleep(1000); 
+
            intake.setPower(speedOfintakeOn); 
            // holder.setPower(-speedOfintakeOn);
-           initAprilTag();    
+   
       }
       if(gamepad1.right_bumper){
-          visionPortal.close();
-          sleep(1000); 
+
           intake.setPower(-speedOfintakeOn); 
           // holder.setPower(speedOfintakeOn);
-          initAprilTag();
+
 
       }
       else{
