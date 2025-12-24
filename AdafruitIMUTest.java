@@ -112,7 +112,7 @@ public class AdafruitIMUTest extends LinearOpMode {
   private CRServo holder;
   private DcMotor X;
   
-
+  double camerastatus=0;
   public double change=10; //adjust value
   public double degree1=0.5;
   public double degree2=0;
@@ -328,10 +328,10 @@ public class AdafruitIMUTest extends LinearOpMode {
    
     intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     X.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    //cameraPosition = new Position(DistanceUnit.INCH, 0, 0, 0, 0);
-    //cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, 0, -90, 0, 0);
-    //initAprilTag();
-
+    cameraPosition = new Position(DistanceUnit.INCH, 0, 0, 0, 0);
+    cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, 0, -90, 0, 0);
+    initAprilTag();
+ 
 
     telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
     telemetry.addData(">", "Touch START to start OpMode");
@@ -351,14 +351,8 @@ public class AdafruitIMUTest extends LinearOpMode {
       frontright_A = (y + x) ;
       backleft_A = (y + x) ;
       backright_A = (y - x) ;
-      if(gamepad1.start){
-        cameraPosition = new Position(DistanceUnit.INCH, 0, 0, 0, 0);
-        cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, 0, -90, 0, 0);
-        initAprilTag();
-      }
-      if(gamepad1.back){
-         myVisionPortal.close();
-      }
+
+
       if(gamepad1.y){
          artifactholder.setPosition(artifactholderopen);
       }
@@ -406,6 +400,8 @@ public class AdafruitIMUTest extends LinearOpMode {
         intake.setPower(speedOfintakeOff);
         // holder.setPower(speedOfintakeOff);
       }
+      
+    
       
 
       if(rotater<0){
@@ -481,75 +477,7 @@ public class AdafruitIMUTest extends LinearOpMode {
               backright.setPower(swerve_B);
       }
       
-      List<AprilTagDetection> myAprilTagDetections;
       
-      AprilTagDetection myAprilTagDetection;
-    
-      // Get a list of AprilTag detections.
-      myAprilTagDetections = myAprilTagProcessor.getDetections();
-      telemetry.addData("# AprilTags Detected", JavaUtil.listLength(myAprilTagDetections));
-  
-      for (AprilTagDetection myAprilTagDetection_item : myAprilTagDetections) {
-        myAprilTagDetection = myAprilTagDetection_item;
-      // Display info about the detection.
-        telemetry.addLine("");
-        
-        if (myAprilTagDetection.metadata != null) {
-          telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") " + myAprilTagDetection.metadata.name);
-         // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
-          test=myAprilTagDetection.id;
-          motifs=test;
-          
-          if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
-            currentpositionY=intake.getCurrentPosition();
-            currentpositionX=X.getCurrentPosition(); 
-            Ya=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
-            Xa=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
-            Za=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
-            Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
-            Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
-            
-            Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
-          
-            rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
-            pointCx=rangeB+offsetX;
-            
-            //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
-            telemetry.addLine("XYZ " + Xa/10 + " " + Ya/10 + " " + Za/10 + "  (inch)");
-            telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
-            
-          }
-        } else {
-           telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
-           telemetry.addLine("Center " + JavaUtil.formatNumber(myAprilTagDetection.center.x, 6, 0) + "" + JavaUtil.formatNumber(myAprilTagDetection.center.y, 6, 0) + " (pixels)");
-         }
-
-      }
-      telemetry.addLine("");
-      telemetry.addLine("key:");
-      telemetry.addLine("XYZ = X (Right), Y (Forward), Z (Up) dist.");
-      telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-      if(motifs!=20 && motifs!=24){
-       if(motifs==23){
-         correctmotif[0]=2;
-         correctmotif[1]=2;
-         correctmotif[2]=1;
-       }
-       if(motifs==21){
-        correctmotif[0]=1;
-        correctmotif[1]=2;
-        correctmotif[2]=2;
-       }
-       if(motifs==22){
-        correctmotif[0]=2;
-        correctmotif[1]=1;
-        correctmotif[2]=2;
-       }
-      
-
-        
-
-      }
       intialspeed=answervelocity(pointCy, gravity, fixedtheta);
       if(gamepad1.right_trigger>0){
             desiredspeed=intialspeed-(change*gamepad1.right_trigger);
@@ -579,7 +507,80 @@ public class AdafruitIMUTest extends LinearOpMode {
       double MyYaw=imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
       telemetry.addLine("yaw degree of bot: "+MyYaw);
       telemetry.update();
-       
+      if(gamepad1.back || gamepad2.back){
+        myVisionPortal.close();
+      }
+      if(gamepad1.start || gamepad2.start){
+        
+        List<AprilTagDetection> myAprilTagDetections;
+      
+        AprilTagDetection myAprilTagDetection;
+    
+      // Get a list of AprilTag detections.
+        myAprilTagDetections = myAprilTagProcessor.getDetections();
+        telemetry.addData("# AprilTags Detected", JavaUtil.listLength(myAprilTagDetections));
+    
+        for (AprilTagDetection myAprilTagDetection_item : myAprilTagDetections) {
+          myAprilTagDetection = myAprilTagDetection_item;
+        // Display info about the detection.
+          telemetry.addLine("");
+          
+          if (myAprilTagDetection.metadata != null) {
+            telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") " + myAprilTagDetection.metadata.name);
+           // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
+            test=myAprilTagDetection.id;
+            motifs=test;
+            
+            if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
+              currentpositionY=intake.getCurrentPosition();
+              currentpositionX=X.getCurrentPosition(); 
+              Ya=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
+              Xa=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
+              Za=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
+              Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
+              Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
+              
+              Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
+            
+              rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
+              pointCx=rangeB+offsetX;
+              
+              //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
+              telemetry.addLine("XYZ " + Xa/10 + " " + Ya/10 + " " + Za/10 + "  (inch)");
+              telemetry.addLine("PRY " +  Pitch/10 + " " + Roll/10 + " " + Yaw/10 + " \u03B8 (deg)");
+              
+            }
+          } else {
+             telemetry.addLine("==== (ID " + myAprilTagDetection.id + ") Unknown");
+             telemetry.addLine("Center " + JavaUtil.formatNumber(myAprilTagDetection.center.x, 6, 0) + "" + JavaUtil.formatNumber(myAprilTagDetection.center.y, 6, 0) + " (pixels)");
+           }
+  
+        }
+        telemetry.addLine("");
+        telemetry.addLine("key:");
+        telemetry.addLine("XYZ = X (Right), Y (Forward), Z (Up) dist.");
+        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+        if(motifs!=20 && motifs!=24){
+         if(motifs==23){
+           correctmotif[0]=2;
+           correctmotif[1]=2;
+           correctmotif[2]=1;
+         }
+         if(motifs==21){
+          correctmotif[0]=1;
+          correctmotif[1]=2;
+          correctmotif[2]=2;
+         }
+         if(motifs==22){
+          correctmotif[0]=2;
+          correctmotif[1]=1;
+          correctmotif[2]=2;
+         }
+        
+  
+        }
+  
+        }
 
 
        
@@ -635,7 +636,7 @@ public class AdafruitIMUTest extends LinearOpMode {
       telemetry.addData("Camera", "Waiting");
       telemetry.update();
       while (!isStopRequested() && !myVisionPortal.getCameraState().equals(VisionPortal.CameraState.STREAMING)) {
-        sleep(2);
+        sleep(20);
       }
       telemetry.addData("Camera", "Ready");
       telemetry.update();
