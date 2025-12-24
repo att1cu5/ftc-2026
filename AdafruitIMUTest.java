@@ -191,7 +191,7 @@ public class AdafruitIMUTest extends LinearOpMode {
        }
   public double calcshooterB(double targetshooterB,double currentshooterB){
           double errorshooterB = targetshooterB - currentshooterB;
-          double integralmaxB=1000;//update this value if needed
+          double integralmaxB=20;//update this value if needed
           double timeBs=0.2; //update if needed
           double integralshooterB =+ errorshooterB*timeBs;
           if(integralshooterB>integralmaxB){
@@ -492,17 +492,21 @@ public class AdafruitIMUTest extends LinearOpMode {
           
           
           double currentspeedB=((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32));
-          double VelocityB=0;//tune this
-          double AccelerationB=0;//tune this
-          double KSshooterB=0;//tune this
-          double KVshooterB=0;//tune this
-          double KAshooterB=0;//tune this
+          double VelocityB=0.1;//tune this
+          double AccelerationB=0.1;//tune this
+          double KSshooterB=0.1;//tune this
+          double KVshooterB=0.1;//tune this
+          double KAshooterB=0.1;//tune this
           double feedforwardB=feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
           
  
           double speedB=calcshooterB(desiredspeed,currentspeedB)+feedforwardB; 
           shooterwheelB.setPower(speedB);
           shooterwheelA.setPower(-speedB);
+      }
+      if(gamepad1.left_stick_button){
+          shooterwheelB.setPower(0);
+          shooterwheelA.setPower(0);
       }
       double MyYaw=imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
       telemetry.addLine("yaw degree of bot: "+MyYaw);
