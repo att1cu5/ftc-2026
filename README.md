@@ -1,3 +1,4 @@
+# reuse pid for flywheels for wheels on ground just add different values
 # debug
 # tune control systems
 # and plan auto
