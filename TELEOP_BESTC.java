@@ -206,6 +206,7 @@ public class TELEOP_BESTC extends LinearOpMode {
            return outputffA;
           }
       }
+  //frontrightwheel
   public class PIDCONTOLLERshooterA{
       
 
@@ -249,7 +250,198 @@ public class TELEOP_BESTC extends LinearOpMode {
          double intergralshooterA=0;
       }
   }
+    public class FeedforwardA{
+      public double kSA=0;//find this value
+      public double kAA=0;//find this value
+      public double kVA=0;//find this value
+      double DesiredVA=0;//find this value
+      double DesiredAA=0;//find this value
 
+      public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
+           this.kSA=kSA;
+           this.kVA=kVA;
+           this.kAA=kAA;
+           double outputffA=kSA*sign(DesiredVA)+kVA*DesiredVA+kAA*DesiredAA;
+           return outputffA;
+          }
+      }
+  //frontleftwheel
+  public class PIDCONTOLLERshooterC{
+      
+
+      public double kpshooterC; //find this value
+      public double kishooterC; //find this value
+      public double kdshooterC;//find this value
+      
+      double previousErrorshooterC=0;
+      double intergralshooterC=0; //assign a value in the future to intergral
+      double minOutputshooterC=0; //assign a value in the future to minoutput
+      double maxOutputshooterC=0; //assign a value in the future to maxoutput
+      
+      public double PIDshooterC(double kpshooterC, double kishooterC, double kdshooterC, double shooterC1, double shooterC2, double shooterC3){
+         
+         this.kpshooterC=kpshooterC;
+         this.kishooterC=kishooterC;
+         this.kdshooterC=kdshooterC;
+         double outputshooterCa = kpshooterC * shooterC1 + kishooterC * shooterC3 + kdshooterC * shooterC2;
+         return outputshooterCa;
+       }
+       public double calcshooterC(double targetshooterC,double currentshooterC){
+          double errorshooterC = targetshooterC - currentshooterC;
+          
+          double integralmaxC=1000;//update this value if needed
+          double timeCs=0.2; //update if needed
+          double integralshooterC =+ errorshooterC*timeCs;
+          if(integralshooterC>integralmaxC){
+              integralshooterC=integralmaxC;
+          }  
+          if(integralshooterC<(integralmaxC*-1)){
+              integralshooterC=integralmaxC*-1;
+          }
+          double outputshooterAC = PIDshooterC(kpshooterC, kishooterC, kdshooterC, errorshooterC, derivativeshooterC, integralshooterC);
+          double outputshooterC = Math.max(minOutputshooterC, Math.min(maxOutputshooterC, outputshooterAC));
+  
+          double previousErrorshooterC = errorshooterC;
+          return outputshooterC;
+      }    
+      public void resetshooterC(){
+         double previousErrorshooterC=0;
+         double intergralshooterC=0;
+      }
+  }
+    public class FeedforwardC{
+      public double kSC=0;//find this value
+      public double kAC=0;//find this value
+      public double kVC=0;//find this value
+      double DesiredVC=0;//find this value
+      double DesiredAC=0;//find this value
+
+      public double feedforwardtermC(double DesiredVC,double DesiredAC,double kSC,double kVC,double kAC){
+           this.kSC=kSC;
+           this.kVC=kVC;
+           this.kAC=kAC;
+           double outputffC=kSC*sign(DesiredVC)+kVC*DesiredVC+kAC*DesiredAC;
+           return outputffC;
+          }
+      }
+//backrightwheel
+public class PIDCONTOLLERshooterD{
+      
+
+      public double kpshooterD; //find this value
+      public double kishooterD; //find this value
+      public double kdshooterD;//find this value
+      
+      double previousErrorshooterD=0;
+      double intergralshooterD=0; //assign a value in the future to intergral
+      double minOutputshooterD=0; //assign a value in the future to minoutput
+      double maxOutputshooterD=0; //assign a value in the future to maxoutput
+      
+      public double PIDshooterD(double kpshooterD, double kishooterD, double kdshooterD, double shooterD1, double shooterD2, double shooterD3){
+         
+         this.kpshooterD=kpshooterD;
+         this.kishooterD=kishooterD;
+         this.kdshooterD=kdshooterD;
+         double outputshooterDa = kpshooterD * shooterD1 + kishooterD * shooterD3 + kdshooterD * shooterD2;
+         return outputshooterDa;
+       }
+       public double calcshooterD(double targetshooterD,double currentshooterD){
+          double errorshooterD = targetshooterD - currentshooterD;
+          
+          double integralmaxD=1000;//update this value if needed
+          double timeDs=0.2; //update if needed
+          double integralshooterD =+ errorshooterD*timeDs;
+          if(integralshooterD>integralmaxD){
+              integralshooterD=integralmaxD;
+          }  
+          if(integralshooterD<(integralmaxD*-1)){
+              integralshooterD=integralmaxD*-1;
+          }
+          double outputshooterAD = PIDshooterD(kpshooterD, kishooterD, kdshooterD, errorshooterD, derivativeshooterD, integralshooterD);
+          double outputshooterD = Math.max(minOutputshooterD, Math.min(maxOutputshooterD, outputshooterAD));
+  
+          double previousErrorshooterD = errorshooterD;
+          return outputshooterD;
+      }    
+      public void resetshooterD(){
+         double previousErrorshooterD=0;
+         double intergralshooterD=0;
+      }
+  }
+    public class FeedforwardD{
+      public double kSD=0;//find this value
+      public double kAD=0;//find this value
+      public double kVD=0;//find this value
+      double DesiredVD=0;//find this value
+      double DesiredAD=0;//find this value
+
+      public double feedforwardtermD(double DesiredVD,double DesiredAD,double kSD,double kVD,double kAD){
+           this.kSD=kSD;
+           this.kVD=kVD;
+           this.kAD=kAD;
+           double outputffD=kSD*sign(DesiredVD)+kVD*DesiredVD+kAD*DesiredAD;
+           return outputffD;
+          }
+      }
+//backleftwheel
+  public class PIDCONTOLLERshooterE{
+      
+
+      public double kpshooterE; //find this value
+      public double kishooterE; //find this value
+      public double kdshooterE;//find this value
+      
+      double previousErrorshooterE=0;
+      double intergralshooterE=0; //assign a value in the future to intergral
+      double minOutputshooterE=0; //assign a value in the future to minoutput
+      double maxOutputshooterE=0; //assign a value in the future to maxoutput
+      
+      public double PIDshooterE(double kpshooterE, double kishooterE, double kdshooterE, double shooterE1, double shooterE2, double shooterE3){
+         
+         this.kpshooterE=kpshooterE;
+         this.kishooterE=kishooterE;
+         this.kdshooterE=kdshooterE;
+         double outputshooterEa = kpshooterE * shooterE1 + kishooterE * shooterE3 + kdshooterE * shooterE2;
+         return outputshooterEa;
+       }
+       public double calcshooterE(double targetshooterE,double currentshooterE){
+          double errorshooterE = targetshooterE - currentshooterE;
+          
+          double integralmaxE=1000;//update this value if needed
+          double timeEs=0.2; //update if needed
+          double integralshooterE =+ errorshooterE*timeEs;
+          if(integralshooterE>integralmaxE){
+              integralshooterE=integralmaxE;
+          }  
+          if(integralshooterE<(integralmaxE*-1)){
+              integralshooterE=integralmaxE*-1;
+          }
+          double outputshooterAE = PIDshooterE(kpshooterE, kishooterE, kdshooterE, errorshooterE, derivativeshooterE, integralshooterE);
+          double outputshooterE = Math.max(minOutputshooterE, Math.min(maxOutputshooterE, outputshooterAE));
+  
+          double previousErrorshooterE = errorshooterE;
+          return outputshooterE;
+      }    
+      public void resetshooterE(){
+         double previousErrorshooterE=0;
+         double intergralshooterE=0;
+      }
+  }
+    public class FeedforwardE{
+      public double kSE=0;//find this value
+      public double kAE=0;//find this value
+      public double kVE=0;//find this value
+      double DesiredVE=0;//find this value
+      double DesiredAE=0;//find this value
+
+      public double feedforwardtermE(double DesiredVE,double DesiredAE,double kSE,double kVE,double kAE){
+           this.kSE=kSE;
+           this.kVE=kVE;
+           this.kAE=kAE;
+           double outputffE=kSE*sign(DesiredVE)+kVE*DesiredVE+kAE*DesiredAE;
+           return outputffE;
+          }
+      }
   public double answervelocity(double heightofgoal, double g, double theta){
        return (Math.sqrt(2*g*heightofgoal)/Math.sin(theta));
   }
