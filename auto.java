@@ -626,6 +626,10 @@ public class PIDCONTOLLERshooterD{
         backleft.setPower(speedE);
         backright.setPower(speedD);
         if(X.getCurrentPosition()==desX){
+          frontright.setPower(0);
+          frontleft.setPower(0);
+          backleft.setPower(0);
+          backright.setPower(0);
           break;
         }
       }
@@ -635,6 +639,10 @@ public class PIDCONTOLLERshooterD{
         backleft.setPower(speedE);
         backright.setPower(speedD);
         if(shooterwheelB.getCurrentPosition()==desY){
+          frontright.setPower(0);
+          frontleft.setPower(0);
+          backleft.setPower(0);
+          backright.setPower(0);
           break;
         }
       }
