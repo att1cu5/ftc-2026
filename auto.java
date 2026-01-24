@@ -1,8 +1,26 @@
-
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import java.util.List;
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -25,7 +43,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.io.Serializable;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -37,8 +55,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-@TeleOp (name = "auto (Blocks to Java)")
+@Autonomous (name = "auto (Blocks to Java)")
 public class auto extends LinearOpMode {
+  IMU imu;
   double fixedtheta=0;//find this
   double rotater=0;
   double motifs=0;
@@ -118,6 +137,7 @@ public class auto extends LinearOpMode {
   double Za=0;
   double Pitch=0;
   double Yaw=0;
+  double myYAW=0;
   double Roll=0;
   double Ycenter=0;
   double Xcenter=0;
@@ -125,6 +145,206 @@ public class auto extends LinearOpMode {
   double A=0;
   double B=0;
   double C=0;
+  public class PIDcontrollerCang(){
+    public double kpCang=0;
+    public double kiCang=0;
+    public double kdCang=0;
+    public double setPointCang=0;
+    double lasterrorCAng=0;
+    double outputCAng=0;
+    double IntergralSumCang=0;
+    public PIDcontrollerCang(double kpCang,double kiCang,double kdCang,double setPointCang){
+       this.kpCang=kpCang;
+       this.kiCang=kiCang;
+       this.kdCang=kdCang;
+       this.setPointCang=setPointCang;
+    }
+    public double calcCang(MesurementCang){
+      double errorCang=setPointCang-MesurementCang;
+      double kpCangTerm=kpCang*errorCang;
+      IntergralSumCang+=errorCang;
+      double kiCangTerm=kiCang*IntergralSumCang;
+      double KdCangTerm=(errorCang-lasterrorCAng);
+      double KdCangTermA=kdDang*KdDangTerm;
+      double outputCAng=kiCangTerm+KdCangTermA+kpCangTerm;
+      lasterrorCAng=errorCang;
+      return outputCAng;
+    }
+  }
+  public void SetSetpointCang(){
+    this.setPointCang=setPointCang;
+  } 
+  public void resetCang(){
+       this.IntergralSumCang=0;
+       this.lasterrorCAng=0;
+
+    }
+  }
+  public class PIDcontrollerDang(){
+    public double kpDang=0;
+    public double kiDang=0;
+    public double kdDang=0;
+    public double setPointDang=0;
+    double lasterrorDAng=0;
+    double outputDAng=0;
+    double IntergralSumDang=0;
+    public PIDcontrollerDang(double kpDang,double kiDang,double kdDang,double setPointDang){
+       this.kpDang=kpDang;
+       this.kiDang=kiDang;
+       this.kdDang=kdDang;
+       this.setPointDang=setPointDang;
+    }
+    public double calcDang(MesurementDang){
+      double errorDang=setPointDang-MesurementDang;
+      double kpDangTerm=kpDang*errorDang;
+      IntergralSumDang+=errorDang;
+      double kiDangTerm=kiDang*IntergralSumDang;
+      double KdDangTerm=(errorDang-lasterrorDAng);
+      double KdDangTermA=kdDang*KdDangTerm;
+      double outputDAng=kiDangTerm+KdDangTermA+kpDangTerm;
+      lasterrorDAng=errorDang;
+      return outputDAng;
+    }
+  }
+  public void SetSetpointDang(){
+    this.setPointDang=setPointDang;
+  } 
+  public void resetDang(){
+       this.IntergralSumDang=0;
+       this.lasterrorDAng=0;
+
+    }
+  }
+  public class PIDcontrollerAang(){
+    public double kpAang=0;
+    public double kiAang=0;
+    public double kdAang=0;
+    public double setPointAang=0;
+    double lasterrorAAng=0;
+    double outputAAng=0;
+    double IntergralSumAang=0;
+    public PIDcontrollerAang(double kpAang,double kiAang,double kdAang,double setPointAang){
+       this.kpAang=kpAang;
+       this.kiAang=kiAang;
+       this.kdAang=kdAang;
+       this.setPointAang=setPointAang;
+    }
+    public double calcAang(MesurementAang){
+      double errorAang=setPointAang-MesurementAang;
+      double kpAangTerm=kpAang*errorAang;
+      IntergralSumAang+=errorAang;
+      double kiAangTerm=kiEang*IntergralSumEang;
+      double KdAangTerm=(errorEang-lasterrorEAng);
+      double KdAangTermA=kdEang*KdEangTerm;
+      double outputAAng=kiAangTerm+KdAangTermA+kpAangTerm;
+      lasterrorAAng=errorAang;
+      return outputAAng;
+    }
+  }
+  public void SetSetpointAang(){
+    this.setPointAang=setPointAang;
+  } 
+  public void resetAang(){
+       this.IntergralSumAang=0;
+       this.lasterrorAAng=0;
+
+    }
+  }
+  public class PIDcontrollerEang(){
+    public double kpEang=0;
+    public double kiEang=0;
+    public double kdEang=0;
+    public double setPointEang=0;
+    double lasterrorEAng=0;
+    double outputEAng=0;
+    double IntergralSumEang=0;
+    public PIDcontrollerEang(double kpEang,double kiEang,double kdEang,double setPointEang){
+       this.kpEang=kpEang;
+       this.kiEang=kiEang;
+       this.kdEang=kdEang;
+       this.setPointEang=setPointEang;
+    }
+    public double calcEang(MesurementEang){
+      double errorEang=setPointEang-MesurementEang;
+      double kpEangTerm=kpEang*errorEang;
+      IntergralSumEang+=errorEang;
+      double kiEangTerm=kiEang*IntergralSumEang;
+      double KdEangTerm=(errorEang-lasterrorEAng);
+      double KdEangTermA=kdEang*KdEangTerm;
+      double outputEAng=kiEangTerm+KdEangTermA+kpEangTerm;
+      lasterrorEAng=errorEang;
+      return outputEAng;
+    }
+  }
+  public void SetSetpointEang(){
+    this.setPointEang=setPointEang;
+  } 
+  public void resetEang(){
+       this.IntergralSumEang=0;
+       this.lasterrorEAng=0;
+
+    }
+  }
+  public class FeedforwardEang{
+      public double kSEang=0;//find this value
+      public double kAEang=0;//find this value
+      public double kVEang=0;//find this value
+      double DesiredVEang=0;//find this value
+      double DesiredAEang=0;//find this value
+      
+      public double feedforwardtermEang(double DesiredVEang,double DesiredAEang,double kSEang,double kVEang,double kAEang){
+           this.kSEang=kSEang;
+           this.kVEang=kVEang;
+           this.kAEang=kAEang;
+           double outputffEang=kSEang*sign(DesiredVEang)+kVEang*DesiredVEang+kAEang*DesiredAEang;
+           return outputffEang;
+      }
+  }
+  public class FeedforwardDang{
+      public double kSDang=0;//find this value
+      public double kADang=0;//find this value
+      public double kVDang=0;//find this value
+      double DesiredVDang=0;//find this value
+      double DesiredADang=0;//find this value
+      
+      public double feedforwardtermDang(double DesiredVDang,double DesiredADang,double kSDang,double kVDang,double kADang){
+           this.kSDang=kSDang;
+           this.kVDang=kVDang;
+           this.kADang=kADang;
+           double outputffDang=kSDang*sign(DesiredVDang)+kVDang*DesiredVDang+kADang*DesiredADang;
+           return outputffDang;
+      }
+  }
+  public class FeedforwardAang{
+      public double kSAang=0;//find this value
+      public double kAAang=0;//find this value
+      public double kVAang=0;//find this value
+      double DesiredVAang=0;//find this value
+      double DesiredAAang=0;//find this value
+      
+      public double feedforwardtermAang(double DesiredVAang,double DesiredAAang,double kSAang,double kVAang,double kAAang){
+           this.kSAang=kSAang;
+           this.kVAang=kVAang;
+           this.kAAang=kAAang;
+           double outputffAang=kSAang*sign(DesiredVAang)+kVAang*DesiredVAang+kAAang*DesiredAAang;
+           return outputffAang;
+      }
+  }
+  public class FeedforwardCang{
+      public double kSCang=0;//find this value
+      public double kACang=0;//find this value
+      public double kVCang=0;//find this value
+      double DesiredVCang=0;//find this value
+      double DesiredACang=0;//find this value
+      
+      public double feedforwardtermCang(double DesiredVCang,double DesiredACang,double kSCang,double kVCang,double kACang){
+           this.kSCang=kSCang;
+           this.kVCang=kVCang;
+           this.kACang=kACang;
+           double outputffCang=kSCang*sign(DesiredVCang)+kVCang*DesiredVCang+kACang*DesiredACang;
+           return outputffCang;
+      }
+  }
   public class FeedforwardB{
       public double kSB=0;//find this value
       public double kAB=0;//find this value
@@ -638,7 +858,7 @@ public class PIDCONTOLLERshooterD{
         frontleft.setPower(speedC);
         backleft.setPower(speedE);
         backright.setPower(speedD);
-        if(shooterwheelB.getCurrentPosition()==desY){
+        if(shooterwheelA.getCurrentPosition()==desY){
           frontright.setPower(0);
           frontleft.setPower(0);
           backleft.setPower(0);
