@@ -56,13 +56,24 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 @Autonomous (name = "auto (Blocks to Java)")
-public class auto extends LinearOpMode {
+public static class auto extends LinearOpMode {
     IMU imu;
     double fixedtheta=0;//find this
     double rotater=0;
     double motifs=0;
+    double speedOfintakeOff=0;
+    double speedOfintakeOn=0.8;
+    double x=0;
+    double y=0;
+    double turn=0;
+    double backleft_A;
+    double backright_A;
+    double frontleft_A;
+    double frontright_A;
     double deltaX=0;
     double startx=0;
+    double CurX=0;
+    double CurY=0;
     double runtime=0;
     double starty=0;
     double deltaY=0;
@@ -145,7 +156,7 @@ public class auto extends LinearOpMode {
     double A=0;
     double B=0;
     double C=0;
-    class PIDcontrollerCang{
+    public class PIDcontrollerCang{
         public double kpCang=0;
         public double kiCang=0;
         public double kdCang=0;
@@ -153,7 +164,7 @@ public class auto extends LinearOpMode {
         double lasterrorCAng=0;
         double outputCAng=0;
         double IntergralSumCang=0;
-        public PIDcontrollerCang(double kpCang,double kiCang,double kdCang,double setPointCang){
+        public double PIDcontrollerCang(double kpCang,double kiCang,double kdCang,double setPointCang){
             this.kpCang=kpCang;
             this.kiCang=kiCang;
             this.kdCang=kdCang;
@@ -182,7 +193,7 @@ public class PIDcontrollerDang{
     double lasterrorDAng=0;
     double outputDAng=0;
     double IntergralSumDang=0;
-    public PIDcontrollerDang(double kpDang,double kiDang,double kdDang,double setPointDang){
+    public double PIDcontrollerDang(double kpDang,double kiDang,double kdDang,double setPointDang){
         this.kpDang=kpDang;
         this.kiDang=kiDang;
         this.kdDang=kdDang;
@@ -210,7 +221,7 @@ public class PIDcontrollerAang{
     double lasterrorAAng=0;
     double outputAAng=0;
     double IntergralSumAang=0;
-    public PIDcontrollerAang(double kpAang,double kiAang,double kdAang,double setPointAang){
+    public double PIDcontrollerAang(double kpAang,double kiAang,double kdAang,double setPointAang){
         this.kpAang=kpAang;
         this.kiAang=kiAang;
         this.kdAang=kdAang;
@@ -238,7 +249,7 @@ public class PIDcontrollerEang{
     double lasterrorEAng=0;
     double outputEAng=0;
     double IntergralSumEang=0;
-    public PIDcontrollerEang(double kpEang,double kiEang,double kdEang,double setPointEang){
+    public double PIDcontrollerEang(double kpEang,double kiEang,double kdEang,double setPointEang){
         this.kpEang=kpEang;
         this.kiEang=kiEang;
         this.kdEang=kdEang;
@@ -415,10 +426,7 @@ public class PIDCONTOLLERshooterA{
         double previousErrorshooterA = errorshooterA;
         return outputshooterA;
     }
-    public void resetshooterA(){
-        double previousErrorshooterA=0;
-        double intergralshooterA=0;
-    }
+
 }
 public class FeedforwardA{
     double kSA=0;//find this value
@@ -615,8 +623,10 @@ public class FeedforwardE{
         return outputffE;
     }
 }
-public double answervelocity(double heightofgoal, double g, double theta){
+public class calcPhys{
+    public double answervelocity(double heightofgoal, double g, double theta){
     return (Math.sqrt(2*g*heightofgoal)/Math.sin(theta));
+ }
 }
 @Override
 public void runOpMode() {
@@ -625,17 +635,7 @@ public void runOpMode() {
 
     USE_WEBCAM = true;
 
-    double speedOfintakeOff=0;
-    double speedOfintakeOn=0.8;
 
-
-    double x=0;
-    double y=0;
-    double turn=0;
-    double backleft_A;
-    double backright_A;
-    double frontleft_A;
-    double frontright_A;
     shooterholder= hardwareMap.get(Servo.class, "shooterholder");
     artifactholder= hardwareMap.get(Servo.class, "artifactholder");
     shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
@@ -655,6 +655,7 @@ public void runOpMode() {
     shooterwheelA.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     X.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    
     initAprilTag();
     getCameraSetting();
     myExposure = 10;
@@ -669,8 +670,8 @@ public void runOpMode() {
 
 
 
-
-
+        CurY=shooterwheelA.getCurrentPosition();
+        CurX=X.getCurrentPosition();
         List<AprilTagDetection> myAprilTagDetections;
 
         AprilTagDetection myAprilTagDetection;
@@ -691,7 +692,7 @@ public void runOpMode() {
                 motifs=test;
 
                 if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
-                    currentpositionY=intake.getCurrentPosition();
+                    currentpositionY=shooterwheelA.getCurrentPosition();
                     currentpositionX=X.getCurrentPosition();
                     Ya=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
                     Xa=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
@@ -789,12 +790,12 @@ public void runOpMode() {
         double speedE=shooterE.calcshooterE(desiredspeedE,currentspeedE)+feedforwardE;
         double desX=0;//tune later
         double desY=0; //tune later
-        while(X.getCurrentPosition()<desX){
+        while(CurX<desX){
             frontright.setPower(speedA);
             frontleft.setPower(speedC);
             backleft.setPower(speedE);
             backright.setPower(speedD);
-            if(X.getCurrentPosition()==desX){
+            if(CurX==desX){
                 frontright.setPower(0);
                 frontleft.setPower(0);
                 backleft.setPower(0);
@@ -802,21 +803,24 @@ public void runOpMode() {
                 break;
             }
         }
-        while(shooterwheelA.getCurrentPosition()<desY){
+        
+        while(CurY<desY){
+           
             frontright.setPower(speedA);
             frontleft.setPower(speedC);
             backleft.setPower(speedE);
             backright.setPower(speedD);
-            if(shooterwheelA.getCurrentPosition()==desY){
+            if(CurY==desY){
                 frontright.setPower(0);
                 frontleft.setPower(0);
                 backleft.setPower(0);
                 backright.setPower(0);
                 break;
+        
             }
         }
         intialspeed=answervelocity(pointCy, gravity, fixedtheta);
-        feedforwardtermB termB=feedforwardtermB();
+        FeedforwardB termB=feedforwardtermB();
         PIDCONTOLLERshooterB ShooterB=PIDCONTOLLERshooterB();
         double currentspeedB=((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
         double VelocityB=0;//tune this
@@ -824,7 +828,7 @@ public void runOpMode() {
         double KSshooterB=0;//tune this
         double KVshooterB=0;//tune this
         double KAshooterB=0;//tune this
-        double feedforwardB=termB.feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
+        double feedforwardB=termB.feedforwardB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
 
         double desiredspeed=0;//CHANGE LATER
         double speedB=shooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB;
