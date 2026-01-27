@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode;
-
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import static android.os.SystemClock.sleep;
 import static org.firstinspires.ftc.robotcontroller.external.samples.ConceptAprilTagEasy.USE_WEBCAM;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
@@ -7,6 +7,9 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.lin
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.vision.VisionPortal.CameraState.STREAMING;
 
+import androidx.core.util.SparseBooleanArrayKt;
+
+import org.firstinspires.ftc.vision.VisionPortal;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -21,12 +24,16 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDir
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.Collections;
 import java.util.List;
 
 @Autonomous (name = "auto_A (Blocks to Java)", group="LinearOpMode") //this is fine
@@ -126,7 +133,7 @@ public class auto_A extends LinearOpMode { //this is fine
             return C;
         }
     }
-    
+
     public class PIDcontrollerCang {
         public double kpCang = 0;
         public double kiCang = 0;
@@ -644,6 +651,7 @@ public static class calcPhys{
 @Override
 public void runOpMode() throws InterruptedException {
     //private ElapsedTime runtime = new ElapsedTime();
+    USE_WEBCAM = true;
     DcMotor backleft;
     IMU imu;
     DcMotor backright;
@@ -684,9 +692,12 @@ public void runOpMode() throws InterruptedException {
     intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     X.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-    AprilTagProcessor myAprilTagProcessor=null;
-    initAprilTag(myAprilTagProcessor);
-    getCameraSetting();
+
+    Position cameraPosition = new Position(DistanceUnit.INCH, 0, 0, 0, 0);
+    YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, 0, -90, 0, 0);
+    startup hi=new startup();
+    hi.initAprilTag();
+
 
 
 
@@ -702,12 +713,13 @@ public void runOpMode() throws InterruptedException {
         double CurX=0;
         CurY=shooterwheelA.getCurrentPosition();
         CurX=X.getCurrentPosition();
-        List<AprilTagDetection> myAprilTagDetections;
-        AprilTagDetection myAprilTagDetection;
+        List<AprilTagDetection> myAprilTagDetections = Collections.emptyList();
+        AprilTagDetection myAprilTagDetection = null;
 
         // Get a list of AprilTag detections.
-        //AprilTagAccess myAprilTagProcessor;
-        myAprilTagDetections = myAprilTagProcessor.getDetections();
+
+
+
         //telemetry.addData("# AprilTags Detected", JavaUtil.listLength(myAprilTagDetections));
 
         for (AprilTagDetection myAprilTagDetection_item : myAprilTagDetections) {
@@ -720,7 +732,8 @@ public void runOpMode() throws InterruptedException {
                 // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
                 double test=myAprilTagDetection.id;
                 double motifs=test;
-                if (!contains(myAprilTagDetection.metadata.name, "Obelisk")) {
+                startup logic=new startup();
+                if (!logic.contains(myAprilTagDetection.metadata.name, "Obelisk")) {
                     double currentpositionY=shooterwheelA.getCurrentPosition();
                     double currentpositionX=X.getCurrentPosition();
                     double Ya=0;
@@ -902,7 +915,7 @@ public void runOpMode() throws InterruptedException {
         double feedforwardAang=termAang.feedforwardtermAang(VelocityAang, AccelerationAang, KSshooterAang, KVshooterAang, KAshooterAang);
 
         double desiredspeedAang=0;//CHANGE LATER
-      
+
         double speedAangAang=shooterAang.calcAang(desiredspeedAang);
         speedAangAang=feedforwardAang+speedAangAang;
         FeedforwardDang termDang=new FeedforwardDang();
@@ -920,7 +933,7 @@ public void runOpMode() throws InterruptedException {
         double speedDangDang=shooterDang.calcDang(desiredspeedDang);
         speedDangDang=speedDangDang+feedforwardDang;
         FeedforwardEang termEang=new FeedforwardEang();
-    
+
         PIDcontrollerEang shooterEang=new PIDcontrollerEang();
         double currentspeedEang=((backleft.getCurrentPosition()/383.6)*(96/32)*104*2*Math.PI)/runtime.seconds();
         double VelocityEang=0;//tune this
@@ -964,73 +977,52 @@ public void runOpMode() throws InterruptedException {
     }
 }
 
+
 /**
  * Initialize AprilTag Detection.
  */
-private void initAprilTag(AprilTagProcessor myAprilTagProcessor) {
-    AprilTagProcessor.Builder myAprilTagProcessorBuilder;
-    VisionPortal.Builder myVisionPortalBuilder;
-
-    // First, create an AprilTagProcessor.Builder.
-    myAprilTagProcessorBuilder = new AprilTagProcessor.Builder();
-    Position cameraPosition;
-    YawPitchRollAngles cameraOrientation = null;
-    Position cameraYawPitchRollAnglesPosition = null;
-    myAprilTagProcessorBuilder.setCameraPose(cameraYawPitchRollAnglesPosition, cameraOrientation);
-    // Create an AprilTagProcessor by calling build.
-    myAprilTagProcessor = myAprilTagProcessorBuilder.build();
-
-    myVisionPortalBuilder = new VisionPortal.Builder();
-    if (USE_WEBCAM) {
-        // Use a webcam.
-        myVisionPortalBuilder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
-    } else {
-        myVisionPortalBuilder.setCamera(BuiltinCameraDirection.BACK);
-    }
-    // Add myAprilTagProcessor to the VisionPortal.Builder.
-    myVisionPortalBuilder.addProcessor(myAprilTagProcessor);
-    // Create a VisionPortal by calling build.
-    VisionPortal myVisionPortal = myVisionPortalBuilder.build();
-}
 
 
 
 
-private boolean contains(String stringToSearch, String containText) {
-    return stringToSearch.indexOf(containText) + 1 != 0;
-}
 
-private static <VisionPortalAccess> void waitForCamera() {
-    VisionPortalAccess myVisionPortal = null;
-    if (!myVisionPortal.getClass().equals(STREAMING)) {
-        while (!linearOpMode.isStopRequested() && !STREAMING.equals(myVisionPortal.getClass())) {
-            sleep(20);
+/**
+ * Initialize AprilTag Detection.
+ */
+public class startup {
+    public boolean contains(String stringToSearch, String containText) {
+        if (stringToSearch.indexOf(containText) + 1 == 0) {
+            return false;
         }
+        return true;
     }
+    private void initAprilTag() {
+        AprilTagProcessor.Builder myAprilTagProcessorBuilder;
+        VisionPortal.Builder myVisionPortalBuilder;
 
-}
-
-
-
-
-
-
-private static void getCameraSetting() {
-
-    waitForCamera();
-    // Get camera control values unless we are stopping.
-    if (!linearOpMode.isStopRequested()) {
-        ExposureControl myExposureControl;
-        VisionPortal myVisionPortal = null;
-        myExposureControl = myVisionPortal.getCameraControl(ExposureControl.class);
-        int minExposure = 10;
-        int maxExposure = 30;
-        GainControl myGainControl = myVisionPortal.getCameraControl(GainControl.class);
-        int minGain = 0;
-        int maxGain = 100;
+        // First, create an AprilTagProcessor.Builder.
+        myAprilTagProcessorBuilder = new AprilTagProcessor.Builder();
+        Position cameraPosition = null;
+        YawPitchRollAngles cameraOrientation = null;
+        AprilTagProcessor.Builder builder = myAprilTagProcessorBuilder.setCameraPose(cameraPosition, cameraOrientation);
+        // Create an AprilTagProcessor by calling build.
+        AprilTagProcessor myAprilTagProcessor = myAprilTagProcessorBuilder.build();
+        // Next, create a VisionPortal.Builder and set attributes related to the camera.
+        myVisionPortalBuilder = new VisionPortal.Builder();
+        if (USE_WEBCAM) {
+            // Use a webcam.
+            myVisionPortalBuilder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        } else {
+            // Use the device's back camera.
+            myVisionPortalBuilder.setCamera(BuiltinCameraDirection.BACK);
+        }
+        // Add myAprilTagProcessor to the VisionPortal.Builder.
+        myVisionPortalBuilder.addProcessor(myAprilTagProcessor);
+        // Create a VisionPortal by calling build.
+        VisionPortal myVisionPortal = myVisionPortalBuilder.build();
     }
+    
 }
-
 
 
 
