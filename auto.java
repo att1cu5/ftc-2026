@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Autonomous (name = "auto (Blocks to Java)", group="LinearOpMode") 
-public class auto extends LinearOpMode { 
+public class auto extends LinearOpMode { //one bug
 
     double Abcd=0;
     double fixedtheta=0;//find this
@@ -648,8 +648,8 @@ public static class calcPhys{
 }
 
 
-@Override //only bug
-public void runOpMode() throws InterruptedException { //only bug
+@Override //two bug
+public void runOpMode() throws InterruptedException { //three bug
     //private ElapsedTime runtime = new ElapsedTime();
     USE_WEBCAM = true;
     DcMotor backleft;
