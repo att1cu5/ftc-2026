@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-//import static android.os.SystemClock.sleep;
+import static android.os.SystemClock.sleep;
 import static org.firstinspires.ftc.robotcontroller.external.samples.ConceptAprilTagEasy.USE_WEBCAM;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.vision.VisionPortal.CameraState.STREAMING;
 
 
@@ -15,6 +16,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
@@ -27,8 +29,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous (name = "auto (Blocks to Java)", group="LinearOpMode") //this is fine
-public class auto extends LinearOpMode { //this is fine
+@Autonomous (name = "auto_A (Blocks to Java)", group="LinearOpMode") //this is fine
+public class auto_A extends LinearOpMode { //this is fine
 
     double Abcd=0;
     double fixedtheta=0;//find this
@@ -119,6 +121,12 @@ public class auto extends LinearOpMode { //this is fine
     double A=0;
     double B=0;
     double C=0;
+    public class nothing {
+        public double nothing(double C) {
+            return C;
+        }
+    }
+    
     public class PIDcontrollerCang {
         public double kpCang = 0;
         public double kiCang = 0;
@@ -150,6 +158,38 @@ public class auto extends LinearOpMode { //this is fine
 
 
 }
+public class PIDcontrollerFang {
+    public double kpFang = 0;
+    public double kiFang = 0;
+    public double kdFang = 0;
+    public double setPointFang = 0;
+    double lasterrorFAng = 0;
+    double outputFAng = 0;
+    double IntergralSumFang = 0;
+
+    public double PIDcontrollerFang(double kpFang, double kiFang, double kdFang, double setPointFang) {
+        this.kpFang = kpFang;
+        this.kiFang = kiFang;
+        this.kdFang = kdFang;
+        this.setPointFang = setPointFang;
+        return 0;
+    }
+    public double calcFang(double MesurementFang){
+        double errorFang=setPointFang-MesurementFang;
+        double kpFangTerm=kpFang*errorFang;
+        IntergralSumFang+=errorFang;
+        double kiFangTerm=kiFang*IntergralSumFang;
+        double KdFangTerm=(errorFang-lasterrorFAng);
+        double KdFangTermA=kdFang*KdFangTerm;
+        double outputFAng=kiFangTerm+KdFangTermA+kpFangTerm;
+        lasterrorFAng=errorFang;
+        return outputFAng;
+    }
+}
+
+
+
+
 public class PIDcontrollerDang{
     public double kpDang=0;
     public double kiDang=0;
@@ -179,7 +219,7 @@ public class PIDcontrollerDang{
 }
 
 
-public class PIDcontrollerAang{
+public static class PIDcontrollerAang{
     public double kpAang=0;
     public double kiAang=0;
     public double kdAang=0;
@@ -650,8 +690,9 @@ public void runOpMode() throws InterruptedException {
 
 
 
-   
+
     runtime.reset();
+    //waitForStart();
     while (linearOpMode.opModeIsActive()) {
 
 
@@ -702,7 +743,7 @@ public void runOpMode() throws InterruptedException {
                     rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
                     pointCx=rangeB+offsetX;
                     double[] correctmotif={0,0,0,0};
-                    //telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
+                    telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1)+ " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
                     if(motifs!=20 && motifs!=24){
                         if(motifs==23){
                             correctmotif[0]=2;
@@ -850,8 +891,67 @@ public void runOpMode() throws InterruptedException {
         speedB=speedBB+feedforwardB;
         shooterwheelB.setPower(speedB);
         shooterwheelA.setPower(speedB);
+        FeedforwardAang termAang=new FeedforwardAang();
+        PIDcontrollerAang shooterAang=new PIDcontrollerAang();
+        double currentspeedAang=((frontright.getCurrentPosition()/383.6)*(96/32)*104*2*Math.PI)/runtime.seconds();
+        double VelocityAang=0;//tune this
+        double AccelerationAang=0;//tune this
+        double KSshooterAang=0;//tune this
+        double KVshooterAang=0;//tune this
+        double KAshooterAang=0;//tune this
+        double feedforwardAang=termAang.feedforwardtermAang(VelocityAang, AccelerationAang, KSshooterAang, KVshooterAang, KAshooterAang);
 
+        double desiredspeedAang=0;//CHANGE LATER
+      
+        double speedAangAang=shooterAang.calcAang(desiredspeedAang);
+        speedAangAang=feedforwardAang+speedAangAang;
+        FeedforwardDang termDang=new FeedforwardDang();
+        PIDcontrollerDang shooterDang=new PIDcontrollerDang();
+        double currentspeedDang=((backright.getCurrentPosition()/383.6)*(96/32)*104*2*Math.PI)/runtime.seconds();
+        double VelocityDang=0;//tune this
+        double AccelerationDang=0;//tune this
+        double KSshooterDang=0;//tune this
+        double KVshooterDang=0;//tune this
+        double KAshooterDang=0;//tune this
+        double feedforwardDang=termDang.feedforwardtermDang(VelocityDang, AccelerationDang, KSshooterDang, KVshooterDang, KAshooterDang);
 
+        double desiredspeedDang=0;//CHANGE LATER
+
+        double speedDangDang=shooterDang.calcDang(desiredspeedDang);
+        speedDangDang=speedDangDang+feedforwardDang;
+        FeedforwardEang termEang=new FeedforwardEang();
+    
+        PIDcontrollerEang shooterEang=new PIDcontrollerEang();
+        double currentspeedEang=((backleft.getCurrentPosition()/383.6)*(96/32)*104*2*Math.PI)/runtime.seconds();
+        double VelocityEang=0;//tune this
+        double AccelerationEang=0;//tune this
+        double KSshooterEang=0;//tune this
+        double KVshooterEang=0;//tune this
+        double KAshooterEang=0;//tune this
+        double feedforwardEang=termEang.feedforwardtermEang(VelocityEang, AccelerationEang, KSshooterEang, KVshooterEang, KAshooterEang);
+
+        double desiredspeedEang=0;//CHANGE LATER
+
+        double speedEangEang=shooterEang.calcEang(desiredspeedEang);
+        FeedforwardCang termCang=new FeedforwardCang();
+
+        PIDcontrollerFang shooterFang=new PIDcontrollerFang();
+        double currentspeedFang=((frontleft.getCurrentPosition()/383.6)*(96/32)*104*2*Math.PI)/runtime.seconds();
+        double VelocityFang=0;//tune this
+        double AccelerationFang=0;//tune this
+        double KSshooterFang=0;//tune this
+        double KVshooterFang=0;//tune this
+        double KAshooterFang=0;//tune this
+        double feedforwardFang=termCang.feedforwardtermCang(VelocityFang, AccelerationFang, KSshooterFang, KVshooterFang, KAshooterFang);
+
+        double desiredspeedCang=0;//CHANGE LATER
+
+        double speedCangCang=shooterFang.calcFang(desiredspeedCang);
+        speedCangCang=feedforwardFang+speedCangCang;
+        frontright.setPower(speedAangAang);
+        frontleft.setPower(speedCangCang);
+        backleft.setPower(speedEangEang);
+        backright.setPower(speedDangDang);
         sleep(20);
 
 
