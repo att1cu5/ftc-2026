@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import static android.os.SystemClock.sleep;
+//import static android.os.SystemClock.sleep;
 import static org.firstinspires.ftc.robotcontroller.external.samples.ConceptAprilTagEasy.USE_WEBCAM;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
@@ -27,9 +27,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous (name = "auto_A (Blocks to Java)")
-public class auto_A extends LinearOpMode {
-    private IMU imu;
+@Autonomous (name = "auto (Blocks to Java)")
+public class auto extends LinearOpMode {
     double Abcd=0;
     double fixedtheta=0;//find this
     double rotater=0;
