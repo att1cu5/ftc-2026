@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-//import static android.os.SystemClock.sleep;
+import static android.os.SystemClock.sleep;
 import static org.firstinspires.ftc.robotcontroller.external.samples.ConceptAprilTagEasy.USE_WEBCAM;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
@@ -27,8 +27,9 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous (name = "auto (Blocks to Java)")
-public class auto extends LinearOpMode {
+@Autonomous (name = "auto_A (Blocks to Java)", group="LinearOpMode") //this is fine
+public class auto_A extends LinearOpMode { //this is fine
+
     double Abcd=0;
     double fixedtheta=0;//find this
     double rotater=0;
@@ -83,13 +84,7 @@ public class auto extends LinearOpMode {
     double desiredspeed=0;
     double intialspeed=0; //intial speed before change measured in ticks adjust value
 
-    private Servo pivotintake;
-    private Servo pivotintakeA;
-    private Servo shooterholder;
-    private Servo artifactholder;
-    private CRServo belt;
 
-    private CRServo holder;
     public double change=10; //adjust value
     public double degree1=0.5;
     public double degree2=0;
@@ -605,33 +600,35 @@ public static class calcPhys{
     }
 }
 
-private DcMotor backleft;
-private DcMotor backright;
-private DcMotor frontright;
-private DcMotor frontleft;
 
-
-private DcMotor X;
-private final ElapsedTime runtime = new ElapsedTime();
-private DcMotor intake;
-/**
- *
- */
-private DcMotor shooterwheelA;
-private DcMotor shooterwheelB;
 @Override
 public void runOpMode() throws InterruptedException {
     //private ElapsedTime runtime = new ElapsedTime();
-
+    DcMotor backleft;
+    IMU imu;
+    DcMotor backright;
+    DcMotor frontright;
+    DcMotor frontleft;
+    Servo pivotintake;
+    Servo pivotintakeA;
+    Servo shooterholder;
+    Servo artifactholder;
+    CRServo belt;
+    CRServo holder;
+    DcMotor X;
+    final ElapsedTime runtime = new ElapsedTime();
+    DcMotor intake;
+    DcMotor shooterwheelA;
+    DcMotor shooterwheelB;
 
     boolean USE_WEBCAM = true;
 
 
-    //shooterholder = hardwareMap.get(Servo.class, "shooterholder");
-    //artifactholder = hardwareMap.get(Servo.class, "artifactholder");
+    shooterholder = hardwareMap.get(Servo.class, "shooterholder");
+    artifactholder = hardwareMap.get(Servo.class, "artifactholder");
     shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
     shooterwheelB = hardwareMap.get(DcMotor.class, "shooterwheelB");
-    //holder = hardwareMap.get(CRServo.class, "holder");
+    holder = hardwareMap.get(CRServo.class, "holder");
     X=hardwareMap.get(DcMotor.class, "X");
     intake = hardwareMap.get(DcMotor.class, "intake");
     backleft = hardwareMap.get(DcMotor.class, "backleft");
@@ -653,9 +650,9 @@ public void runOpMode() throws InterruptedException {
 
 
 
-
+   
     runtime.reset();
-    while (!(isStarted() || isStopRequested())) {
+    while (linearOpMode.opModeIsActive()) {
 
 
 
@@ -847,7 +844,10 @@ public void runOpMode() throws InterruptedException {
         double feedforwardB=termB.feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
 
         double desiredspeed=0;//CHANGE LATER
-        double speedB=ShooterB.calcshooterB(desiredspeed,currentspeedB)+feedforwardB;
+        double speedBB=0;
+        speedBB=ShooterB.calcshooterB(desiredspeed,currentspeedB);
+        double speedB=0;
+        speedB=speedBB+feedforwardB;
         shooterwheelB.setPower(speedB);
         shooterwheelA.setPower(speedB);
 
@@ -899,14 +899,13 @@ private void initAprilTag(AprilTagProcessor myAprilTagProcessor) {
 private boolean contains(String stringToSearch, String containText) {
     return stringToSearch.indexOf(containText) + 1 != 0;
 }
+
 private static <VisionPortalAccess> void waitForCamera() {
     VisionPortalAccess myVisionPortal = null;
-    if (myVisionPortal.getClass().equals(STREAMING)) {
-        return;
-    }
-
-    while (!isStopRequested() && !STREAMING.equals(myVisionPortal.getClass())) {
-        sleep(20);
+    if (!myVisionPortal.getClass().equals(STREAMING)) {
+        while (!linearOpMode.isStopRequested() && !STREAMING.equals(myVisionPortal.getClass())) {
+            sleep(20);
+        }
     }
 
 }
@@ -920,7 +919,7 @@ private static void getCameraSetting() {
 
     waitForCamera();
     // Get camera control values unless we are stopping.
-    if (!isStopRequested()) {
+    if (!linearOpMode.isStopRequested()) {
         ExposureControl myExposureControl;
         VisionPortal myVisionPortal = null;
         myExposureControl = myVisionPortal.getCameraControl(ExposureControl.class);
