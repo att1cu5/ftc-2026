@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
-import static android.os.SystemClock.sleep;
+import static android.os.SystemClock.sleep; // comment out this
 import static org.firstinspires.ftc.robotcontroller.external.samples.ConceptAprilTagEasy.USE_WEBCAM;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.vision.VisionPortal.CameraState.STREAMING;
 
-import androidx.core.util.SparseBooleanArrayKt;
+import androidx.core.util.SparseBooleanArrayKt; // comment out this
 
 import org.firstinspires.ftc.vision.VisionPortal;
 
@@ -36,8 +36,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.Collections;
 import java.util.List;
 
-@Autonomous (name = "auto_A (Blocks to Java)", group="LinearOpMode") //this is fine
-public class auto_A extends LinearOpMode { //this is fine
+@Autonomous (name = "auto (Blocks to Java)", group="LinearOpMode") 
+public class auto extends LinearOpMode { 
 
     double Abcd=0;
     double fixedtheta=0;//find this
@@ -648,8 +648,8 @@ public static class calcPhys{
 }
 
 
-@Override
-public void runOpMode() throws InterruptedException {
+@Override //only bug
+public void runOpMode() throws InterruptedException { //only bug
     //private ElapsedTime runtime = new ElapsedTime();
     USE_WEBCAM = true;
     DcMotor backleft;
