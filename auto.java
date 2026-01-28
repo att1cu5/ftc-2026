@@ -446,6 +446,41 @@ public class auto_A extends LinearOpMode { //this is fine
         frontleft.setPower(speedCangCang);
         backleft.setPower(speedEangEang);
         backright.setPower(speedDangDang);
+        motorintake state=new motorintake();
+        double speedOfIntake=0;//set this
+        if (speedOfIntake>speedOfintakeOn){
+            speedOfIntake=speedOfintakeOn;
+        }
+        if (speedOfIntake<-speedOfintakeOn){
+            speedOfIntake=-speedOfintakeOn;
+        }
+
+        double stateofintake=state.set_intake(speedOfIntake);
+        intake.setPower(stateofintake);
+        double angleofmotorA=0;//set this
+        Servos_A degrees=new Servos_A();
+        if(Servos_A.angles(angleofmotorA)<=180){
+           double timesx=(Servos_A.angles(angleofmotorA)/180);
+           angleofmotorA=timesx;
+           shooterholder.setPosition(angleofmotorA);
+        }
+        double angleofmotorB=0;//set this
+        Servos_A degreesB=new Servos_A();
+        if(Servos_A.angles(angleofmotorB)<=180){
+            double timesxs=(Servos_A.angles(angleofmotorB)/180);
+            angleofmotorB=timesxs;
+            artifactholder.setPosition(angleofmotorB);
+        }
+        double holderpower=0;//set this
+        Servos_B powerofintakes=new Servos_B();
+        if(powerofintakes.direction(holderpower)>1){
+            holderpower=1;
+        }
+        if(powerofintakes.direction(holderpower)<-1){
+            holderpower=-1;
+        }
+        holder.setPower(holderpower);
+
         sleep(20);
 
 
@@ -976,7 +1011,11 @@ class calcPhys{
         return (Math.sqrt(2*g*heightofgoal)/Math.sin(theta));
     }
 }
-
+class motorintake{
+    public double set_intake(double intakepower){
+        return intakepower;
+    }
+}
 
 /**
  * Initialize AprilTag Detection.
@@ -996,6 +1035,7 @@ class startup {
         }
         return true;
     }
+
     public void initAprilTag() {
         AprilTagProcessor.Builder myAprilTagProcessorBuilder;
         VisionPortal.Builder myVisionPortalBuilder;
@@ -1021,9 +1061,17 @@ class startup {
         // Create a VisionPortal by calling build.
         VisionPortal myVisionPortal = myVisionPortalBuilder.build();
     }
+}
+class Servos_A{
+    public static double angles(double desiredangle){
+        return Math.abs(desiredangle);
     }
-
-
+}
+class Servos_B{
+    public static double direction(double powerofintake){
+        return powerofintake;
+    }
+}
 
 
 
