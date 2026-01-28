@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
-import static android.os.SystemClock.sleep;
-import static org.firstinspires.ftc.robotcontroller.external.samples.ConceptAprilTagEasy.USE_WEBCAM;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-import static org.firstinspires.ftc.vision.VisionPortal.CameraState.STREAMING;
+//import static android.os.SystemClock.sleep;
+//import static org.firstinspires.ftc.robotcontroller.external.samples.ConceptAprilTagEasy.USE_WEBCAM;
+//import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+//import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
+//import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+//import static org.firstinspires.ftc.vision.VisionPortal.CameraState.STREAMING;
 
-import androidx.core.util.SparseBooleanArrayKt;
+//import androidx.core.util.SparseBooleanArrayKt;
 
 import org.firstinspires.ftc.vision.VisionPortal;
 
@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
@@ -36,8 +37,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.Collections;
 import java.util.List;
 
-@Autonomous (name = "auto_A (Blocks to Java)", group="LinearOpMode") //this is fine
-public class auto_A extends LinearOpMode { //this is fine
+@Autonomous (name = "auto (Blocks to Java)", group="LinearOpMode") //this is fine
+public class auto extends LinearOpMode { //this is fine
 
     double Abcd=0;
     double fixedtheta=0;//find this
@@ -176,16 +177,16 @@ public class auto_A extends LinearOpMode { //this is fine
 
     Position cameraPosition = new Position(DistanceUnit.INCH, 0, 0, 0, 0);
     YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, 0, -90, 0, 0);
-    startup hi=new startup();
-    hi.initAprilTag();
+    //startup hi=new startup();
+    //hi.initAprilTag();
 
 
 
 
 
     runtime.reset();
-    //waitForStart();
-    while (linearOpMode.opModeIsActive()) {
+    waitForStart();
+    while (opModeIsActive()) {
 
 
 
@@ -194,8 +195,8 @@ public class auto_A extends LinearOpMode { //this is fine
         double CurX=0;
         CurY=shooterwheelA.getCurrentPosition();
         CurX=X.getCurrentPosition();
-        List<AprilTagDetection> myAprilTagDetections = Collections.emptyList();
-        AprilTagDetection myAprilTagDetection = null;
+      //  List<AprilTagDetection> myAprilTagDetections = Collections.emptyList();
+        //AprilTagDetection myAprilTagDetection = null;
 
         // Get a list of AprilTag detections.
 
@@ -203,142 +204,145 @@ public class auto_A extends LinearOpMode { //this is fine
 
         //telemetry.addData("# AprilTags Detected", JavaUtil.listLength(myAprilTagDetections));
 
-        for (AprilTagDetection myAprilTagDetection_item : myAprilTagDetections) {
-            myAprilTagDetection = myAprilTagDetection_item;
+        //for (AprilTagDetection myAprilTagDetection_item : myAprilTagDetections) {
+          //  myAprilTagDetection = myAprilTagDetection_item;
             // Display info about the detection.
 
 
-            if (myAprilTagDetection.metadata != null) {
+//            if (myAprilTagDetection.metadata != null) {
 
                 // Only use tags that don't have Obelisk in them since Obelisk tags don't have valid location data
-                double test=myAprilTagDetection.id;
-                double motifs=test;
-                startup logic=new startup();
-                if (!logic.contains(myAprilTagDetection.metadata.name, "Obelisk")) {
-                    double currentpositionY=shooterwheelA.getCurrentPosition();
-                    double currentpositionX=X.getCurrentPosition();
-                    double Ya=0;
-                    double Xa=0;
-                    double Za=0;
-                    double Pitch=0;
-                    double Roll=0;
-                    double Yaw=0;
-                    double rangeB=0;
-                    double pointCx=0;
-                    double offsetX=9.129397076417323;
-                    Ya=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
-                    Xa=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
-                    Za=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
-                    Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
-                    Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
-                    Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
-                    double startx=Xa;
-                    double starty=Ya;
-                    rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
-                    pointCx=rangeB+offsetX;
-                    double[] correctmotif={0,0,0,0};
-                    telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1)+ " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
-                    if(motifs!=20 && motifs!=24){
-                        if(motifs==23){
-                            correctmotif[0]=2;
-                            correctmotif[1]=2;
-                            correctmotif[2]=1;
-                        }
-                        if(motifs==21){
-                            correctmotif[0]=1;
-                            correctmotif[1]=2;
-                            correctmotif[2]=2;
-                        }
-                        if(motifs==22){
-                            correctmotif[0]=2;
-                            correctmotif[1]=1;
-                            correctmotif[2]=2;
-                        }
+  //              double test=myAprilTagDetection.id;
+    //            double motifs=test;
+      //          startup logic=new startup();
+        //        if (!logic.contains(myAprilTagDetection.metadata.name, "Obelisk")) {
+        //            double currentpositionY=shooterwheelA.getCurrentPosition();
+         //           double currentpositionX=X.getCurrentPosition();
+           //         double Ya=0;
+            //        double Xa=0;
+            //        double Za=0;
+            //        double Pitch=0;
+            //        double Roll=0;
+            //        double Yaw=0;
+            //        double rangeB=0;
+            //        double pointCx=0;
+            //        double offsetX=9.129397076417323;
+            //        Ya=Math.round(myAprilTagDetection.robotPose.getPosition().y*10);
+            //        Xa=Math.round(myAprilTagDetection.robotPose.getPosition().x*10);
+            //        Za=Math.round(myAprilTagDetection.robotPose.getPosition().z*10);
+            //        Pitch=Math.round(myAprilTagDetection.robotPose.getOrientation().getPitch()*10);
+            //        Roll=Math.round(myAprilTagDetection.robotPose.getOrientation().getRoll()*10);
+            //        Yaw=Math.round(myAprilTagDetection.robotPose.getOrientation().getYaw()*10);
+            //        double startx=Xa;
+            //        double starty=Ya;
+            //        rangeB=Math.sqrt(Math.pow(((startx - currentpositionX) * Math.PI * 1.25984) / 2000, 2) + Math.pow(((starty - currentpositionY) * Math.PI * 1.25984) / 2000, 2));
+            //        pointCx=rangeB+offsetX;
+            //        double[] correctmotif={0,0,0,0};
+            //        telemetry.addLine("XYZ " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().x, 6, 1) + " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().y, 6, 1)+ " " + JavaUtil.formatNumber(myAprilTagDetection.robotPose.getPosition().z, 6, 1) + "  (inch)");
+            //        if(motifs!=20 && motifs!=24){
+            //            if(motifs==23){
+            //                correctmotif[0]=2;
+            //                correctmotif[1]=2;
+            //                correctmotif[2]=1;
+            //            }
+            //            if(motifs==21){
+            //                correctmotif[0]=1;
+            //                correctmotif[1]=2;
+                      //      correctmotif[2]=2;
+                     //   }
+                    //    if(motifs==22){
+                      //      correctmotif[0]=2;
+                     //       correctmotif[1]=1;
+                    //        correctmotif[2]=2;
+                  //      }
 
 
 
 
 
-                    }
+                //    }
 
-                }
-            } else {
+              //  }
+            //} else {
 
-            }
+          //  }
 
-        }
+        //}
 
 
         double Circumference=76.8*Math.PI;
-        double intialspeedA=0;//CHANGE LATER
+        double intialspeedA=0.1;//CHANGE LATER
         FeedforwardA termA= new FeedforwardA();
         PIDCONTOLLERshooterA ShooterA=new PIDCONTOLLERshooterA();
         double currentspeedA=((frontright.getCurrentPosition()/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
-        double VelocityA=0;//tune this
-        double AccelerationA=0;//tune this
-        double KSshooterA=0;//tune this
-        double KVshooterA=0;//tune this
-        double KAshooterA=0;//tune this\
+        double VelocityA=0.1;//tune this
+        double AccelerationA=0.1;//tune this
+        double KSshooterA=0.1;//tune this
+        double KVshooterA=0.1;//tune this
+        double KAshooterA=0.1;//tune this\
         double feedforwardA=0;
         feedforwardA=termA.feedforwardtermA(VelocityA, AccelerationA, KSshooterA, KVshooterA, KAshooterA);
-        double desiredspeedA=0;//CHANGE LATER
+        double desiredspeedA=0.1;//CHANGE LATER
         double speedAA=0;
         speedAA=ShooterA.calcshooterA(desiredspeedA,currentspeedA);
         double speedA=speedAA;
         speedA=speedA+feedforwardA;
-        double intialspeedC=0;//CHANGE LATER
+        double intialspeedC=0.1;//CHANGE LATER
         FeedforwardC termC=new FeedforwardC();
         PIDCONTOLLERshooterC ShooterC=new PIDCONTOLLERshooterC();
         double currentspeedC=((frontleft.getCurrentPosition()/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
-        double VelocityC=0;//tune this
-        double AccelerationC=0;//tune this
-        double KSshooterC=0;//tune this
-        double KVshooterC=0;//tune this
-        double KAshooterC=0;//tune this
+        double VelocityC=0.1;//tune this
+        double AccelerationC=0.1;//tune this
+        double KSshooterC=0.1;//tune this
+        double KVshooterC=0.1;//tune this
+        double KAshooterC=0.1;//tune this
         double feedforwardC=termC.feedforwardtermC(VelocityC, AccelerationC, KSshooterC, KVshooterC, KAshooterC);
-        double desiredspeedC=0;//CHANGE LATER
+        double desiredspeedC=0.1;//CHANGE LATER
         double speedCC=0;
         speedCC=ShooterC.calcshooterC(desiredspeedC,currentspeedC);
         double speedC=speedCC;
         speedC=speedC+feedforwardC;
-        double intialspeedD=0;//CHANGE LATER
+        double intialspeedD=0.1;//CHANGE LATER
         FeedforwardD termD=new FeedforwardD();
         PIDCONTOLLERshooterD ShooterD=new PIDCONTOLLERshooterD();
         double currentspeedD=((backright.getCurrentPosition()/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
-        double VelocityD=0;//tune this
-        double AccelerationD=0;//tune this
-        double KSshooterD=0;//tune this
-        double KVshooterD=0;//tune this
-        double KAshooterD=0;//tune this
+        double VelocityD=0.1;//tune this
+        double AccelerationD=0.1;//tune this
+        double KSshooterD=0.1;//tune this
+        double KVshooterD=0.1;//tune this
+        double KAshooterD=0.1;//tune this
         double feedforwardD=termD.feedforwardtermD(VelocityD, AccelerationD, KSshooterD, KVshooterD, KAshooterD);
-        double desiredspeedD=0;//CHANGE LATER
+        double desiredspeedD=0.1;//CHANGE LATER
         double speedDD=0;
         speedDD=ShooterD.calcshooterD(desiredspeedD,currentspeedD);
         double speedD=speedDD;
         speedD=speedD+feedforwardD;
-        double intialspeedE=0;//CHANGE LATER
+        double intialspeedE=0.1;//CHANGE LATER
         FeedforwardE termE=new FeedforwardE();
         PIDCONTOLLERshooterE ShooterE=new PIDCONTOLLERshooterE();
         double currentspeedE=((backleft.getCurrentPosition()/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
-        double VelocityE=0;//tune this
-        double AccelerationE=0;//tune this
-        double KSshooterE=0;//tune this
-        double KVshooterE=0;//tune this
-        double KAshooterE=0;//tune this
+        double VelocityE=0.1;//tune this
+        double AccelerationE=0.1;//tune this
+        double KSshooterE=0.1;//tune this
+        double KVshooterE=0.1;//tune this
+        double KAshooterE=0.1;//tune this
         double feedforwardE=termE.feedforwardtermE(VelocityE, AccelerationE, KSshooterE, KVshooterE, KAshooterE);
-        double desiredspeedE=0;//CHANGE LATER
+        double desiredspeedE=0.1;//CHANGE LATER
         double speedEE=0;
         speedEE=ShooterE.calcshooterE(desiredspeedE,currentspeedE);
         double speedE=speedEE;
         speedE=speedE+feedforwardE;
-        double desX=0;//tune later
-        double desY=0; //tune later
-        while(CurX<desX){
+        double desX=-7462;//tune later
+        double desY=-2; //tune later
+        while(CurX>desX){
+            CurX=X.getCurrentPosition();
+            telemetry.addData("posX",CurX);
             frontright.setPower(speedA);
-            frontleft.setPower(speedC);
-            backleft.setPower(speedE);
+            frontleft.setPower((speedC+0.2));
+            backleft.setPower((speedE+0.2));
             backright.setPower(speedD);
-            if(CurX==desX){
+            telemetry.update();
+            if(CurX==desX || CurX<desX){
                 frontright.setPower(0);
                 frontleft.setPower(0);
                 backleft.setPower(0);
@@ -347,21 +351,24 @@ public class auto_A extends LinearOpMode { //this is fine
             }
         }
 
-        while(CurY<desY){
+        //while(CurY>desY){
+          //  CurY=shooterwheelA.getCurrentPosition();
+        //    telemetry.addData("posY",CurY);
+            
+         //   frontright.setPower(speedA);
+          //  frontleft.setPower((speedC+0.2));
+    //        backleft.setPower((speedE+0.2));
+     //       backright.setPower(speedD);
+       //     telemetry.update();
+         //   if(CurY==desY || CurY<desY){
+           //     frontright.setPower(0);
+        //        frontleft.setPower(0);
+        //        backleft.setPower(0);
+        //        backright.setPower(0);
+        //        break;
 
-            frontright.setPower(speedA);
-            frontleft.setPower(speedC);
-            backleft.setPower(speedE);
-            backright.setPower(speedD);
-            if(CurY==desY){
-                frontright.setPower(0);
-                frontleft.setPower(0);
-                backleft.setPower(0);
-                backright.setPower(0);
-                break;
-
-            }
-        }
+        //    }
+        //}
 
         double offsetY=5.1496063;
         double pointCy=38.759843+offsetY;
@@ -709,11 +716,11 @@ class FeedforwardCang{
     }
 }
 class FeedforwardB{
-    public double kSB=0;//find this value
-    public double kAB=0;//find this value
-    public double kVB=0;//find this value
-    double DesiredVB=0;//find this value
-    double DesiredAB=0;//find this value
+    public double kSB=0.1;//find this value
+    public double kAB=0.1;//find this value
+    public double kVB=0.1;//find this value
+    double DesiredVB=0.1;//find this value
+    double DesiredAB=0.10;//find this value
 
     public double feedforwardtermB(double DesiredVB,double DesiredAB,double kSB,double kVB,double kAB){
         this.kSB=kSB;
@@ -725,13 +732,13 @@ class FeedforwardB{
 }
 
 class PIDCONTOLLERshooterB{
-    public double kpshooterB; //find this value
-    public double kishooterB; //find this value
-    public double kdshooterB;//find this value
+    public double kpshooterB=0.2; //find this value
+    public double kishooterB=0.3; //find this value
+    public double kdshooterB=0.1;//find this value
     double previousErrorshooterB=0;
     double intergralshooterB=0; //assign a value in the future to intergral
-    double minOutputshooterB=0; //assign a value in the future to minoutput
-    double maxOutputshooterB=0; //assign a value in the future to maxoutput
+    double minOutputshooterB=-0.5; //assign a value in the future to minoutput
+    double maxOutputshooterB=0.5; //assign a value in the future to maxoutput
 
     public double PIDshooterB(double kpshooterB, double kishooterB, double kdshooterB, double shooterB1, double shooterB2, double shooterB3){
 
@@ -771,14 +778,14 @@ class PIDCONTOLLERshooterB{
 class PIDCONTOLLERshooterA{
 
 
-    public double kpshooterA; //find this value
-    public double kishooterA; //find this value
-    public double kdshooterA;//find this value
+    public double kpshooterA=0.2; //find this value
+    public double kishooterA=0.3; //find this value
+    public double kdshooterA=0.1;//find this value
 
     double previousErrorshooterA=0;
     double intergralshooterA=0; //assign a value in the future to intergral
-    double minOutputshooterA=0; //assign a value in the future to minoutput
-     double maxOutputshooterA=0; //assign a value in the future to maxoutput
+    double minOutputshooterA=-0.5; //assign a value in the future to minoutput
+    double maxOutputshooterA=0.5; //assign a value in the future to maxoutput
 
     public double PIDshooterA(double kpshooterA, double kishooterA, double kdshooterA, double shooterA1, double shooterA2, double shooterA3){
 
@@ -811,11 +818,11 @@ class PIDCONTOLLERshooterA{
 
 }
 class FeedforwardA{
-    double kSA=0;//find this value
-    double kAA=0;//find this value
-    double kVA=0;//find this value
-    double DesiredVA=0;//find this value
-    double DesiredAA=0;//find this value
+    double kSA=0.1;//find this value
+    double kAA=0.1;//find this value
+    double kVA=0.1;//find this value
+    double DesiredVA=0.1;//find this value
+    double DesiredAA=0.1;//find this value
 
     public double feedforwardtermA(double DesiredVA,double DesiredAA,double kSA,double kVA,double kAA){
         this.kSA=kSA;
@@ -829,14 +836,14 @@ class FeedforwardA{
 class PIDCONTOLLERshooterC{
 
 
-    public double kpshooterC; //find this value
-    public double kishooterC; //find this value
-    public double kdshooterC;//find this value
+    public double kpshooterC=0.2; //find this value
+    public double kishooterC=0.3; //find this value
+    public double kdshooterC=0.1;//find this value
 
     double previousErrorshooterC=0;
     double intergralshooterC=0; //assign a value in the future to intergral
-    double minOutputshooterC=0; //assign a value in the future to minoutput
-    double maxOutputshooterC=0; //assign a value in the future to maxoutput
+    double minOutputshooterC=-0.5; //assign a value in the future to minoutput
+    double maxOutputshooterC=0.5; //assign a value in the future to maxoutput
 
     public double PIDshooterC(double kpshooterC, double kishooterC, double kdshooterC, double shooterC1, double shooterC2, double shooterC3){
 
@@ -872,11 +879,11 @@ class PIDCONTOLLERshooterC{
     }
 }
 class FeedforwardC{
-    public double kSC=0;//find this value
-    public double kAC=0;//find this value
-    public double kVC=0;//find this value
-    double DesiredVC=0;//find this value
-    double DesiredAC=0;//find this value
+    public double kSC=0.1;//find this value
+    public double kAC=0.1;//find this value
+    public double kVC=0.1;//find this value
+    double DesiredVC=0.1;//find this value
+    double DesiredAC=0.10;//find this value
 
     public double feedforwardtermC(double DesiredVC,double DesiredAC,double kSC,double kVC,double kAC){
         this.kSC=kSC;
@@ -890,14 +897,14 @@ class FeedforwardC{
 class PIDCONTOLLERshooterD{
 
 
-    public double kpshooterD; //find this value
-    public double kishooterD; //find this value
-    public double kdshooterD;//find this value
+    public double kpshooterD=0.2; //find this value
+    public double kishooterD=0.3; //find this value
+    public double kdshooterD=0.1;//find this value
 
     double previousErrorshooterD=0;
     double intergralshooterD=0; //assign a value in the future to intergral
-    double minOutputshooterD=0; //assign a value in the future to minoutput
-    double maxOutputshooterD=0; //assign a value in the future to maxoutput
+    double minOutputshooterD=-0.5; //assign a value in the future to minoutput
+    double maxOutputshooterD=0.5; //assign a value in the future to maxoutput
 
     public double PIDshooterD(double kpshooterD, double kishooterD, double kdshooterD, double shooterD1, double shooterD2, double shooterD3){
 
@@ -932,11 +939,11 @@ class PIDCONTOLLERshooterD{
     }
 }
 class FeedforwardD{
-    public double kSD=0;//find this value
-    public double kAD=0;//find this value
-    public double kVD=0;//find this value
-    double DesiredVD=0;//find this value
-    double DesiredAD=0;//find this value
+    public double kSD=0.1;//find this value
+    public double kAD=0.1;//find this value
+    public double kVD=0.1;//find this value
+    double DesiredVD=0.1;//find this value
+    double DesiredAD=0.10;//find this value
 
     public double feedforwardtermD(double DesiredVD,double DesiredAD,double kSD,double kVD,double kAD){
         this.kSD=kSD;
@@ -950,14 +957,14 @@ class FeedforwardD{
 class PIDCONTOLLERshooterE{
 
 
-    public double kpshooterE; //find this value
-    public double kishooterE; //find this value
-    public double kdshooterE;//find this value
+    public double kpshooterE=0.2; //find this value
+    public double kishooterE=0.3; //find this value
+    public double kdshooterE=0.1;//find this value
 
     double previousErrorshooterE=0;
     double intergralshooterE=0; //assign a value in the future to intergral
-    double minOutputshooterE=0; //assign a value in the future to minoutput
-    double maxOutputshooterE=0; //assign a value in the future to maxoutput
+    double minOutputshooterE=-0.5; //assign a value in the future to minoutput
+    double maxOutputshooterE=0.5; //assign a value in the future to maxoutput
 
     public double PIDshooterE(double kpshooterE, double kishooterE, double kdshooterE, double shooterE1, double shooterE2, double shooterE3){
 
@@ -1036,31 +1043,33 @@ class startup {
         return true;
     }
 
-    public void initAprilTag() {
-        AprilTagProcessor.Builder myAprilTagProcessorBuilder;
-        VisionPortal.Builder myVisionPortalBuilder;
-
+    //public void initAprilTag() {
+        
+        //AprilTagProcessor.Builder myAprilTagProcessorBuilder;
+        //VisionPortal.Builder myVisionPortalBuilder;
+        //boolean USE_WEBCAM;
         // First, create an AprilTagProcessor.Builder.
-        myAprilTagProcessorBuilder = new AprilTagProcessor.Builder();
-        Position cameraPosition = null;
-        YawPitchRollAngles cameraOrientation = null;
-        AprilTagProcessor.Builder builder = myAprilTagProcessorBuilder.setCameraPose(cameraPosition, cameraOrientation);
+        //myAprilTagProcessorBuilder = new AprilTagProcessor.Builder();
+        //Position cameraPosition;
+        //YawPitchRollAngles cameraOrientation;
+        //AprilTagProcessor.Builder builder = myAprilTagProcessorBuilder.setCameraPose(cameraPosition, cameraOrientation);
         // Create an AprilTagProcessor by calling build.
-        AprilTagProcessor myAprilTagProcessor = myAprilTagProcessorBuilder.build();
+        //AprilTagProcessor myAprilTagProcessor = myAprilTagProcessorBuilder.build();
         // Next, create a VisionPortal.Builder and set attributes related to the camera.
-        myVisionPortalBuilder = new VisionPortal.Builder();
-        if (USE_WEBCAM) {
+        //VisionPortal.Builder setCamera = new VisionPortal.Builder();
+        
+        //if (USE_WEBCAM==true) {
             // Use a webcam.
-            myVisionPortalBuilder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        } else {
+          //  VisionPortalBuilder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        //} else {
             // Use the device's back camera.
-            myVisionPortalBuilder.setCamera(BuiltinCameraDirection.BACK);
-        }
+            //myVisionPortalBuilder.setCamera(BuiltinCameraDirection.BACK);
+        //}
         // Add myAprilTagProcessor to the VisionPortal.Builder.
-        myVisionPortalBuilder.addProcessor(myAprilTagProcessor);
+        //myVisionPortalBuilder.addProcessor(myAprilTagProcessor);
         // Create a VisionPortal by calling build.
-        VisionPortal myVisionPortal = myVisionPortalBuilder.build();
-    }
+        //VisionPortal myVisionPortal = myVisionPortalBuilder.build();
+    //}
 }
 class Servos_A{
     public static double angles(double desiredangle){
@@ -1072,7 +1081,3 @@ class Servos_B{
         return powerofintake;
     }
 }
-
-
-
-
