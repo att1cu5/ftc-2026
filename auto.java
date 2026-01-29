@@ -41,7 +41,7 @@ import java.util.List;
 public class auto extends LinearOpMode { //this is fine
 
     double Abcd=0;
-    double fixedtheta=0;//find this
+    double fixedtheta=65;//find this
     double rotater=0;
     double test=0;
 
@@ -333,7 +333,7 @@ public class auto extends LinearOpMode { //this is fine
         double speedE=speedEE;
         speedE=speedE+feedforwardE;
         double desX=-7462;//tune later
-        double desY=-2; //tune later
+        double desY=0; //tune later
         while(CurX>desX){
             CurX=X.getCurrentPosition();
             telemetry.addData("posX",CurX);
