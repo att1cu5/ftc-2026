@@ -42,7 +42,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 @TeleOp (name = "TELEOP_BESTC (Blocks to Java)")
 public class TELEOP_BESTC extends LinearOpMode {
-  double fixedtheta=0;//find this
+  double fixedtheta=65;//find this
   double rotater=0;
   double rotaterA=0;
   double motifs=0;
