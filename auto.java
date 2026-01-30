@@ -41,7 +41,7 @@ import java.util.List;
 public class auto extends LinearOpMode { //this is fine
 
     double Abcd=0;
-    double fixedtheta=0;//find this
+    double fixedtheta=65;//find this
     double rotater=0;
     double test=0;
 
@@ -182,19 +182,31 @@ public class auto extends LinearOpMode { //this is fine
 
 
 
-
-
+    double CurY=0;
+    double CurX=0;
+    double filteredG=0;
+    double filteredF=0;
+    double filtered=0;
+    double filteredA=0;
+    double filteredC=0;
+    double filteredB=0;
+    double filteredD=0;
     runtime.reset();
     waitForStart();
+     
     while (opModeIsActive()) {
 
 
 
-
-        double CurY=0;
-        double CurX=0;
-        CurY=shooterwheelA.getCurrentPosition();
-        CurX=X.getCurrentPosition();
+        
+        double posY=shooterwheelA.getCurrentPosition();
+        filter lpd=new filter();
+        filteredG=lpd.filterinput(0.3,posY,filteredG);
+        CurY=filteredG;
+        double posX=X.getCurrentPosition();
+        filter lpa=new filter();
+        filteredF=lpa.filterinput(0.3,posX,filteredF);
+        CurX=filteredF;
       //  List<AprilTagDetection> myAprilTagDetections = Collections.emptyList();
         //AprilTagDetection myAprilTagDetection = null;
 
@@ -274,7 +286,10 @@ public class auto extends LinearOpMode { //this is fine
         double intialspeedA=0.1;//CHANGE LATER
         FeedforwardA termA= new FeedforwardA();
         PIDCONTOLLERshooterA ShooterA=new PIDCONTOLLERshooterA();
-        double currentspeedA=((frontright.getCurrentPosition()/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
+        double posA=frontright.getCurrentPosition();
+        filter lp=new filter();
+        filtered=lp.filterinput(0.3,posA,filtered);
+        double currentspeedA=((filtered/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
         double VelocityA=0.1;//tune this
         double AccelerationA=0.1;//tune this
         double KSshooterA=0.1;//tune this
@@ -290,7 +305,10 @@ public class auto extends LinearOpMode { //this is fine
         double intialspeedC=0.1;//CHANGE LATER
         FeedforwardC termC=new FeedforwardC();
         PIDCONTOLLERshooterC ShooterC=new PIDCONTOLLERshooterC();
-        double currentspeedC=((frontleft.getCurrentPosition()/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
+        double posC=frontleft.getCurrentPosition();
+        filter lpf=new filter();
+        filteredA=lpf.filterinput(0.3,posC,filteredA);
+        double currentspeedC=((filteredA/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
         double VelocityC=0.1;//tune this
         double AccelerationC=0.1;//tune this
         double KSshooterC=0.1;//tune this
@@ -305,7 +323,10 @@ public class auto extends LinearOpMode { //this is fine
         double intialspeedD=0.1;//CHANGE LATER
         FeedforwardD termD=new FeedforwardD();
         PIDCONTOLLERshooterD ShooterD=new PIDCONTOLLERshooterD();
-        double currentspeedD=((backright.getCurrentPosition()/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
+        double posD=backright.getCurrentPosition();
+        filter lpg=new filter();
+        filteredB=lpg.filterinput(0.3,posD,filteredB);
+        double currentspeedD=((filteredB/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
         double VelocityD=0.1;//tune this
         double AccelerationD=0.1;//tune this
         double KSshooterD=0.1;//tune this
@@ -320,7 +341,10 @@ public class auto extends LinearOpMode { //this is fine
         double intialspeedE=0.1;//CHANGE LATER
         FeedforwardE termE=new FeedforwardE();
         PIDCONTOLLERshooterE ShooterE=new PIDCONTOLLERshooterE();
-        double currentspeedE=((backleft.getCurrentPosition()/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
+        double posR=backleft.getCurrentPosition();
+        filter lpp=new filter();
+        filteredC=lpp.filterinput(0.3,posR,filteredC);
+        double currentspeedE=((filteredC/383.6)*104*2*Math.PI*(96/32))/runtime.seconds();
         double VelocityE=0.1;//tune this
         double AccelerationE=0.1;//tune this
         double KSshooterE=0.1;//tune this
@@ -332,15 +356,18 @@ public class auto extends LinearOpMode { //this is fine
         speedEE=ShooterE.calcshooterE(desiredspeedE,currentspeedE);
         double speedE=speedEE;
         speedE=speedE+feedforwardE;
-        double desX=-7462;//tune later
+        double desX=-10000;//tune later
         double desY=-2; //tune later
         while(CurX>desX){
-            CurX=X.getCurrentPosition();
+            double posO=X.getCurrentPosition();
+            filter lppd=new filter();
+            double filteredV=lppd.filterinput(0.3,posO,filteredC);
+            CurX=filteredV;
             telemetry.addData("posX",CurX);
             frontright.setPower(speedA);
-            frontleft.setPower((speedC+0.2));
-            backleft.setPower((speedE+0.2));
-            backright.setPower(speedD);
+            frontleft.setPower(speedC);
+            backleft.setPower(-speedE);
+            backright.setPower(-speedD);
             telemetry.update();
             if(CurX==desX || CurX<desX){
                 frontright.setPower(0);
@@ -377,7 +404,10 @@ public class auto extends LinearOpMode { //this is fine
         double intialspeed=calcPhys.answervelocity(pointCy, gravity, fixedtheta);
         FeedforwardB termB=new FeedforwardB();
         PIDCONTOLLERshooterB ShooterB=new PIDCONTOLLERshooterB();
-        double currentspeedB=((shooterwheelB.getCurrentPosition()/383.6)*Circumference*(96/32))/runtime.seconds();
+        double posE=shooterwheelB.getCurrentPosition();
+        filter lps=new filter();
+        filteredD=lps.filterinput(0.3,posE,filteredD);
+        double currentspeedB=((filteredD/383.6)*Circumference*(96/32))/runtime.seconds();
         double VelocityB=0;//tune this
         double AccelerationB=0;//tune this
         double KSshooterB=0;//tune this
@@ -999,11 +1029,11 @@ class PIDCONTOLLERshooterE{
     }
 }
 class FeedforwardE{
-    public double kSE=0;//find this value
-    public double kAE=0;//find this value
-    public double kVE=0;//find this value
-    double DesiredVE=0;//find this value
-    double DesiredAE=0;//find this value
+    public double kSE=0.1;//find this value
+    public double kAE=0.1;//find this value
+    public double kVE=0.1;//find this value
+    double DesiredVE=0.1;//find this value
+    double DesiredAE=0.1;//find this value
 
     public double feedforwardtermE(double DesiredVE,double DesiredAE,double kSE,double kVE,double kAE){
         this.kSE=kSE;
@@ -1070,6 +1100,11 @@ class startup {
         // Create a VisionPortal by calling build.
         //VisionPortal myVisionPortal = myVisionPortalBuilder.build();
     //}
+}
+class filter{
+  public double filterinput(double a,double filterA,double currentinput){
+    return (a*filterA)+((1-a)*currentinput);
+  }  
 }
 class Servos_A{
     public static double angles(double desiredangle){
