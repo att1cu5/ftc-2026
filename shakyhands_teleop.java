@@ -41,9 +41,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-@TeleOp (name = "TELEOP_BESTC (Blocks to Java)")
-public class TELEOP_BESTC extends LinearOpMode {
+@TeleOp (name = "shakyhands_teleop (Blocks to Java)")
+public class shakyhands_teleop extends LinearOpMode {
   double fixedtheta=65;//find this
+  double alpha=0.2;//tune
   double rotater=0;
   double rotaterA=0;
   double motifs=0;
@@ -204,7 +205,7 @@ public class TELEOP_BESTC extends LinearOpMode {
   @Override
   public void runOpMode() {
  
-    //private ElapsedTime runtime = new ElapsedTime();
+    ElapsedTime runtime = new ElapsedTime();
     pivotintake = hardwareMap.get(Servo.class, "pivotintake");
     pivotintakeA = hardwareMap.get(Servo.class, "pivotintakeA");
     belt = hardwareMap.get(CRServo.class, "belt");
@@ -216,7 +217,7 @@ public class TELEOP_BESTC extends LinearOpMode {
     double yAxis= -gamepad2.left_stick_y;
     double xAxis= gamepad2.left_stick_x;
     double zAxis= gamepad1.right_stick_y;
-    double deadzone=0.1;
+    double deadzone=0.2;
     double x=0;
     double y=0;
     double turn=0;
@@ -237,6 +238,14 @@ public class TELEOP_BESTC extends LinearOpMode {
     backright = hardwareMap.get(DcMotor.class, "backright");
     frontright = hardwareMap.get(DcMotor.class, "frontright");
     frontleft = hardwareMap.get(DcMotor.class, "frontleft");  
+    backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     X.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     shooterwheelA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -254,19 +263,28 @@ public class TELEOP_BESTC extends LinearOpMode {
     telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
     telemetry.addData(">", "Touch START to start OpMode");
     telemetry.update();
-
+    runtime.reset();
     waitForStart();
     //runtime.reset();
     while (opModeIsActive()) {
-        
+      double volts=hardwareMap.voltageSensor.iterator().next().getVoltage();
       y = gamepad2.left_stick_y;
       x = gamepad2.left_stick_x;
       if(Math.abs(y)<deadzone){
         y=0;
-      }
+      }else{
+        y=Math.pow(y,3);
+      } 
       if(Math.abs(x)<deadzone){
         x=0;      
+      }else{
+        x=Math.pow(x,3);
       }  
+      
+      StartA=frontright.getCurrentPosition();
+      StartB=frontleft.getCurrentPosition();
+      StartC=backright.getCurrentPosition();
+      StartD=backleft.getCurrentPosition();
       turn = gamepad2.right_stick_x;
       rotater= gamepad1.left_stick_y;
       rotaterA= gamepad1.right_stick_y;
@@ -276,75 +294,7 @@ public class TELEOP_BESTC extends LinearOpMode {
       frontright_A = (y + x) ;
       backleft_A = (y + x) ;
       backright_A = (y - x) ;
-      if(gamepad1.right_trigger>0){
-         beltA.setPower(0);
-         belt.setPower(0);
-      }
-      //if(gamepad1.y){
-      //   artifactholder.setPosition(artifactholderopen);
-      //}
-      //if(gamepad1.x){
-      //   artifactholder.setPosition(artifactholderclose);
-      //}
-      //if(gamepad1.dpad_up){
-      //   shooterholder.setPosition(shooterholderclose);
-      //}
-      //if(gamepad1.dpad_down){
-      //   shooterholder.setPosition(shooterholderopen);
-      //}     
-      //if(gamepad1.dpad_left){
-      //  pivotintakeA.setPosition(latchopen);
-      //}
-      //if(gamepad1.dpad_right){
-      //  pivotintakeA.setPosition(latchclose);
-      //}
-      //if(gamepad1.a){
-      //  pivotintake.setPosition(degree1);
-      //}
-      //if(gamepad1.b){
-      //  pivotintake.setPosition(degree2);
-      //}
-
-      if(gamepad1.left_bumper){
-           intake.setPower(-speedOfintakeOn); 
-           //holder.setPower(speedOfintakeOn);
-           
-      }
-      if(gamepad1.right_bumper){
-           intake.setPower(speedOfintakeOn); 
-            //holder.setPower(-speedOfintakeOn);
-      }
-      else{
-        
-          intake.setPower(speedOfintakeOff); 
-           //holder.setPower(speedOfintakeOff);
-
-      }
-      if(gamepad1.a){
-          
-         
-
-
-
-        
-          double power=1-gamepad1.left_trigger;
-          shooterwheelA.setPower(-power);
-          shooterwheelB.setPower(power);
-      }
-      if(gamepad1.b){
-        shooterwheelA.setPower(0);
-        shooterwheelB.setPower(0);
-      }
-      if(gamepad1.x){
-        beltA.setPower(-beltspeed1);
-        belt.setPower(beltspeed1);
-      }
-      if(gamepad1.y){
-        beltA.setPower(-beltspeed2);
-        belt.setPower(beltspeed2);
-      }
-      //beltA.setPower(0);
-      //belt.setPower(0);
+      
       if (gamepad2.right_bumper) {
           double precision=1-gamepad2.left_trigger;    
           swerve_A=precision*(swerve_A);
@@ -387,18 +337,99 @@ public class TELEOP_BESTC extends LinearOpMode {
               backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);     
               backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       }
-      if(turn==0){
+      if(turn==0 && volts>10.0){
               frontright.setPower(-frontright_A);        
               frontleft.setPower(-frontleft_A);          
               backleft.setPower(backleft_A);            
               backright.setPower(backright_A);
+      }else if(volts<10.0 && turn==0){
+        double rawA=frontright.getCurrentPosition();
+        double rawB=frontleft.getCurrentPosition();
+        double rawC=backright.getCurrentPosition();
+        double rawD=backleft.getCurrentPosition();
       }
-      if(turn!=0){
+      if(turn!=0 && volts>10.0){
               frontright.setPower(-swerve_A);        
               frontleft.setPower(-swerve_A);          
               backleft.setPower(swerve_B);            
               backright.setPower(swerve_B);
+      }else if(volts<10.0 && turn!=0){
+        double rawA=frontright.getCurrentPosition();
+        double rawB=frontleft.getCurrentPosition();
+        double rawC=backright.getCurrentPosition();
+        double rawD=backleft.getCurrentPosition();
+        
       }
+      if(gamepad1.right_trigger>0){
+         beltA.setPower(0);
+         belt.setPower(0);
+      }
+      //if(gamepad1.y){
+      //   artifactholder.setPosition(artifactholderopen);
+      //}
+      //if(gamepad1.x){
+      //   artifactholder.setPosition(artifactholderclose);
+      //}
+      //if(gamepad1.dpad_up){
+      //   shooterholder.setPosition(shooterholderclose);
+      //}
+      //if(gamepad1.dpad_down){
+      //   shooterholder.setPosition(shooterholderopen);
+      //}     
+      //if(gamepad1.dpad_left){
+      //  pivotintakeA.setPosition(latchopen);
+      //}
+      //if(gamepad1.dpad_right){
+      //  pivotintakeA.setPosition(latchclose);
+      //}
+      //if(gamepad1.a){
+      //  pivotintake.setPosition(degree1);
+      //}
+      //if(gamepad1.b){
+      //  pivotintake.setPosition(degree2);
+      //}
+
+      if(gamepad1.left_bumper){
+           intake.setPower(-speedOfintakeOn); 
+           holder.setPower(speedOfintakeOn);
+           
+      }
+      if(gamepad1.right_bumper){
+           intake.setPower(speedOfintakeOn); 
+            holder.setPower(-speedOfintakeOn);
+      }
+      else{
+        
+          intake.setPower(speedOfintakeOff); 
+          holder.setPower(speedOfintakeOff);
+
+      }
+      if(gamepad1.a){
+          
+         
+
+
+
+        
+          double power=1-gamepad1.left_trigger;
+          shooterwheelA.setPower(-power);
+          shooterwheelB.setPower(power);
+      }
+      if(gamepad1.b){
+        shooterwheelA.setPower(0);
+        shooterwheelB.setPower(0);
+      }
+      if(gamepad1.x){
+        beltA.setPower(-beltspeed1);
+        belt.setPower(beltspeed1);
+      }
+      if(gamepad1.y){
+        beltA.setPower(-beltspeed2);
+        belt.setPower(beltspeed2);
+      }
+      //beltA.setPower(0);
+      //belt.setPower(0);
+      
 
 
     }   
