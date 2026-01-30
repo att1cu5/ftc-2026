@@ -190,6 +190,7 @@ public class auto extends LinearOpMode { //this is fine
     double filteredA=0;
     double filteredC=0;
     double filteredB=0;
+    double filteredV=0;
     double filteredD=0;
     runtime.reset();
     waitForStart();
@@ -358,10 +359,12 @@ public class auto extends LinearOpMode { //this is fine
         speedE=speedE+feedforwardE;
         double desX=-10000;//tune later
         double desY=-2; //tune later
+        telemetry.addData("posX",CurX);
+        telemetry.update();
         while(CurX>desX){
             double posO=X.getCurrentPosition();
             filter lppd=new filter();
-            double filteredV=lppd.filterinput(0.3,posO,filteredC);
+            filteredV=lppd.filterinput(0.3,posO,filteredV);
             CurX=filteredV;
             telemetry.addData("posX",CurX);
             frontright.setPower(speedA);
@@ -420,8 +423,8 @@ public class auto extends LinearOpMode { //this is fine
         speedBB=ShooterB.calcshooterB(desiredspeed,currentspeedB);
         double speedB=0;
         speedB=speedBB+feedforwardB;
-        shooterwheelB.setPower(speedB);
-        shooterwheelA.setPower(speedB);
+        //shooterwheelB.setPower(speedB);
+        //shooterwheelA.setPower(speedB);
         FeedforwardAang termAang=new FeedforwardAang();
         PIDcontrollerAang shooterAang=new PIDcontrollerAang();
         double currentspeedAang=((frontright.getCurrentPosition()/383.6)*(96/32)*104*2*Math.PI)/runtime.seconds();
@@ -479,10 +482,10 @@ public class auto extends LinearOpMode { //this is fine
 
         double speedCangCang=shooterFang.calcFang(desiredspeedCang);
         speedCangCang=feedforwardFang+speedCangCang;
-        frontright.setPower(speedAangAang);
-        frontleft.setPower(speedCangCang);
-        backleft.setPower(speedEangEang);
-        backright.setPower(speedDangDang);
+        //frontright.setPower(speedAangAang);
+        //frontleft.setPower(speedCangCang);
+        //backleft.setPower(speedEangEang);
+        //backright.setPower(speedDangDang);
         motorintake state=new motorintake();
         double speedOfIntake=0;//set this
         if (speedOfIntake>speedOfintakeOn){
@@ -493,7 +496,7 @@ public class auto extends LinearOpMode { //this is fine
         }
 
         double stateofintake=state.set_intake(speedOfIntake);
-        intake.setPower(stateofintake);
+        //intake.setPower(stateofintake);
         double angleofmotorA=0;//set this
         Servos_A degrees=new Servos_A();
         if(Servos_A.angles(angleofmotorA)<=180){
@@ -516,7 +519,7 @@ public class auto extends LinearOpMode { //this is fine
         if(powerofintakes.direction(holderpower)<-1){
             holderpower=-1;
         }
-        holder.setPower(holderpower);
+        //holder.setPower(holderpower);
 
         sleep(20);
 
