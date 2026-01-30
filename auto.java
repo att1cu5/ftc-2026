@@ -145,6 +145,7 @@ public class auto extends LinearOpMode { //this is fine
     Servo artifactholder;
     CRServo belt;
     CRServo holder;
+    CRServo beltA;
     DcMotor X;
     final ElapsedTime runtime = new ElapsedTime();
     DcMotor intake;
@@ -152,8 +153,8 @@ public class auto extends LinearOpMode { //this is fine
     DcMotor shooterwheelB;
 
     boolean USE_WEBCAM = true;
-
-
+    beltA = hardwareMap.get(CRServo.class, "beltA");
+    belt = hardwareMap.get(CRServo.class, "belt");
     shooterholder = hardwareMap.get(Servo.class, "shooterholder");
     artifactholder = hardwareMap.get(Servo.class, "artifactholder");
     shooterwheelA = hardwareMap.get(DcMotor.class, "shooterwheelA");
@@ -399,7 +400,22 @@ public class auto extends LinearOpMode { //this is fine
 
         //    }
         //}
-
+        
+        double holderpower=1;//set this
+        Servos_B powerofintakes=new Servos_B();
+        if(powerofintakes.direction(holderpower)>1){
+            holderpower=1;
+        }
+        if(powerofintakes.direction(holderpower)<-1){
+            holderpower=-1;
+        }
+        beltA.setPower(holderpower);
+        belt.setPower(-holderpower);
+        holder.setPower(holderpower);
+        sleep(200);
+        beltA.setPower(0);
+        belt.setPower(0);
+        holder.setPower(0);
         double offsetY=5.1496063;
         double pointCy=38.759843+offsetY;
         double fixedtheta=0;//tune
@@ -409,22 +425,24 @@ public class auto extends LinearOpMode { //this is fine
         PIDCONTOLLERshooterB ShooterB=new PIDCONTOLLERshooterB();
         double posE=shooterwheelB.getCurrentPosition();
         filter lps=new filter();
-        filteredD=lps.filterinput(0.3,posE,filteredD);
+        filteredD=lps.filterinput(0.5,posE,filteredD);
         double currentspeedB=((filteredD/383.6)*Circumference*(96/32))/runtime.seconds();
-        double VelocityB=0;//tune this
-        double AccelerationB=0;//tune this
-        double KSshooterB=0;//tune this
-        double KVshooterB=0;//tune this
-        double KAshooterB=0;//tune this
+        double VelocityB=0.1;//tune this
+        double AccelerationB=0.1;//tune this
+        double KSshooterB=0.1;//tune this
+        double KVshooterB=0.1;//tune this
+        double KAshooterB=0.1;//tune this
         double feedforwardB=termB.feedforwardtermB(VelocityB, AccelerationB, KSshooterB, KVshooterB, KAshooterB);
 
-        double desiredspeed=0;//CHANGE LATER
+        double desiredspeed=1;//CHANGE LATER
         double speedBB=0;
         speedBB=ShooterB.calcshooterB(desiredspeed,currentspeedB);
         double speedB=0;
         speedB=speedBB+feedforwardB;
-        //shooterwheelB.setPower(speedB);
-        //shooterwheelA.setPower(speedB);
+        telemetry.addData("speed: ",speedB);
+        telemetry.update();
+        shooterwheelB.setPower(speedB);
+        shooterwheelA.setPower(-speedB);
         FeedforwardAang termAang=new FeedforwardAang();
         PIDcontrollerAang shooterAang=new PIDcontrollerAang();
         double currentspeedAang=((frontright.getCurrentPosition()/383.6)*(96/32)*104*2*Math.PI)/runtime.seconds();
@@ -511,17 +529,9 @@ public class auto extends LinearOpMode { //this is fine
             angleofmotorB=timesxs;
             artifactholder.setPosition(angleofmotorB);
         }
-        double holderpower=0;//set this
-        Servos_B powerofintakes=new Servos_B();
-        if(powerofintakes.direction(holderpower)>1){
-            holderpower=1;
-        }
-        if(powerofintakes.direction(holderpower)<-1){
-            holderpower=-1;
-        }
-        //holder.setPower(holderpower);
 
-        sleep(20);
+
+        //sleep(20);
 
 
 
@@ -765,13 +775,13 @@ class FeedforwardB{
 }
 
 class PIDCONTOLLERshooterB{
-    public double kpshooterB=0.2; //find this value
-    public double kishooterB=0.3; //find this value
+    public double kpshooterB=0.4; //find this value
+    public double kishooterB=0.1; //find this value
     public double kdshooterB=0.1;//find this value
     double previousErrorshooterB=0;
     double intergralshooterB=0; //assign a value in the future to intergral
-    double minOutputshooterB=-0.5; //assign a value in the future to minoutput
-    double maxOutputshooterB=0.5; //assign a value in the future to maxoutput
+    double minOutputshooterB=0; //assign a value in the future to minoutput
+    double maxOutputshooterB=1; //assign a value in the future to maxoutput
 
     public double PIDshooterB(double kpshooterB, double kishooterB, double kdshooterB, double shooterB1, double shooterB2, double shooterB3){
 
@@ -784,7 +794,7 @@ class PIDCONTOLLERshooterB{
     public double calcshooterB(double targetshooterB, double currentshooterB){
         double errorshooterB = targetshooterB - currentshooterB;
         double integralmaxB=1000;//update this value if needed
-        double timeBs=0.2; //update if needed
+        double timeBs=0.1; //update if needed
         double integralshooterB =+ errorshooterB*timeBs;
         if(integralshooterB>integralmaxB){
             integralshooterB=integralmaxB;
