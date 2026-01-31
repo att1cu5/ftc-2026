@@ -368,10 +368,10 @@ public class auto extends LinearOpMode { //this is fine
             filteredV=lppd.filterinput(0.3,posO,filteredV);
             CurX=filteredV;
             telemetry.addData("posX",CurX);
-            frontright.setPower(speedA);
-            frontleft.setPower(speedC);
-            backleft.setPower(-speedE);
-            backright.setPower(-speedD);
+            frontright.setPower(-speedA);
+            frontleft.setPower(-speedC);
+            backleft.setPower(speedE);
+            backright.setPower(speedD);
             telemetry.update();
             if(CurX==desX || CurX<desX){
                 frontright.setPower(0);
